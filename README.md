@@ -22,7 +22,7 @@ A python script to take a mastodon archive and convert it into a human-readable 
 
 <b>Without Python (modified by slshyn):</b>
 
-* Download the `archive_page.html` file.
+* Download the `archive_page.html` file. Place it in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
 * Open `archive_page.html` in your web browser. Open the `actor.json` and `outbox.json` file from within the page and it will load it.
 
 
