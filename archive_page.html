@@ -6,13 +6,14 @@
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <style>
-        .status { 
+        .status__box { 
 			position: relative;
 			min-height: 128px;
 			padding:8px;
-			padding: 15px 15px 15px 15px;
+			padding: 15px;
 			min-height: 50px;
 			border-bottom: 1px solid #393f4f;
+			display:block;
 		}
 		.status__summary {
 			width: 100%;
@@ -29,8 +30,17 @@
 			text-align: right;
 		}
 		.status__media {
-			width:60%;
+			
+			border-radius: 4px;
+  			/*cursor: pointer;*/
+  			/*transition: 0.1s;*/
 		}
+		.status__media.image {
+   			 width: 60%;
+		}
+		/*.status__media :hover {
+			opacity: 0.7;
+		}*/
 		.status__image {
 			max-width: 100%; width:100%; min-width:100%;
 		}
@@ -63,7 +73,7 @@
 		a {
 			color: rgb(150,255,140)
 		}
-		label{
+		label,button{
 		    flex: 0 auto;
 		    font-size: 0.9em;
 		    color: #fff;
@@ -89,7 +99,7 @@
 			width: auto;
 			margin: 0 5px;
 		}
-		label:active, label:focus, label:hover {
+		label:active, label:focus, label:hover,button:hover {
     		background-color: #56a7e1;
 		    transition: all .2s ease-out;
 		}
@@ -229,6 +239,7 @@
 		        border-top-style: solid;
 		    border-width: 0;
 		    line-height: 0px;
+		    background: #313543;
 		}
 		.account__header__fields dl {
 		    display: flex;
@@ -330,7 +341,7 @@
 		    border-bottom: 1px solid #393f4f;
 		    cursor: default;
 		    display: flex;
-		    padding: 15px;
+		    
 		}
 		.tootheadline {
 		    display: block;
@@ -340,51 +351,87 @@
 		    text-decoration: none;
 		    position: relative;
 		    white-space: nowrap;
+		    padding: 15px;
 		}
 		.tootheadline {
 		    width: 33%;
 		    text-align: center;
 		}
 		.tootheadline.active{
-		color: #d9e1e8;
+			color: #d9e1e8;
+			background-color: #282C37;
 		}
-		.status.direct-status {
+		.status__box.direct {
 		background: #393f4f;
 		border-bottom-color: #42485a;
 		}
+		.grid {
+		    display: grid;
+		    grid-gap: 10px;
+		    grid-template-columns: minmax(300px,3fr) minmax(298px,1fr);
+		    grid-auto-columns: 25%;
+		    grid-auto-rows: -webkit-max-content;
+		    grid-auto-rows: max-content;
+		}
+		.grid .column-1 {
+		    grid-row: 1;
+		    grid-column: 2;
+		}
+		.grid .column-0 {
+		    grid-row: 1;
+		    grid-column: 1;
+		}
+		.archive__section dd {
+		    text-align: left;
+		    padding-bottom: 10px;
+		}
+		 #scroll_top_button {
+		  display: none; /* Hidden by default */
+		  position: fixed; /* Fixed/sticky position */
+		  bottom: 20px; /* Place the button at the bottom of the page */
+		  right: 30px; /* Place the button 30px from the right */
+		  z-index: 99; /* Make sure it does not overlap */
+		  font-size: 1.1em;
+		}
+
+		#scroll_top_button:hover {
+		  background-color: #555; /* Add a dark-grey background on hover */
+		}
+		.archive.year {
+		  padding: 15px;
+		  background-color: #313543;
+		  border-bottom: 1px solid #393f4f;
+		  cursor: pointer;
+		}
+		.sticky {
+		  position: fixed;
+		  top: 0;
+		  width: 100%;
+		}
+		#archive__section {
+		background-color: #191b22;
+		}
+
 	</style>
     <template id="article">
         <article class='status'>
-            <div class='status__date'><span ></span></div>
-            <div class='status__content'></div>
-            <div class='status__media'></div>
+            <div class='status__box'>
+                <div class='status__date'><span ></span></div>
+                <div class='status__content'></div>
+                <div class='status__media'></div>
+            </div>
         </article>
     </template>
     <template id="article--CW">
         <article class='status'>
-            <div class='status__date'><span></span></div>
-            <details>
-                <summary class='status__summary'></summary>
-                <div class='status__content'></div>
-                <div class='status__media'></div>
-            </details>
-        </article>
-    </template>
-    <template id="article-direct">
-        <article class='status direct-status'>
-            <div class='status__date'><span ></span></div>
-            <div class='status__content'></div>
-            <div class='status__media'></div>
-        </article>
-    </template>
-    <template id="article--CW-direct">
-        <article class='status direct-status'>
-            <div class='status__date'><span></span></div>
-            <details>
-                <summary class='status__summary'></summary>
-                <div class='status__content'></div>
-                <div class='status__media'></div>
-            </details>
+            <div class='status__box'>
+                <div class='status__date'><span></span></div>
+                <details>
+                    <summary class='status__summary'></summary>
+                    <div class='status__content'></div>
+                    <div class='status__media'></div>
+                </details>
+            </div>
         </article>
     </template>
     <template id="media-video">
@@ -393,11 +440,12 @@
         </video>
     </template>
     <template id="media-image">
-        <img class='status__media' src=''>
+        <img class='status__media image' src=''>
 	</template>
 </head>
 
 <body>
+    <button onclick="topFunction()" id="scroll_top_button" title="Go to top">⇧</button>
     <div class="container">
         <section id="loading">
             <div id="div-import-prompt">
@@ -415,6 +463,7 @@
                     </label>
                 </div>
             </div>
+        </section>
     </div>
     <div class="container">
         <section id="header">
@@ -435,151 +484,260 @@
                 </div>
             </div>
         </section>
-        <div class="account__section-headline" id="account__section-headline">
-        </div>
+        <section class="grid">
+            <div class="column-0">
+                <div class="account__section-headline" id="account__section-headline">
+                </div>
+                <main id="articles">
+                </main>
+            </div>
+            <div class="column-1">
+                <div class="archive__section" id="archive__section">
+                </div>
+            </div>
         </section>
-        <main id="articles">
-        </main>
     </div>
-</body>
-<script>
-'use strict'
-// i'm both shocked that this works and shocked that the other things i tried didn't
-// same my friend 
-var actor = null;
-var outbox = null;
+    </div>
+    <script>
+    'use strict'
+    // i'm both shocked that this works and shocked that the other things i tried didn't
+    // same my friend 
+    var actor = null;
+    var outbox = null;
 
-document.getElementById("actor-file-input")
-    .addEventListener("change", function(event) {
-        var file = event.target.files[0],
-            reader = new FileReader();
-        reader.addEventListener("load", function() {
-            actor = JSON.parse(this.result);
+    //scroll bar
+    //Get the button:
+    var mybutton = document.getElementById("scroll_top_button");
 
-            var accounturl = actor.url
-            var url_sp = accounturl.split("/")
-            var id = url_sp[3] + '@' + url_sp[2]
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() { scrollFunction() };
 
-            var avatar_img = ''
-            var header_img = ''
-            try{
-            	avatar_img = actor.icon["url"]
-            	header_img = actor.image["url"]
-            } catch{
-            	console.log("no image");
-            }
-            
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
 
-            var header_fields = ''
-            actor.attachment.forEach((item) => {
-                header_fields += '<dl><dt>' + item.name + '</dt><dd><span>' + item.value + '</span></dd></dl>'
+        stop = archive.offsetTop - 20
+        if (stop >= 0) {
+            stop_val = stop
+        }
+        console.log(stop)
+
+        // if user scrolls to 20px from the top of the archive 
+        if (document.body.scrollTop > stop_val || document.documentElement.scrollTop > stop_val) {
+            // stick the div
+            archive.classList.add("sticky");
+        } else {
+            // release the div
+            archive.classList.remove("sticky");
+        }
+    }
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+
+    // stick archive
+    var archive = document.getElementById("archive__section"),
+
+        stop = archive.offsetTop - 20,
+        stop_val = stop;
+
+
+
+    //load actor
+    document.getElementById("actor-file-input")
+        .addEventListener("change", function(event) {
+            var file = event.target.files[0],
+                reader = new FileReader();
+            reader.addEventListener("load", function() {
+                actor = JSON.parse(this.result);
+
+                var accounturl = actor.url,
+                    url_sp = accounturl.split("/"),
+                    id = url_sp[3] + '@' + url_sp[2];
+
+                var avatar_img, header_img = ''
+                try {
+                    avatar_img = actor.icon["url"];
+                } catch { console.log("no profile avatar"); }
+                try {
+                    header_img = actor.image["url"]
+                } catch { console.log("no profile header image"); }
+
+                var header_fields = '';
+                actor.attachment.forEach((item) => {
+                    header_fields += '<dl><dt>' + item.name + '</dt><dd><span>' + item.value + '</span></dd></dl>'
+                });
+                document.getElementById("account__header__fields").innerHTML = header_fields;
+                document.getElementById("public-account-header__image").innerHTML = '<img class="parallax" src="' + header_img + '" style="transform: translate3d(0px, 0px, 0px);">';
+                document.getElementById("account__header__tabs__name").innerHTML = '<h1><span>' + actor.name + '</span><small>' + id + '</small></h1>'
+                document.getElementById("public-account-header__bar").innerHTML = '<a class="avatar" href="' + accounturl + '"><img src="' + avatar_img + '"></a>';
+                document.getElementById("account__header__content").innerHTML = actor.summary;
             });
-            document.getElementById("account__header__fields").innerHTML = header_fields;
-            document.getElementById("public-account-header__image").innerHTML = '<img class="parallax" src="' + header_img + '" style="transform: translate3d(0px, 0px, 0px);">';
-            document.getElementById("account__header__tabs__name").innerHTML = '<h1><span>' + actor.name + '</span><small>' + id + '</small></h1>'
-            document.getElementById("public-account-header__bar").innerHTML = '<a class="avatar" href="' + accounturl + '"><img src="' + avatar_img + '"></a>';
-            document.getElementById("account__header__content").innerHTML = actor.summary;
+            reader.readAsText(file);
         });
-        reader.readAsText(file);
-    });
-document.getElementById("outbox-file-input")
-    .addEventListener("change", function(event) {
-
-        var file = event.target.files[0],
-            reader = new FileReader();
-        reader.addEventListener("load", function() {
-            outbox = JSON.parse(this.result);
-            buildArchiveView(outbox, actor);
+    document.getElementById("outbox-file-input")
+        .addEventListener("change", function(event) {
+            var file = event.target.files[0],
+                reader = new FileReader();
+            reader.addEventListener("load", function() {
+                outbox = JSON.parse(this.result);
+                buildArchiveView(outbox, actor);
+            });
+            reader.readAsText(file);
         });
-        reader.readAsText(file);
-    });
 
-function buildArchiveView(outbox, actor) {
-    var articleTemplate = document.getElementById("article"),
-        articleCWTemplate = document.getElementById("article--CW"),
-        articleDirectTemplate = document.getElementById("article-direct"),
-        articleCWDirectTemplate = document.getElementById("article--CW-direct"),
-        videoTemplate = document.getElementById("media-video"),
-        imageTemplate = document.getElementById("media-image");
+    function buildArchiveView(outbox, actor) {
+        var articleTemplate = document.getElementById("article"),
+            articleCWTemplate = document.getElementById("article--CW"),
+            videoTemplate = document.getElementById("media-video"),
+            imageTemplate = document.getElementById("media-image");
 
-    var statuses = outbox.orderedItems.map(item => item.object)
-        .filter(object => typeof(object) === typeof({}));
-    var nonreply_ct = 0;
+        var statuses = outbox.orderedItems.map(item => item.object)
+            .filter(object => typeof(object) === typeof({}));
 
+        var nonreply_ct = 0,
+            mediatoot_ct = 0;
+        var month_cur = '',
+            month_list = [],
+            month_ct = []
 
-    statuses.forEach((status) => {
-
-        if (status.inReplyTo == null) {
-            nonreply_ct += 1
-        }
-        var visibility = '';
-        var activitystreams = outbox["@context"] + '#Public';
-        // check visibility
-        try {
-            if (status.to.includes(activitystreams)) {
-                visibility = '🌍';
-            } else if (status.to.includes(actor.followers)) {
-                if (status.cc.includes(activitystreams)) {
-                    visibility = '📜';
+        statuses.forEach((status) => {
+            // check visibility
+            var visibility = '',
+                activitystreams = outbox["@context"] + '#Public';
+            try {
+                if (status.to.includes(actor.followers)) {
+                    if (status.cc.includes(activitystreams)) {
+                        visibility = '📜';
+                    } else {
+                        visibility = '🔒';
+                    }
+                } else if (status.to.includes(activitystreams)) {
+                    visibility = '🌍';
                 } else {
-                    visibility = '🔒';
+                    visibility = '✉️';
                 }
-            } else {
-                visibility = '✉️';
+            } catch {
+                console.log('grabing visibility failed');
+                visibility = '';
             }
-        } catch {
-            console.log('grabing visibility failed');
-            visibility = '';
-        }
 
-        var attachmentUrls = status.attachment.map(media => media.url);
-        if (status.summary) {
-            if (visibility == '✉️') {
-                var article = document.importNode(articleCWDirectTemplate.content, true);
-                article.querySelector(".status__summary")
-                    .insertAdjacentText("afterbegin", status.summary);
-            } else {
+            var attachmentUrls = status.attachment.map(media => media.url);
+            if (status.summary) {
                 var article = document.importNode(articleCWTemplate.content, true);
                 article.querySelector(".status__summary")
                     .insertAdjacentText("afterbegin", status.summary);
-            }
-
-        } else {
-            if (visibility == '✉️') {
-                var article = document.importNode(articleDirectTemplate.content, true);
-
             } else {
                 var article = document.importNode(articleTemplate.content, true);
-
+            }
+            if (visibility == '✉️') {
+                article.querySelector(".status__box").classList.add("direct");
+            }
+            if (status.inReplyTo != null) {
+                article.querySelector(".status__box").classList.add("reply");
+            } else {
+                nonreply_ct += 1
             }
 
+            var publish_date = status.published;
+            var publish_month = publish_date.slice(0, 7);
+
+            var date_html = '<a class="date" href="' + status.url + '">' + visibility + ' ' + publish_date.slice(0, 10) + ' ' + publish_date.slice(11, 19) + '</a>';
+            if ((month_cur != publish_month)) {
+                date_html = '<a class="date" id="' + publish_month + '" href="' + status.url + '">' + visibility + ' ' + publish_date.slice(0, 10) + ' ' + publish_date.slice(11, 19) + '</a>'
+                month_cur = publish_month;
+
+                month_list.push(month_cur);
+                month_ct.push(1);
+            } else {
+                month_ct[month_list.length - 1] += 1
+            }
+
+            article.querySelector(".status__date")
+                .insertAdjacentHTML("afterbegin", date_html);
+            article.querySelector(".status__content")
+                .insertAdjacentHTML("afterbegin", status.content);
+            if (attachmentUrls.length > 0) {
+
+                var mediaDiv = article.querySelector(".status__media");
+                attachmentUrls.forEach((url) => {
+                    mediatoot_ct += 1
+                    var extension = url.split(".").pop();
+                    if (extension === "mp4") {
+                        var media = document.importNode(videoTemplate.content, true);
+                    } else {
+                        var media = document.importNode(imageTemplate.content, true);
+                    }
+                    media.querySelector(".status__media").src = "media_attachments/" + url.split("/media_attachments/").pop();
+                    mediaDiv.appendChild(media);
+                });
+            } else {
+                article.querySelector(".status__box").classList.add("nonmedia");
+                article.querySelector(".status__media").remove();
+            }
+            document.getElementById("articles").appendChild(article);
+
+        });
+        document.getElementById("account__section-headline").innerHTML = '<a class="tootheadline" id="toots" onclick="clicktoots()"><span>嘟文（' + nonreply_ct.toString() + '）</span></a><a class="active tootheadline" id="tootsNreplies" onclick="clicktootsNreplies()"><span>嘟文和回复（' + outbox.totalItems.toString() + '）</span></a><a class="tootheadline" id="mediatoots" onclick="clicktootsmedia()"><span>媒体（' + mediatoot_ct.toString() + '）</span></a>'
+
+
+        var month_section_html = '<dl class="account__section-headline" style="background: #1f232b;border-bottom: 1px solid #393f4f; margin:0"><dd style="padding:15px;color:#d9e1e8">索引</dd></dl>'
+
+        var yr_last = ''
+        var yr_cur = ''
+        for (var i = 0; i < month_list.length; i++) {
+            yr_cur = month_list[i].slice(0, 4)
+            if (yr_cur != yr_last) {
+                month_section_html += '</details><details><summary class="archive year">' + yr_cur + '</summary>'
+                yr_last = yr_cur
+            }
+            month_section_html += '<dl><dd><a href="#' + month_list[i] + '">' + month_list[i] + ' (' + month_ct[i] + ')</a></dd></dl>'
+
         }
 
-        var date_html = '<a class="date" href="' + status.url + '">' + visibility + ' ' + status.published.slice(0, 10) + ' ' + status.published.slice(11, 19) + '</a>'
-        article.querySelector(".status__date")
-            .insertAdjacentHTML("afterbegin", date_html);
-        article.querySelector(".status__content")
-            .insertAdjacentHTML("afterbegin", status.content);
-        if (attachmentUrls.length > 0) {
-            var mediaDiv = article.querySelector(".status__media");
-            attachmentUrls.forEach((url) => {
-                var extension = url.split(".").pop();
-                if (extension === "mp4") {
-                    var media = document.importNode(videoTemplate.content, true);
-                } else {
-                    var media = document.importNode(imageTemplate.content, true);
-                }
-                media.querySelector(".status__media").src = "media_attachments/" + url.split("/media_attachments/").pop();
-                mediaDiv.appendChild(media);
-            });
+        month_section_html += '</details>'
+        document.getElementById("archive__section").innerHTML = month_section_html
+
+    }
+
+    function clicktoots() {
+        var sts = document.getElementsByClassName("status__box reply");
+        for (var index = 0; index < sts.length; index++) {
+            var status = sts[index]
+            status.style.display = "none";
+            document.getElementById("toots").classList.add("active");
+            document.getElementById("tootsNreplies").classList.remove("active");
+            document.getElementById("mediatoots").classList.remove("active");
         }
-        document.getElementById("articles").appendChild(article);
+    }
 
-    });
-    document.getElementById("account__section-headline").innerHTML = '<a class="tootheadline" id="toots"><span>嘟文（' + nonreply_ct.toString() + '）</span></a><a class="active tootheadline" id="tootsNreplies"><span>嘟文和回复（' + outbox.totalItems.toString() + '）</span></a><a class="tootheadline" id="mediatoots"><span>媒体</span></a>'
+    function clicktootsNreplies() {
+        var sts = document.getElementsByClassName("status__box");
+        for (var index = 0; index < sts.length; index++) {
+            var status = sts[index]
+            status.style.display = "block";
+            document.getElementById("toots").classList.remove("active");
+            document.getElementById("tootsNreplies").classList.add("active");
+            document.getElementById("mediatoots").classList.remove("active");
+        }
+    }
 
-
-}
-</script>
+    function clicktootsmedia() {
+        var sts = document.getElementsByClassName("status__box nonmedia");
+        for (var index = 0; index < sts.length; index++) {
+            var status = sts[index]
+            status.style.display = "none";
+            document.getElementById("toots").classList.remove("active");
+            document.getElementById("tootsNreplies").classList.remove("active");
+            document.getElementById("mediatoots").classList.add("active");
+        }
+    }
+    </script>
+</body>
 
 </html>
