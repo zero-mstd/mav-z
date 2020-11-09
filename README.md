@@ -35,7 +35,7 @@ A python script to take a mastodon archive and convert it into a human-readable 
 
 - [x] separate page on only toots & media
 	- [ ] make medias easier to view
-	- [ ] click to open pictures (why does `addEventListener click didn't work...`)
+	- [ ] click to open pictures (why `addEventListener` click does not work here...)
 - [ ] prettier interface
 
 Open to suggestions. Chinese and English ok.
