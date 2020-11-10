@@ -1,5 +1,5 @@
 # Mastodon Archive Viewer (modified by slshyn 11/09/2020)
-A python script to take a mastodon archive and convert it into a human-readable webpage for viewing. Currently available as a python script or a hacky html file with some inline JS. 
+A html script to take a mastodon archive and convert it into a human-readable webpage for viewing. Currently available as a hacky html file with some inline JS. 
 
 # Features:
 ## original
@@ -23,7 +23,7 @@ A python script to take a mastodon archive and convert it into a human-readable 
 * added open link on a new tab when click
 
 # Usage
-<b>With Python (original):</b>
+<b>With Python (unchanged, can still work as the original viewer):</b>
 * To make a webpage to view your archive, just place the `html_from_archive.py` script in the root of the archive (the folder that has `outbox.json` and `media_attachments` in it) and run it using python3 
 * From the command line: `python3 html_from_archive.py`
 * You can also set it as executable and run it directly or, on Windows, right click and open it with python 3.
