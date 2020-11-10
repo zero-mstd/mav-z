@@ -7,412 +7,484 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <style>
         .status__box { 
-			position: relative;
-			min-height: 128px;
-			padding:8px;
-			padding: 15px;
-			min-height: 50px;
-			border-bottom: 1px solid #393f4f;
-			display:block;
-		}
-		.status__summary {
-			width: 100%;
-			background: #606984;
-			border-radius: 2px;
-			padding: 2px 5px;
-			cursor: pointer;
-		}
-		.status__summary::after {
-			content: '';
-			display: block;
-		}
-		.status__date {
-			text-align: right;
-		}
-		.status__media {
-			
-			border-radius: 4px;
-  			/*cursor: pointer;*/
-  			/*transition: 0.1s;*/
-		}
-		.status__media.image {
-   			 width: 60%;
-		}
-		/*.status__media :hover {
-			opacity: 0.7;
-		}*/
-		.status__image {
-			max-width: 100%; width:100%; min-width:100%;
-		}
-		.hidden {
-			display: none;
-		}
-		#header {
-			background: #313543;
-		}
-		#help-text,
-		#div-import-prompt {
-			background: #393f4f;
-			padding: 24px;
-			text-align: center;
-			font-size: 1.1em
-		}
-		body {
-			font-size: 1rem;
-			font:inherit;
-			margin: 0;
-			background:#191b22;
-			color: #fff1e8;
-			line-height: 1.25;
-			padding: 10px 0;
-		}
-		* {
-			word-wrap: break-word;
-			overflow-wrap: break-word;
-		}
-		a {
-			color: rgb(150,255,140)
-		}
-		label,button{
-		    flex: 0 auto;
-		    font-size: 0.9em;
-		    color: #fff;
-		    text-transform: none;
-		    line-height: 36px;
-		    height: auto;
-		    padding: 3px 15px;
-		    background-color: #2b90d9;
-			border: 10px;
-			border-radius: 4px;
-			box-sizing: border-box;
-			cursor: pointer;
-			display: inline-block;
-			font-weight: 500;
-			letter-spacing: 0;
-			overflow: hidden;
-			position: relative;
-			text-align: center;
-			text-decoration: none;
-			text-overflow: ellipsis;
-			transition: all .1s ease-in;
-			white-space: nowrap;
-			width: auto;
-			margin: 0 5px;
-		}
-		label:active, label:focus, label:hover,button:hover {
-    		background-color: #56a7e1;
-		    transition: all .2s ease-out;
-		}
-		#articles {
-			
-			background-color: #282c37;
-		}
-		.container {
-		    box-sizing: border-box;
-		    max-width: 960px;
-		    margin: 0 auto;
-		    position: relative;
-		    padding: 5px 0;
-		}
-		#header .avatar img {
-			display: block;
-			margin: 0;
-			border-radius: 50%;
-			border: 4px solid #313543;
-			background: #17191f;
-			width: 100%;
-			height: 100%;
-		}
-		.public-account-header__image {
-			border-radius: 4px 4px 0 0;
-			overflow: hidden;
-			height: 300px;
-			position: relative;
-			background: #0e1014;
-		}
-		.public-account-header__image img {
-		    -o-object-fit: cover;
-		    font-family: "object-fit:cover";
-		    object-fit: cover;
-		    display: block;
-		    width: 100%;
-		    height: 100%;
-		    margin: 0;
-		    border-radius: 4px 4px 0 0;
-		}
-		.public-account-header__image::after {
-		    content: "";
-		    display: block;
-		    position: absolute;
-		    width: 100%;
-			height: 100%;
-		    box-shadow: inset 0 -1px 1px 1px rgba(0,0,0,.15);
-		    top: 0;
-		    left: 0;
-		}
-		.public-account-header {
-		    overflow: hidden;
-		    margin-bottom: 10px;
-		    box-shadow: 0 0 15px rgba(0,0,0,.2);
-		}
-		.public-account-header__bar .avatar {
-		    display: block;
-		    width: 120px;
-		    height: 120px;
-		    padding-left: 16px;
-		    flex: 0 0 auto;
-		}
-		.public-account-header__bar::before {
-		    content: "";
-		    display: block;
-		    background: #313543;
-		    position: absolute;
-		    bottom: 0;
-		    left: 0;
-		    right: 0;
-		    height: 60px;
-		    border-radius: 0 0 4px 4px;
-		    z-index: -1;
-		}
-		.public-account-header__bar {
-		    position: relative;
-		    margin-top: -80px;
-		    display: flex;
-		    justify-content: flex-start;
-		}
-		.account__header__tabs__name {
-		    padding: 5px 16px;
-		}
-		.account__header__tabs__name h1 {
-		    line-height: 1.25;
-		    font-weight: 500;
-		    overflow: hidden;
-		    white-space: nowrap;
-		    text-overflow: ellipsis;
-		}
-		.account__header__tabs__name h1 small {
-		    display: block;
-		    font-weight: 400;
-		    overflow: hidden;
-		    text-overflow: ellipsis;
-		}
-		.columns-area--mobile .account__header__bio {
-		    margin: 0 -10px;
-		}
-		.account__header__bio {
-		    overflow: hidden;
-		    margin: 0 -5px;
-		}
-		.account__header__extra__links {
-		    text-align: center;
-		    background: rgba(128, 128, 128, 0.25);
-		    border-radius: 4px;
-		}
-		.account__header__extra__links {
-		    color: #9baec8;
-		    padding: 10px 0;
-		}
-		.account__header__bio  {
-		    margin: 0;
-		    border-top: 1px solid #42485a;
-		}
-		.account__header__bio .account__header__content {
-		    padding: 20px 15px 15px;
-		        
-		}
-		.account__header__content {
-		    text-align: center;
-		font-weight: 400;
-		overflow: hidden;
-		word-break: normal;
-		word-wrap: break-word;
-		}
-		.account__header__fields {
-		    max-width: 100vw;
-		    padding: 0;
-		    margin: 0;
-		    border-bottom: 0;
-		    border-top:  1px solid #42485a;
-		    border-color: #42485a currentcolor;
-		        border-top-color: rgb(66, 72, 90);
-		    border-style: solid none;
-		        border-top-style: solid;
-		    border-width: 0;
-		    line-height: 0px;
-		    background: #313543;
-		}
-		.account__header__fields dl {
-		    display: flex;
-		    border-bottom: 0;
-		    margin: 0;
-		}
-		.account__header__fields dt {
-		    font-weight: 500;
-		    width: 160px;
-		    flex: 0 0 auto;
-		    color: #d9e1e8;
-		    background: rgba(23,25,31,.5);
-		}
-		.account__header__fields dd, .account__header__fields dt {
-		    box-sizing: border-box;
-		    padding: 1.5em;
-		    text-align: center;
-		    max-height: 48px;
-		    overflow: hidden;
-		    white-space: nowrap;
-		    text-overflow: ellipsis;
-		}
-		.account__header__fields dd {
-		    flex: 1 1 auto;
-		    color: #9baec8;
-		}
-		a {
-		    color: #4ea2df;
-		    text-decoration: none;
-		}
-		a:active, a:focus, a:hover {
-		    text-decoration: underline;
-		}
-		#account__header__content a {
-		  color: #fff;
-		  text-decoration: underline;
-		}
-		#account__header__content a:active, #account__header__content  a:focus, #account__header__content a:hover {
-		    text-decoration: none;
-		}
+            position: relative;
+            min-height: 128px;
+            padding:8px;
+            padding: 15px;
+            min-height: 50px;
+            border-bottom: 1px solid #393f4f;
+            display:block;
+        }
+        .status__summary {
+            width: 100%;
+            background: #606984;
+            border-radius: 2px;
+            padding: 2px 5px;
+            cursor: pointer;
+        }
+        .status__summary::after {
+            content: '';
+            display: block;
+        }
+        .status__date {
+            text-align: right;
+        }
+        .status__media {
+            
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .status__media.image {
+            width: 60%;
+        }
+        .status__media :hover {
+            opacity: 0.7;
+        }
+        .status__image {
+            max-width: 100%; 
+            width:100%; 
+            min-width:100%;
+        }
+        .hidden {
+            display: none;
+        }
+        #header {
+            background: #313543;
+        }
+        #help-text,
+        #div-import-prompt {
+            background: #393f4f;
+            padding: 24px;
+            text-align: center;
+            font-size: 1.1em
+        }
+        body {
+            font-size: 1rem;
+            font:inherit;
+            margin: 0;
+            background:#191b22;
+            color: #fff1e8;
+            line-height: 1.25;
+            padding: 10px 0;
+        }
+        * {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        a {
+            color: rgb(150,255,140)
+        }
+        label,button{
+            flex: 0 auto;
+            font-size: 0.9em;
+            color: #fff;
+            text-transform: none;
+            line-height: 36px;
+            height: auto;
+            padding: 3px 15px;
+            background-color: #2b90d9;
+            border: 10px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 500;
+            letter-spacing: 0;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            transition: all .1s ease-in;
+            white-space: nowrap;
+            width: auto;
+            margin: 0 5px;
+        }
+        label:active, label:focus, label:hover,button:hover {
+            background-color: #56a7e1;
+            transition: all .2s ease-out;
+        }
+        #articles {
+            
+            background-color: #282c37;
+        }
+        .container {
+            box-sizing: border-box;
+            max-width: 960px;
+            margin: 0 auto;
+            position: relative;
+            padding: 5px 0;
+        }
+        #header .avatar img {
+            display: block;
+            margin: 0;
+            border-radius: 50%;
+            border: 4px solid #313543;
+            background: #17191f;
+            width: 100%;
+            height: 100%;
+        }
+        .public-account-header__image {
+            border-radius: 4px 4px 0 0;
+            overflow: hidden;
+            height: 300px;
+            position: relative;
+            background: #0e1014;
+        }
+        .public-account-header__image img {
+            -o-object-fit: cover;
+            font-family: "object-fit:cover";
+            object-fit: cover;
+            display: block;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            border-radius: 4px 4px 0 0;
+        }
+        .public-account-header__image::after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 -1px 1px 1px rgba(0,0,0,.15);
+            top: 0;
+            left: 0;
+        }
+        .public-account-header {
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,.2);
+        }
+        .public-account-header__bar .avatar {
+            display: block;
+            width: 120px;
+            height: 120px;
+            padding-left: 16px;
+            flex: 0 0 auto;
+        }
+        .public-account-header__bar::before {
+            content: "";
+            display: block;
+            background: #313543;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            border-radius: 0 0 4px 4px;
+            z-index: -1;
+        }
+        .public-account-header__bar {
+            position: relative;
+            margin-top: -80px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .account__header__tabs__name {
+            padding: 5px 16px;
+        }
+        .account__header__tabs__name h1 {
+            line-height: 1.25;
+            font-weight: 500;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .account__header__tabs__name h1 small {
+            display: block;
+            font-weight: 400;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .columns-area--mobile .account__header__bio {
+            margin: 0 -10px;
+        }
+        .account__header__bio {
+            overflow: hidden;
+            margin: 0 -5px;
+        }
+        .account__header__extra__links {
+            text-align: center;
+            background: rgba(128, 128, 128, 0.25);
+            border-radius: 4px;
+        }
+        .account__header__extra__links {
+            color: #9baec8;
+            padding: 10px 0;
+        }
+        .account__header__bio  {
+            margin: 0;
+            border-top: 1px solid #42485a;
+        }
+        .account__header__bio .account__header__content {
+            padding: 20px 15px 15px;
+                
+        }
+        .account__header__content {
+            text-align: center;
+            font-weight: 400;
+            overflow: hidden;
+            word-break: normal;
+            word-wrap: break-word;
+        }
+        .account__header__fields {
+            max-width: 100vw;
+            padding: 0;
+            margin: 0;
+            border-bottom: 0;
+            border-top:  1px solid #42485a;
+            border-color: #42485a currentcolor;
+                border-top-color: rgb(66, 72, 90);
+            border-style: solid none;
+                border-top-style: solid;
+            border-width: 0;
+            line-height: 0px;
+            background: #313543;
+        }
+        .account__header__fields dl {
+            display: flex;
+            border-bottom: 0;
+            margin: 0;
+        }
+        .account__header__fields dt {
+            font-weight: 500;
+            width: 160px;
+            flex: 0 0 auto;
+            color: #d9e1e8;
+            background: rgba(23,25,31,.5);
+        }
+        .account__header__fields dd, .account__header__fields dt {
+            box-sizing: border-box;
+            padding: 1.5em;
+            text-align: center;
+            max-height: 48px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .account__header__fields dd {
+            flex: 1 1 auto;
+            color: #9baec8;
+        }
+        a {
+            color: #4ea2df;
+            text-decoration: none;
+        }
+        a:active, a:focus, a:hover {
+            text-decoration: underline;
+        }
+        #account__header__content a {
+          color: #fff;
+          text-decoration: underline;
+        }
+        #account__header__content a:active, #account__header__content  a:focus, #account__header__content a:hover {
+            text-decoration: none;
+        }
 
-		.account__header__fields .mention:hover {
-		    text-decoration: underline;
-		}
+        .account__header__fields .mention:hover {
+            text-decoration: underline;
+        }
 
-		.date {
-		  color: #606984;
-		}
+        .date {
+          color: #606984;
+        }
 
-		.status__date a:hover{
-		    color: #2090D7;
-		}
-		.mention.hashtag{
-			background-color: rgba(244, 67, 54, 0.2);
-			padding: 0px 4px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			border-style: dashed;
-			border-color: orange;
-			border-width: 0.5px;
-			border-radius: 2px;
-			margin-top: 2px;
-			margin-bottom: 2px;
-		}
-		.account__header__content a.u-url {
-			color: inherit;
-			background: rgba(54, 136, 244, 0.2);
-			padding: 0px 4px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			border-style: dashed;
-			border-color: rgb(136, 136, 255);
-			border-width: 0.5px;
-			border-radius: 2px;
-			margin-top: 2px;
-			margin-bottom: 2px;
-		}
-		a[class$="mention"][href^="https://gup.pe/"] {
-			background: rgba(54, 136, 244, 0.2);
-			padding: 0px 4px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			border-style: dashed;
-			border-color: rgb(136, 136, 255);
-			border-width: 0.5px;
-			border-radius: 2px;
-			margin-top: 2px;
-			margin-bottom: 2px;
-		}
-		.account__header__fields .mention{
-		  background: none !important;
-		  border: none !important;
-		}
-		.account__section-headline {
-		    background: #1f232b;
-		    border-bottom: 1px solid #393f4f;
-		    cursor: default;
-		    display: flex;
-		    
-		}
-		.tootheadline {
-		    display: block;
-		    flex: 1 1 auto;
-		    color: #9baec8;
-		    text-align: center;
-		    text-decoration: none;
-		    position: relative;
-		    white-space: nowrap;
-		    padding: 15px;
-		}
-		.tootheadline {
-		    width: 33%;
-		    text-align: center;
-		}
-		.tootheadline.active{
-			color: #d9e1e8;
-			background-color: #282C37;
-		}
-		.status__box.direct {
-		background: #393f4f;
-		border-bottom-color: #42485a;
-		}
-		.grid {
-		    display: grid;
-		    grid-gap: 10px;
-		    grid-template-columns: minmax(300px,3fr) minmax(298px,1fr);
-		    grid-auto-columns: 25%;
-		    grid-auto-rows: -webkit-max-content;
-		    grid-auto-rows: max-content;
-		}
-		.grid .column-1 {
-		    grid-row: 1;
-		    grid-column: 2;
-		}
-		.grid .column-0 {
-		    grid-row: 1;
-		    grid-column: 1;
-		}
-		.archive__section dd {
-		    text-align: left;
-		    padding-bottom: 10px;
-		}
-		 #scroll_top_button {
+        .status__date a:hover{
+            color: #2090D7;
+        }
+        .mention.hashtag{
+            background-color: rgba(244, 67, 54, 0.2);
+            padding: 0px 4px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-style: dashed;
+            border-color: orange;
+            border-width: 0.5px;
+            border-radius: 2px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+        .account__header__content a.u-url {
+            color: inherit;
+            background: rgba(54, 136, 244, 0.2);
+            padding: 0px 4px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-style: dashed;
+            border-color: rgb(136, 136, 255);
+            border-width: 0.5px;
+            border-radius: 2px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+        a[class$="mention"][href^="https://gup.pe/"] {
+            background: rgba(54, 136, 244, 0.2);
+            padding: 0px 4px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-style: dashed;
+            border-color: rgb(136, 136, 255);
+            border-width: 0.5px;
+            border-radius: 2px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+        .account__header__fields .mention{
+          background: none !important;
+          border: none !important;
+        }
+        .account__section-headline {
+            background: #1f232b;
+            border-bottom: 1px solid #393f4f;
+            cursor: default;
+            display: flex;
+            
+        }
+        .tootheadline {
+            display: block;
+            flex: 1 1 auto;
+            color: #9baec8;
+            text-align: center;
+            text-decoration: none;
+            position: relative;
+            white-space: nowrap;
+            padding: 15px;
+        }
+        .tootheadline {
+            width: 33%;
+            text-align: center;
+        }
+        .tootheadline.active{
+            color: #d9e1e8;
+            background-color: #282C37;
+        }
+        .status__box.direct {
+        background: #393f4f;
+        border-bottom-color: #42485a;
+        }
+        .grid {
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: minmax(300px,3fr) minmax(298px,1fr);
+            grid-auto-columns: 25%;
+            grid-auto-rows: -webkit-max-content;
+            grid-auto-rows: max-content;
+        }
+        .grid .column-1 {
+            grid-row: 1;
+            grid-column: 2;
+        }
+        .grid .column-0 {
+            grid-row: 1;
+            grid-column: 1;
+        }
+        .archive__section dd {
+            text-align: left;
+            padding-bottom: 10px;
+        }
+         #scroll_top_button {
+          display: none; /* Hidden by default */
+          position: fixed; /* Fixed/sticky position */
+          bottom: 20px; /* Place the button at the bottom of the page */
+          right: 30px; /* Place the button 30px from the right */
+          z-index: 99; /* Make sure it does not overlap */
+          font-size: 1.1em;
+        }
+
+        #scroll_top_button:hover {
+          background-color: #555; /* Add a dark-grey background on hover */
+        }
+        .archive.year {
+          padding: 15px;
+          background-color: #313543;
+          border-bottom: 1px solid #393f4f;
+          cursor: pointer;
+        }
+        .sticky {
+          position: fixed;
+          top: 0;
+          width: 298px;
+        }
+        #archive__section {
+            background-color: #191b22;
+            overflow: scroll;
+            height: 600px;
+        }
+
+		/* The Modal (background) */
+		.modal {
 		  display: none; /* Hidden by default */
-		  position: fixed; /* Fixed/sticky position */
-		  bottom: 20px; /* Place the button at the bottom of the page */
-		  right: 30px; /* Place the button 30px from the right */
-		  z-index: 99; /* Make sure it does not overlap */
-		  font-size: 1.1em;
+		  position: fixed; /* Stay in place */
+		  z-index: 1; /* Sit on top */
+		  padding-top: 100px; /* Location of the box */
+		  left: 0;
+		  top: 0;
+		  width: 100%; /* Full width */
+		  height: 100%; /* Full height */
+		  overflow: auto; /* Enable scroll if needed */
+		  background-color: rgb(0,0,0); /* Fallback color */
+		  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 		}
 
-		#scroll_top_button:hover {
-		  background-color: #555; /* Add a dark-grey background on hover */
+		/* Modal Content (Image) */
+		.modal-content {
+		  margin: auto;
+		  display: block;
+		  width: 80%;
+		  max-width: 700px;
 		}
-		.archive.year {
-		  padding: 15px;
-		  background-color: #313543;
-		  border-bottom: 1px solid #393f4f;
+		/* Caption of Modal Image (Image Text) - Same Width as the Image */
+		#caption {
+		  margin: auto;
+		  display: block;
+		  width: 80%;
+		  max-width: 700px;
+		  text-align: center;
+		  color: #ccc;
+		  padding: 10px 0;
+		  height: 150px;
+		}
+		/* Add Animation - Zoom in the Modal */
+		.modal-content, #caption {
+		  animation-name: zoom;
+		  animation-duration: 0.6s;
+		}
+
+		@keyframes zoom {
+		  from {transform:scale(0)}
+		  to {transform:scale(1)}
+		}
+
+		/* The Close Button */
+		.close {
+		  position: absolute;
+		  top: 15px;
+		  right: 35px;
+		  color: #f1f1f1;
+		  font-size: 40px;
+		  font-weight: bold;
+		  transition: 0.3s;
+		}
+
+		.close:hover,
+		.close:focus {
+		  color: #bbb;
+		  text-decoration: none;
 		  cursor: pointer;
 		}
-		.sticky {
-		  position: fixed;
-		  top: 0;
-		  width: 100%;
-		}
-		#archive__section {
-		background-color: #191b22;
-		}
 
-	</style>
+		/* 100% Image Width on Smaller Screens */
+		@media only screen and (max-width: 700px){
+		  .modal-content {
+		    width: 100%;
+		  }
+		} 
+    </style>
     <template id="article">
         <article class='status'>
             <div class='status__box'>
@@ -440,8 +512,8 @@
         </video>
     </template>
     <template id="media-image">
-        <img class='status__media image' src=''>
-	</template>
+        <img class='status__media image' src='' onclick = ''>
+    </template>
 </head>
 
 <body>
@@ -498,245 +570,275 @@
         </section>
     </div>
     </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+	    <!-- The Close Button -->
+	    <span id="close" class="close" onclick = "clickcloseimg()">&times;</span>
+	    <!-- Modal Content (The Image) -->
+	    <img class="modal-content" id="img01">
+	    <!-- Modal Caption (Image Text) -->
+	    <div id="caption"></div>
+	</div>
     <script>
-    'use strict'
-    // i'm both shocked that this works and shocked that the other things i tried didn't
-    // same my friend 
-    var actor = null;
-    var outbox = null;
+        'use strict'
+        // i'm both shocked that this works and shocked that the other things i tried didn't
+        // same my friend 
+        var actor = null;
+        var outbox = null;
 
-    //scroll bar
-    //Get the button:
-    var mybutton = document.getElementById("scroll_top_button");
+        //scroll bar
+        //Get the button:
+        var mybutton = document.getElementById("scroll_top_button");
 
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function() { scrollFunction() };
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() { scrollFunction() };
 
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            mybutton.style.display = "block";
-        } else {
-            mybutton.style.display = "none";
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+
+            stop = archive.offsetTop - 20
+            if (stop >= 0) {
+                stop_val = stop
+            }
+            console.log(stop)
+
+            // if user scrolls to 20px from the top of the archive 
+            if (document.body.scrollTop > stop_val || document.documentElement.scrollTop > stop_val) {
+                // stick the div
+                archive.classList.add("sticky");
+            } else {
+                // release the div
+                archive.classList.remove("sticky");
+            }
+        }
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         }
 
-        stop = archive.offsetTop - 20
-        if (stop >= 0) {
-            stop_val = stop
-        }
-        console.log(stop)
+        // stick archive
+        var archive = document.getElementById("archive__section"),
 
-        // if user scrolls to 20px from the top of the archive 
-        if (document.body.scrollTop > stop_val || document.documentElement.scrollTop > stop_val) {
-            // stick the div
-            archive.classList.add("sticky");
-        } else {
-            // release the div
-            archive.classList.remove("sticky");
-        }
-    }
-    // When the user clicks on the button, scroll to the top of the document
-    function topFunction() {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    }
-
-    // stick archive
-    var archive = document.getElementById("archive__section"),
-
-        stop = archive.offsetTop - 20,
-        stop_val = stop;
+            stop = archive.offsetTop - 20,
+            stop_val = stop;
 
 
 
-    //load actor
-    document.getElementById("actor-file-input")
-        .addEventListener("change", function(event) {
-            var file = event.target.files[0],
-                reader = new FileReader();
-            reader.addEventListener("load", function() {
-                actor = JSON.parse(this.result);
+        //load actor
+        document.getElementById("actor-file-input")
+            .addEventListener("change", function(event) {
+                var file = event.target.files[0],
+                    reader = new FileReader();
+                reader.addEventListener("load", function() {
+                    actor = JSON.parse(this.result);
 
-                var accounturl = actor.url,
-                    url_sp = accounturl.split("/"),
-                    id = url_sp[3] + '@' + url_sp[2];
+                    var accounturl = actor.url,
+                        url_sp = accounturl.split("/"),
+                        id = url_sp[3] + '@' + url_sp[2];
 
-                var avatar_img, header_img = ''
-                try {
-                    avatar_img = actor.icon["url"];
-                } catch { console.log("no profile avatar"); }
-                try {
-                    header_img = actor.image["url"]
-                } catch { console.log("no profile header image"); }
+                    var avatar_img, header_img = ''
+                    try {
+                        avatar_img = actor.icon["url"];
+                    } catch { console.log("no profile avatar"); }
+                    try {
+                        header_img = actor.image["url"]
+                    } catch { console.log("no profile header image"); }
 
-                var header_fields = '';
-                actor.attachment.forEach((item) => {
-                    header_fields += '<dl><dt>' + item.name + '</dt><dd><span>' + item.value + '</span></dd></dl>'
+                    var header_fields = '';
+                    actor.attachment.forEach((item) => {
+                        header_fields += '<dl><dt>' + item.name + '</dt><dd><span>' + item.value + '</span></dd></dl>'
+                    });
+                    document.getElementById("account__header__fields").innerHTML = header_fields;
+                    document.getElementById("public-account-header__image").innerHTML = '<img class="parallax" src="' + header_img + '" style="transform: translate3d(0px, 0px, 0px);">';
+                    document.getElementById("account__header__tabs__name").innerHTML = '<h1><span>' + actor.name + '</span><small>' + id + '</small></h1>'
+                    document.getElementById("public-account-header__bar").innerHTML = '<a class="avatar" href="' + accounturl + '"><img src="' + avatar_img + '"></a>';
+                    document.getElementById("account__header__content").innerHTML = actor.summary;
                 });
-                document.getElementById("account__header__fields").innerHTML = header_fields;
-                document.getElementById("public-account-header__image").innerHTML = '<img class="parallax" src="' + header_img + '" style="transform: translate3d(0px, 0px, 0px);">';
-                document.getElementById("account__header__tabs__name").innerHTML = '<h1><span>' + actor.name + '</span><small>' + id + '</small></h1>'
-                document.getElementById("public-account-header__bar").innerHTML = '<a class="avatar" href="' + accounturl + '"><img src="' + avatar_img + '"></a>';
-                document.getElementById("account__header__content").innerHTML = actor.summary;
+                reader.readAsText(file);
             });
-            reader.readAsText(file);
-        });
-    document.getElementById("outbox-file-input")
-        .addEventListener("change", function(event) {
-            var file = event.target.files[0],
-                reader = new FileReader();
-            reader.addEventListener("load", function() {
-                outbox = JSON.parse(this.result);
-                buildArchiveView(outbox, actor);
+        document.getElementById("outbox-file-input")
+            .addEventListener("change", function(event) {
+                var file = event.target.files[0],
+                    reader = new FileReader();
+                reader.addEventListener("load", function() {
+                    outbox = JSON.parse(this.result);
+                    buildArchiveView(outbox, actor);
+                });
+                reader.readAsText(file);
             });
-            reader.readAsText(file);
-        });
 
-    function buildArchiveView(outbox, actor) {
-        var articleTemplate = document.getElementById("article"),
-            articleCWTemplate = document.getElementById("article--CW"),
-            videoTemplate = document.getElementById("media-video"),
-            imageTemplate = document.getElementById("media-image");
+        function buildArchiveView(outbox, actor) {
+            var articleTemplate = document.getElementById("article"),
+                articleCWTemplate = document.getElementById("article--CW"),
+                videoTemplate = document.getElementById("media-video"),
+                imageTemplate = document.getElementById("media-image");
 
-        var statuses = outbox.orderedItems.map(item => item.object)
-            .filter(object => typeof(object) === typeof({}));
+            var statuses = outbox.orderedItems.map(item => item.object)
+                .filter(object => typeof(object) === typeof({}));
 
-        var nonreply_ct = 0,
-            mediatoot_ct = 0;
-        var month_cur = '',
-            month_list = [],
-            month_ct = []
+            var nonreply_ct = 0,
+                mediatoot_ct = 0;
+            var month_cur = '',
+                month_list = [],
+                month_ct = []
 
-        statuses.forEach((status) => {
-            // check visibility
-            var visibility = '',
-                activitystreams = outbox["@context"] + '#Public';
-            try {
-                if (status.to.includes(actor.followers)) {
-                    if (status.cc.includes(activitystreams)) {
-                        visibility = '📜';
+            statuses.forEach((status) => {
+                // check visibility
+                var visibility = '',
+                    activitystreams = outbox["@context"] + '#Public';
+                try {
+                    if (status.to.includes(actor.followers)) {
+                        if (status.cc.includes(activitystreams)) {
+                            visibility = '📜';
+                        } else {
+                            visibility = '🔒';
+                        }
+                    } else if (status.to.includes(activitystreams)) {
+                        visibility = '🌍';
                     } else {
-                        visibility = '🔒';
+                        visibility = '✉️';
                     }
-                } else if (status.to.includes(activitystreams)) {
-                    visibility = '🌍';
-                } else {
-                    visibility = '✉️';
+                } catch {
+                    console.log('grabing visibility failed');
+                    visibility = '';
                 }
-            } catch {
-                console.log('grabing visibility failed');
-                visibility = '';
-            }
 
-            var attachmentUrls = status.attachment.map(media => media.url);
-            if (status.summary) {
-                var article = document.importNode(articleCWTemplate.content, true);
-                article.querySelector(".status__summary")
-                    .insertAdjacentText("afterbegin", status.summary);
-            } else {
-                var article = document.importNode(articleTemplate.content, true);
-            }
-            if (visibility == '✉️') {
-                article.querySelector(".status__box").classList.add("direct");
-            }
-            if (status.inReplyTo != null) {
-                article.querySelector(".status__box").classList.add("reply");
-            } else {
-                nonreply_ct += 1
-            }
+                var attachmentUrls = status.attachment.map(media => media.url);
+                var attachmentNames = status.attachment.map(media => media.name);
+                if (status.summary) {
+                    var article = document.importNode(articleCWTemplate.content, true);
+                    article.querySelector(".status__summary")
+                        .insertAdjacentText("afterbegin", status.summary);
+                } else {
+                    var article = document.importNode(articleTemplate.content, true);
+                }
+                if (visibility == '✉️') {
+                    article.querySelector(".status__box").classList.add("direct");
+                }
+                if (status.inReplyTo != null) {
+                    article.querySelector(".status__box").classList.add("reply");
+                } else {
+                    nonreply_ct += 1
+                }
 
-            var publish_date = status.published;
-            var publish_month = publish_date.slice(0, 7);
+                var publish_date = status.published;
+                var publish_month = publish_date.slice(0, 7);
 
-            var date_html = '<a class="date" href="' + status.url + '">' + visibility + ' ' + publish_date.slice(0, 10) + ' ' + publish_date.slice(11, 19) + '</a>';
-            if ((month_cur != publish_month)) {
-                date_html = '<a class="date" id="' + publish_month + '" href="' + status.url + '">' + visibility + ' ' + publish_date.slice(0, 10) + ' ' + publish_date.slice(11, 19) + '</a>'
-                month_cur = publish_month;
+                var date_html = '<a class="date" href="' + status.url + '"  target="_blank">' + visibility + ' ' + publish_date.slice(0, 10) + ' ' + publish_date.slice(11, 19) + '</a>';
+                if ((month_cur != publish_month)) {
+                    date_html = '<a class="date" id="' + publish_month + '" href="' + status.url + '"  target="_blank">' + visibility + ' ' + publish_date.slice(0, 10) + ' ' + publish_date.slice(11, 19) + '</a>'
+                    month_cur = publish_month;
 
-                month_list.push(month_cur);
-                month_ct.push(1);
-            } else {
-                month_ct[month_list.length - 1] += 1
-            }
+                    month_list.push(month_cur);
+                    month_ct.push(1);
+                } else {
+                    month_ct[month_list.length - 1] += 1
+                }
 
-            article.querySelector(".status__date")
-                .insertAdjacentHTML("afterbegin", date_html);
-            article.querySelector(".status__content")
-                .insertAdjacentHTML("afterbegin", status.content);
-            if (attachmentUrls.length > 0) {
+                article.querySelector(".status__date")
+                    .insertAdjacentHTML("afterbegin", date_html);
+                article.querySelector(".status__content")
+                    .insertAdjacentHTML("afterbegin", status.content);
+                if (attachmentUrls.length > 0) {
 
-                var mediaDiv = article.querySelector(".status__media");
-                attachmentUrls.forEach((url) => {
-                    mediatoot_ct += 1
-                    var extension = url.split(".").pop();
-                    if (extension === "mp4") {
-                        var media = document.importNode(videoTemplate.content, true);
-                    } else {
-                        var media = document.importNode(imageTemplate.content, true);
+                    var mediaDiv = article.querySelector(".status__media");
+                    for (var i = 0; i < attachmentUrls.length; i++) {
+
+                        var url = attachmentUrls[i]
+                        var caption = attachmentNames[i]
+                        // attachmentUrls.forEach((url) => {
+                        mediatoot_ct += 1
+                        var extension = url.split(".").pop();
+                        if (extension === "mp4") {
+                            var media = document.importNode(videoTemplate.content, true);
+                        } else {
+                            var media = document.importNode(imageTemplate.content, true);
+                        }
+                        var src_img = "media_attachments/" + url.split("/media_attachments/").pop();
+                        media.querySelector(".status__media").src = src_img
+                        media.querySelector(".status__media").onclick = function() { // insert image inside the modal - use name as a caption
+                            var modal = document.getElementById("myModal");
+                            var modalImg = document.getElementById("img01");
+                            modal.style.display = "block";
+                            modalImg.src = src_img;
+                            if (caption) {
+                                captionText.innerHTML = caption;
+                            }
+                        }
+                        mediaDiv.appendChild(media);
+                        // });
                     }
-                    media.querySelector(".status__media").src = "media_attachments/" + url.split("/media_attachments/").pop();
-                    mediaDiv.appendChild(media);
-                });
-            } else {
-                article.querySelector(".status__box").classList.add("nonmedia");
-                article.querySelector(".status__media").remove();
+                } else {
+                    article.querySelector(".status__box").classList.add("nonmedia");
+                    article.querySelector(".status__media").remove();
+                }
+                document.getElementById("articles").appendChild(article);
+
+            });
+            document.getElementById("account__section-headline").innerHTML = '<a class="tootheadline" id="toots" onclick="clicktoots()"><span>嘟文（' + nonreply_ct.toString() + '）</span></a><a class="active tootheadline" id="tootsNreplies" onclick="clicktootsNreplies()"><span>嘟文和回复（' + outbox.totalItems.toString() + '）</span></a><a class="tootheadline" id="mediatoots" onclick="clicktootsmedia()"><span>媒体（' + mediatoot_ct.toString() + '）</span></a>'
+
+
+            var month_section_html = '<dl class="account__section-headline" style="background: #1f232b;border-bottom: 1px solid #393f4f; margin:0"><dd style="padding:15px;color:#d9e1e8">索引</dd></dl>'
+
+            var yr_last = ''
+            var yr_cur = ''
+            for (var i = 0; i < month_list.length; i++) {
+                yr_cur = month_list[i].slice(0, 4)
+                if (yr_cur != yr_last) {
+                    month_section_html += '</details><details><summary class="archive year">' + yr_cur + '</summary>'
+                    yr_last = yr_cur
+                }
+                month_section_html += '<dl><dd><a href="#' + month_list[i] + '">' + month_list[i] + ' (' + month_ct[i] + ')</a></dd></dl>'
+
             }
-            document.getElementById("articles").appendChild(article);
 
-        });
-        document.getElementById("account__section-headline").innerHTML = '<a class="tootheadline" id="toots" onclick="clicktoots()"><span>嘟文（' + nonreply_ct.toString() + '）</span></a><a class="active tootheadline" id="tootsNreplies" onclick="clicktootsNreplies()"><span>嘟文和回复（' + outbox.totalItems.toString() + '）</span></a><a class="tootheadline" id="mediatoots" onclick="clicktootsmedia()"><span>媒体（' + mediatoot_ct.toString() + '）</span></a>'
+            month_section_html += '</details>'
+            document.getElementById("archive__section").innerHTML = month_section_html
 
+        }
 
-        var month_section_html = '<dl class="account__section-headline" style="background: #1f232b;border-bottom: 1px solid #393f4f; margin:0"><dd style="padding:15px;color:#d9e1e8">索引</dd></dl>'
-
-        var yr_last = ''
-        var yr_cur = ''
-        for (var i = 0; i < month_list.length; i++) {
-            yr_cur = month_list[i].slice(0, 4)
-            if (yr_cur != yr_last) {
-                month_section_html += '</details><details><summary class="archive year">' + yr_cur + '</summary>'
-                yr_last = yr_cur
+        function clicktoots() {
+            var sts = document.getElementsByClassName("status__box reply");
+            for (var index = 0; index < sts.length; index++) {
+                var status = sts[index]
+                status.style.display = "none";
+                document.getElementById("toots").classList.add("active");
+                document.getElementById("tootsNreplies").classList.remove("active");
+                document.getElementById("mediatoots").classList.remove("active");
             }
-            month_section_html += '<dl><dd><a href="#' + month_list[i] + '">' + month_list[i] + ' (' + month_ct[i] + ')</a></dd></dl>'
-
         }
 
-        month_section_html += '</details>'
-        document.getElementById("archive__section").innerHTML = month_section_html
-
-    }
-
-    function clicktoots() {
-        var sts = document.getElementsByClassName("status__box reply");
-        for (var index = 0; index < sts.length; index++) {
-            var status = sts[index]
-            status.style.display = "none";
-            document.getElementById("toots").classList.add("active");
-            document.getElementById("tootsNreplies").classList.remove("active");
-            document.getElementById("mediatoots").classList.remove("active");
+        function clicktootsNreplies() {
+            var sts = document.getElementsByClassName("status__box");
+            for (var index = 0; index < sts.length; index++) {
+                var status = sts[index]
+                status.style.display = "block";
+                document.getElementById("toots").classList.remove("active");
+                document.getElementById("tootsNreplies").classList.add("active");
+                document.getElementById("mediatoots").classList.remove("active");
+            }
         }
-    }
 
-    function clicktootsNreplies() {
-        var sts = document.getElementsByClassName("status__box");
-        for (var index = 0; index < sts.length; index++) {
-            var status = sts[index]
-            status.style.display = "block";
-            document.getElementById("toots").classList.remove("active");
-            document.getElementById("tootsNreplies").classList.add("active");
-            document.getElementById("mediatoots").classList.remove("active");
+        function clicktootsmedia() {
+            var sts = document.getElementsByClassName("status__box nonmedia");
+            for (var index = 0; index < sts.length; index++) {
+                var status = sts[index]
+                status.style.display = "none";
+                document.getElementById("toots").classList.remove("active");
+                document.getElementById("tootsNreplies").classList.remove("active");
+                document.getElementById("mediatoots").classList.add("active");
+            }
         }
-    }
 
-    function clicktootsmedia() {
-        var sts = document.getElementsByClassName("status__box nonmedia");
-        for (var index = 0; index < sts.length; index++) {
-            var status = sts[index]
-            status.style.display = "none";
-            document.getElementById("toots").classList.remove("active");
-            document.getElementById("tootsNreplies").classList.remove("active");
-            document.getElementById("mediatoots").classList.add("active");
+        function clickcloseimg() {
+            document.getElementById('myModal').style.display = 'none'
         }
-    }
     </script>
 </body>
 
