@@ -1,4 +1,4 @@
-# Mastodon Archive Viewer (modified by slshyn 11/08/2020)
+# Mastodon Archive Viewer (modified by slshyn 11/09/2020)
 A python script to take a mastodon archive and convert it into a human-readable webpage for viewing. Currently available as a python script or a hacky html file with some inline JS. 
 
 # Features:
@@ -16,7 +16,11 @@ A python script to take a mastodon archive and convert it into a human-readable 
 * separate page on only toots & media
 * archive colume on months and year, stick on the screen when scroll down
 * back to top button when scroll down
-
+## modified by slshyn 11/09/2020 
+* added click to open image
+* fixed a few visual problems
+* added scroll on archive column
+* added open link on a new tab when click
 
 # Usage
 <b>With Python (original):</b>
@@ -34,8 +38,8 @@ A python script to take a mastodon archive and convert it into a human-readable 
 # Next steps:
 
 - [x] separate page on only toots & media
-	- [ ] make medias easier to view
-	- [ ] click to open pictures (why `addEventListener` click does not work here...)
+	- [x] make medias easier to view
+	- [x] click to open pictures (why `addEventListener click` didn't work...)
 - [ ] prettier interface
 
 Open to suggestions. Chinese and English ok.
