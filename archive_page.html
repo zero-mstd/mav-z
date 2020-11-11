@@ -406,14 +406,15 @@
           cursor: pointer;
         }
         .sticky {
-          position: fixed;
+          position: sticky;
           top: 0;
-          width: 298px;
         }
         #archive__section {
             background-color: #191b22;
-            overflow: scroll;
-            height: 600px;
+            
+            overflow-y: auto;
+            height: 100vh;
+            
         }
 
 		/* The Modal (background) */
@@ -605,7 +606,6 @@
             if (stop >= 0) {
                 stop_val = stop
             }
-            console.log(stop)
 
             // if user scrolls to 20px from the top of the archive 
             if (document.body.scrollTop > stop_val || document.documentElement.scrollTop > stop_val) {
@@ -690,8 +690,13 @@
 
             statuses.forEach((status) => {
                 // check visibility
+
                 var visibility = '',
                     activitystreams = outbox["@context"] + '#Public';
+
+                if (typeof outbox["@context"] != "string"){
+                	activitystreams = outbox["@context"][0] + '#Public';
+                }
                 try {
                     if (status.to.includes(actor.followers)) {
                         if (status.cc.includes(activitystreams)) {
@@ -748,6 +753,7 @@
                 if (attachmentUrls.length > 0) {
 
                     var mediaDiv = article.querySelector(".status__media");
+                    
                     for (var i = 0; i < attachmentUrls.length; i++) {
 
                         var url = attachmentUrls[i]
@@ -760,13 +766,14 @@
                         } else {
                             var media = document.importNode(imageTemplate.content, true);
                         }
+                        
                         var src_img = "media_attachments/" + url.split("/media_attachments/").pop();
                         media.querySelector(".status__media").src = src_img
-                        media.querySelector(".status__media").onclick = function() { // insert image inside the modal - use name as a caption
+                        media.querySelector(".status__media").onclick = function(src_img) { // insert image inside the modal - use name as a caption
                             var modal = document.getElementById("myModal");
                             var modalImg = document.getElementById("img01");
                             modal.style.display = "block";
-                            modalImg.src = src_img;
+                            modalImg.src = src_img.target.src;
                             if (caption) {
                                 captionText.innerHTML = caption;
                             }
