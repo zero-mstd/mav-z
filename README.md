@@ -14,13 +14,16 @@ A html script to take a mastodon archive and convert it into a human-readable we
 * more details from the toots and user profile added
 ## modified by slshyn 11/08/2020 
 * separate page on only toots & media
-* archive colume on months and year, stick on the screen when scroll down
+* archive column on months and year, stick on the screen when scroll down
 * back to top button when scroll down
 ## modified by slshyn 11/09/2020 
 * added click to open image
 * fixed a few visual problems
 * added scroll on archive column
 * added open link on a new tab when click
+## fixed by slshyn 11/10/2020 
+* fixed picture display problem
+* modified .sticky column
 
 # Usage
 <b>With Python (unchanged, can still work as the original viewer):</b>
