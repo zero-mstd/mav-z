@@ -1,5 +1,5 @@
-# Mastodon Archive Viewer (modified by slshyn 11/09/2020)
-A html script to take a mastodon archive and convert it into a human-readable webpage for viewing. Currently available as a hacky html file with some inline JS. 
+# Mastodon Archive Viewer (based on the modified version by slshyn 11/09/2020)
+A html script to take a mastodon archive and convert it into a human-readable webpage for viewing.
 
 # Features:
 ## original
@@ -24,17 +24,12 @@ A html script to take a mastodon archive and convert it into a human-readable we
 ## fixed by slshyn 11/10/2020 
 * fixed picture display problem
 * modified .sticky column
+## modified by Zero 03/24/2021
+* seperated the css and js file from html
+* delete the original python method
 
 # Usage
-<b>With Python (unchanged, can still work as the original viewer):</b>
-* To make a webpage to view your archive, just place the `html_from_archive.py` script in the root of the archive (the folder that has `outbox.json` and `media_attachments` in it) and run it using python3 
-* From the command line: `python3 html_from_archive.py`
-* You can also set it as executable and run it directly or, on Windows, right click and open it with python 3.
-* Open the resulting `processed_archive.html` file in your web browser.
-
-<b>Without Python (modified by slshyn):</b>
-
-* Download the `archive_page.html` file. Place it in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
+* Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
 * Open `archive_page.html` in your web browser. Open the `actor.json` and `outbox.json` file from within the page and it will load it.
 
 
@@ -44,5 +39,9 @@ A html script to take a mastodon archive and convert it into a human-readable we
 	- [x] make medias easier to view
 	- [x] click to open pictures (why `addEventListener click` didn't work...)
 - [ ] prettier interface
+- [ ] select a period of toots
+- [ ] assistant for my season's exhibition
+- [ ] open the .tar.gz directly
+- [ ] the display of vedio problem, width out of box
 
 Open to suggestions. Chinese and English ok.
