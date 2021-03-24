@@ -43,5 +43,6 @@ A html script to take a mastodon archive and convert it into a human-readable we
 - [ ] assistant for my season's exhibition
 - [ ] open the .tar.gz directly
 - [ ] the display of vedio problem, width out of box
+- [ ] add reverse mode to view all toots
 
 Open to suggestions. Chinese and English ok.
