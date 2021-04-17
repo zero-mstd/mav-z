@@ -82,7 +82,7 @@ document.getElementById("actor-file-input")
             document.getElementById("account__header__fields")
                 .innerHTML = header_fields;
             document.getElementById("public-account-header__image")
-                .innerHTML = '<img class="parallax" src="' +
+                .innerHTML = '<img class="parallax" src="assets/' +
                 header_img +
                 '" style="transform: translate3d(0px, 0px, 0px);">';
             document.getElementById("account__header__tabs__name")
@@ -90,7 +90,7 @@ document.getElementById("actor-file-input")
                 '</span><small>' + id + '</small></h1>'
             document.getElementById("public-account-header__bar")
                 .innerHTML = '<a class="avatar" href="' +
-                accounturl + '"><img src="' + avatar_img + '"></a>';
+                accounturl + '"><img src="assets/' + avatar_img + '"></a>';
             document.getElementById("account__header__content")
                 .innerHTML = actor.summary;
         });
