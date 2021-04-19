@@ -102,10 +102,33 @@ document.getElementById("outbox-file-input")
             reader = new FileReader();
         reader.addEventListener("load", function() {
             outbox = JSON.parse(this.result);
+            var date_from = document.getElementById("date-input-from");
+            var date_to = document.getElementById("date-input-to");
+            var earliest_number = 0;
+            var latest_number = outbox.orderedItems.length - 1;
+            var earliest_date = outbox.orderedItems[earliest_number].published.substring(0,10);
+            var latest_date = outbox.orderedItems[latest_number].published.substring(0,10);
+            date_from.value = earliest_date;
+            date_from.min = earliest_date;
+            date_from.max = latest_date;
+            date_to.value = latest_date;
+            date_to.min = earliest_date;
+            date_to.max = latest_date;
             buildArchiveView(outbox, actor);
         });
         reader.readAsText(file);
     });
+
+var date_from_value = date_from.value;
+var date_to_value = date_to.value;
+function save_date_from(v) {
+    date_from_value = v.target.value;
+    // todo: delete toots before the "from" value and then buildArchiveView.
+}
+function save_date_to(v) {
+    date_to_value = v.target.value;
+    // todo: delete toots after the "to" value and then buildArchiveView.
+}
 
 function buildArchiveView(outbox, actor) {
     var articleTemplate = document.getElementById("article"),

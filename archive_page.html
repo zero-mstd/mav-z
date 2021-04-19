@@ -48,12 +48,18 @@
                 </p>
                 <div>
                     <label id="actor-input">
-                        Browse Your Files for actor.json
+                        actor.json
                         <input accept="application/json" id="actor-file-input" type="file" style="display:none">
                     </label>
                     <label id="outbox-input">
-                        Browse Your Files for outbox.json
+                        outbox.json
                         <input accept="application/json" id="outbox-file-input" type="file" style="display:none">
+                    </label>
+                    <label>
+                        From
+                        <input id="date-input-from" type="date" onchange="save_date_from(event);"/>
+                        To
+                        <input id="date-input-to" type="date" onchange="save_date_to(event);"/>
                     </label>
                 </div>
             </div>

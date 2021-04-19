@@ -27,6 +27,8 @@ A html script to take a mastodon archive and convert it into a human-readable we
 ## modified by Zero 03/24/2021
 * seperated the css and js file from html
 * delete the original python method
+## modified by Zero 04/19/2021
+* added a date selector, then one can choose a specific period of time to view
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
@@ -44,5 +46,6 @@ A html script to take a mastodon archive and convert it into a human-readable we
 - [ ] open the .tar.gz directly
 - [ ] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
+- [ ] timezone problem, all the time need to be +8 hrs fixed
 
 Open to suggestions. Chinese and English ok.
