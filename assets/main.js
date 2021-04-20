@@ -66,11 +66,13 @@ document.getElementById("actor-file-input")
                 avatar_img = actor.icon["url"];
             } catch {
                 console.log("no profile avatar");
+                avatar_img = "avatar_default.png";
             }
             try {
                 header_img = actor.image["url"]
             } catch {
                 console.log("no profile header image");
+                header_img = "header_default.jpg";
             }
 
             var header_fields = '';
