@@ -143,7 +143,16 @@ function buildArchiveView(outbox, actor) {
 
     var nonreply_ct = 0,
         with_reply_ct = 0,
-        mediatoot_ct = 0;
+        mediatoot_ct = 0,
+        public_ct = 0,
+        public_reply_ct = 0,
+        unlisted_ct = 0,
+        unlisted_reply_ct = 0,
+        followers_only_ct = 0,
+        followers_only_reply_ct = 0,
+        direct_ct = 0,
+        direct_reply_ct = 0,
+        boost_ct = 0;
     var month_cur = '',
         month_list = [],
         month_ct = [];
@@ -152,6 +161,17 @@ function buildArchiveView(outbox, actor) {
     for (toot in outbox.orderedItems) {
         if (outbox.orderedItems[toot].type == "Create") {
             with_reply_ct += 1;
+        } else if (outbox.orderedItems[toot].type == "Announce") {
+            boost_ct += 1;
+        }
+    }
+
+    function checkIfReply(status) {
+        if (status.inReplyTo != null) {
+            return 1;
+        } else {
+            nonreply_ct += 1;
+            return 0;
         }
     }
 
@@ -168,13 +188,21 @@ function buildArchiveView(outbox, actor) {
             if (status.to.includes(actor.followers)) {
                 if (status.cc.includes(activitystreams)) {
                     visibility = '🔓';
+                    unlisted_reply_ct += checkIfReply(status);
+                    unlisted_ct += 1;
                 } else {
                     visibility = '🔒';
+                    followers_only_reply_ct += checkIfReply(status);
+                    followers_only_ct += 1;
                 }
             } else if (status.to.includes(activitystreams)) {
                 visibility = '🌍';
+                public_reply_ct += checkIfReply(status);
+                public_ct += 1;
             } else {
                 visibility = '✉️';
+                direct_reply_ct += checkIfReply(status);
+                direct_ct += 1;
             }
         } catch {
             console.log('grabing visibility failed');
@@ -199,8 +227,6 @@ function buildArchiveView(outbox, actor) {
         if (status.inReplyTo != null) {
             article.querySelector(".status__box")
                 .classList.add("reply");
-        } else {
-            nonreply_ct += 1
         }
 
         var publish_date = status.published;
@@ -281,7 +307,25 @@ function buildArchiveView(outbox, actor) {
         '）</span></a><a class="active tootheadline" id="tootsNreplies" onclick="clicktootsNreplies()"><span>嘟文和回复（' +
         with_reply_ct.toString() +
         '）</span></a><a class="tootheadline" id="mediatoots" onclick="clicktootsmedia()"><span>媒体（' +
-        mediatoot_ct.toString() + '）</span></a>'
+        mediatoot_ct.toString() + '）</span></a>';
+    document.getElementById("overviews_public").innerHTML = public_ct.toString();
+    document.getElementById("overviews_public_original").innerHTML = (public_ct - public_reply_ct).toString();
+    document.getElementById("overviews_public_reply").innerHTML = public_reply_ct.toString();
+    document.getElementById("overviews_unlisted").innerHTML = unlisted_ct.toString();
+    document.getElementById("overviews_unlisted_original").innerHTML = (unlisted_ct - unlisted_reply_ct).toString();
+    document.getElementById("overviews_unlisted_reply").innerHTML = unlisted_reply_ct.toString();
+    document.getElementById("overviews_followers-only").innerHTML = followers_only_ct.toString();
+    document.getElementById("overviews_followers-only_original").innerHTML = (followers_only_ct - followers_only_reply_ct).toString();
+    document.getElementById("overviews_followers-only_reply").innerHTML = followers_only_reply_ct.toString();
+    document.getElementById("overviews_direct").innerHTML = direct_ct.toString();
+    document.getElementById("overviews_direct_original").innerHTML = (direct_ct - direct_reply_ct).toString();
+    document.getElementById("overviews_direct_reply").innerHTML = direct_reply_ct.toString();
+    document.getElementById("overviews_original").innerHTML = nonreply_ct.toString();
+    document.getElementById("overviews_reply").innerHTML = (public_reply_ct + unlisted_reply_ct + followers_only_reply_ct + direct_reply_ct).toString();
+    document.getElementById("overviews_total").innerHTML = (public_ct + unlisted_ct + followers_only_ct + direct_ct).toString();
+    document.getElementById("overviews_total_without_direct").innerHTML = (public_ct + unlisted_ct + followers_only_ct).toString();
+    document.getElementById("overviews_boost").innerHTML = boost_ct.toString();
+    document.getElementById("overviews_display").innerHTML = outbox.totalItems.toString();
 
 
     var month_section_html =
