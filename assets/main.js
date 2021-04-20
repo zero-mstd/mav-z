@@ -159,7 +159,7 @@ function buildArchiveView(outbox, actor) {
         try {
             if (status.to.includes(actor.followers)) {
                 if (status.cc.includes(activitystreams)) {
-                    visibility = '📜';
+                    visibility = '🔓';
                 } else {
                     visibility = '🔒';
                 }
