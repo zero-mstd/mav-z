@@ -142,10 +142,18 @@ function buildArchiveView(outbox, actor) {
         .filter(object => typeof(object) === typeof({}));
 
     var nonreply_ct = 0,
+        with_reply_ct = 0,
         mediatoot_ct = 0;
     var month_cur = '',
         month_list = [],
-        month_ct = []
+        month_ct = [];
+
+    let toot;
+    for (toot in outbox.orderedItems) {
+        if (outbox.orderedItems[toot].type == "Create") {
+            with_reply_ct += 1;
+        }
+    }
 
     statuses.forEach((status) => {
         // check visibility
@@ -271,7 +279,7 @@ function buildArchiveView(outbox, actor) {
         '<a class="tootheadline" id="toots" onclick="clicktoots()"><span>嘟文（' +
         nonreply_ct.toString() +
         '）</span></a><a class="active tootheadline" id="tootsNreplies" onclick="clicktootsNreplies()"><span>嘟文和回复（' +
-        outbox.totalItems.toString() +
+        with_reply_ct.toString() +
         '）</span></a><a class="tootheadline" id="mediatoots" onclick="clicktootsmedia()"><span>媒体（' +
         mediatoot_ct.toString() + '）</span></a>'
 
