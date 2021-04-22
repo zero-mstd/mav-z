@@ -322,7 +322,7 @@ function buildArchiveView(outbox, actor) {
     document.getElementById("overviews_direct_reply").innerHTML = direct_reply_ct.toString();
     document.getElementById("overviews_original").innerHTML = nonreply_ct.toString();
     document.getElementById("overviews_reply").innerHTML = (public_reply_ct + unlisted_reply_ct + followers_only_reply_ct + direct_reply_ct).toString();
-    document.getElementById("overviews_total").innerHTML = (public_ct + unlisted_ct + followers_only_ct + direct_ct).toString();
+    document.getElementById("overviews_total").innerHTML = with_reply_ct.toString();
     document.getElementById("overviews_total_without_direct").innerHTML = (public_ct + unlisted_ct + followers_only_ct).toString();
     document.getElementById("overviews_boost").innerHTML = boost_ct.toString();
     document.getElementById("overviews_display").innerHTML = outbox.totalItems.toString();
