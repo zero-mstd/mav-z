@@ -29,7 +29,7 @@ A html script to take a mastodon archive and convert it into a human-readable we
 * delete the original python method
 ## modified by Zero 04/19/2021
 * added a date selector, then one can choose a specific period of time to view
-## modified by Zero 01/20/2021
+## modified by Zero 04/20/2021
 * fixed the wrong number of "Toots and replies"
 * added a statistical table to show the numbers of all kinds of toots
 
