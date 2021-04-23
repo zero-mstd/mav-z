@@ -104,14 +104,16 @@ function days_diff(start, end) {
     var e = new Date(end);
     return (e.getTime() - s.getTime()) / (1000 * 3600 * 24) + 1;
 }
-var date_from = document.getElementById("date-input-from");
-var date_to = document.getElementById("date-input-to");
+
+var date_from, date_to;
 document.getElementById("outbox-file-input")
     .addEventListener("change", function(event) {
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
             outbox = JSON.parse(this.result);
+            date_from = document.getElementById("date-input-from");
+            date_to = document.getElementById("date-input-to");
             var earliest_number = 0;
             var latest_number = outbox.orderedItems.length - 1;
             var earliest_date = outbox.orderedItems[earliest_number].published.substring(0,10);
@@ -134,23 +136,37 @@ document.getElementById("outbox-file-input")
         reader.readAsText(file);
     });
 
-var date_from_value = date_from.value;
-var date_to_value = date_to.value;
-function save_date_from(v) {
-    date_from_value = v.target.value;
-    days_ct = days_diff(date_from_value, date_to_value);
-    document.getElementById("date_input_from").innerHTML = date_from_value;
-    document.getElementById("date_input_diff").innerHTML = days_ct;
-    // todo: delete toots before the "from" value and then buildArchiveView.
-    // buildArchiveView(outbox, actor);
-}
-function save_date_to(v) {
-    date_to_value = v.target.value;
+function deal_with_period(date_from_value, date_to_value) {
+    var date_from_number = new Date(date_from_value);
+    var date_to_number = new Date(date_to_value);
+    if (date_from_number.getTime() > date_to_number.getTime()) {
+        alert('开始日期应不晚于结束日期');
+        return 1;
+    }
+
     days_ct = days_diff(date_from_value, date_to_value);
     document.getElementById("date_input_to").innerHTML = date_to_value;
     document.getElementById("date_input_diff").innerHTML = days_ct;
-    // todo: delete toots after the "to" value and then buildArchiveView.
-    // buildArchiveView(outbox, actor);
+
+    var outbox_operate = JSON.parse(JSON.stringify(outbox));
+    // deep copy so that the change won't affect the original data.
+    let toot;
+    for (toot in outbox_operate.orderedItems) {
+        var published_date = new Date(outbox_operate.orderedItems[toot].published.substring(0,10));
+        if (published_date.getTime() < date_from_number.getTime() ||
+            published_date.getTime() > date_to_number.getTime()) {
+            delete outbox_operate.orderedItems[toot];
+        }
+    }
+
+    buildArchiveView(outbox_operate, actor);
+}
+
+function save_date_from(v) {
+    deal_with_period(v.target.value, date_to.value);
+}
+function save_date_to(v) {
+    deal_with_period(date_from.value, v.target.value);
 }
 
 function clear_grid() {
