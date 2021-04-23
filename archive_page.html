@@ -42,79 +42,6 @@
 <body>
     <button onclick="topFunction()" id="scroll_top_button" title="Go to top">⇧</button>
     <div class="container">
-        <section id="overviews">
-            发嘟概览：
-            <ul>
-                <li><p>按顺序加载完 actor.json 和 outbox.json 后这个表格会自动生成统计数据.</p></li>
-                <li><p>“显示的嘟文与回复数”指的是在个人主页那里，关注数与关注者数左边的那个数字，它包括转嘟，但不包括私信.</p></li>
-                <li><p>一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条回复会变为原创. 因此，原创的嘟文可能会有少许增加，而回复的嘟文会相应减少.</p></li>
-            </ul>
-            <!-- I just put the styles of this table here so that it can be modified easily. -->
-            <!-- Really thankful to the excellent tool: https://www.tablesgenerator.com/html_tables# -->
-            <style type="text/css">
-                .tg  {border-collapse:collapse;border-spacing:0;}
-                .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-                    overflow:hidden;padding:10px 5px;word-break:normal;}
-                .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-                    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-                .tg .tg-nrix{border-color:#fff1e8;text-align:center;vertical-align:middle}
-            </style>
-            <table class="tg" style="undefined;table-layout: fixed; width: 469px">
-                <colgroup>
-                    <col style="width: 81px">
-                    <col style="width: 61px">
-                    <col style="width: 61px">
-                    <col style="width: 61px">
-                    <col style="width: 3px">
-                    <col style="width: 101px">
-                    <col style="width: 101px">
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <td class="tg-nrix">发嘟概览</td>
-                        <td class="tg-nrix">原创</td>
-                        <td class="tg-nrix">回复</td>
-                        <td class="tg-nrix">总计</td>
-                        <td class="tg-nrix" rowspan="6"></td>
-                        <td class="tg-nrix">不含私信总计</td>
-                        <td class="tg-nrix">转嘟总计</td>
-                    </tr>
-                    <tr>
-                        <td class="tg-nrix">公开</td>
-                        <td class="tg-nrix"><span id="overviews_public_original"></span></td>
-                        <td class="tg-nrix"><span id="overviews_public_reply"></span></td>
-                        <td class="tg-nrix"><span id="overviews_public"></span></td>
-                        <td class="tg-nrix" rowspan="3"><span id="overviews_total_without_direct"></span></td>
-                        <td class="tg-nrix" rowspan="3"><span id="overviews_boost"></span<br></td>
-                    </tr>
-                    <tr>
-                        <td class="tg-nrix">不公开</td>
-                        <td class="tg-nrix"><span id="overviews_unlisted_original"></span></td>
-                        <td class="tg-nrix"><span id="overviews_unlisted_reply"></span></td>
-                        <td class="tg-nrix"><span id="overviews_unlisted"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tg-nrix">仅关注者</td>
-                        <td class="tg-nrix"><span id="overviews_followers-only_original"></span></td>
-                        <td class="tg-nrix"><span id="overviews_followers-only_reply"></span></td>
-                        <td class="tg-nrix"><span id="overviews_followers-only"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tg-nrix">私信</td>
-                        <td class="tg-nrix"><span id="overviews_direct_original"></span></td>
-                        <td class="tg-nrix"><span id="overviews_direct_reply"></span></td>
-                        <td class="tg-nrix"><span id="overviews_direct"></span></td>
-                        <td class="tg-nrix" colspan="2" rowspan="2">显示的嘟文与回复数：<span id="overviews_display"></span></td>
-                    </tr>
-                    <tr>
-                        <td class="tg-nrix">总计</td>
-                        <td class="tg-nrix"><span id="overviews_original"></span></td>
-                        <td class="tg-nrix"><span id="overviews_reply"></span></td>
-                        <td class="tg-nrix"><span id="overviews_total"></span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
         <section id="loading">
             <div id="div-import-prompt">
                 <p>
@@ -137,6 +64,97 @@
                     </label>
                 </div>
             </div>
+        </section>
+        <section id="overviews">
+            嘟嘟概览：
+            <ul>
+                <li><p>按顺序加载完 actor.json 和 outbox.json 后这个表格会自动生成统计数据.</p></li>
+                <li><p>一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条回复会变为原创. 因此，原创的嘟文可能会比预料中的有少许增加，而回复的嘟文会相应地有少许减少.</p></li>
+                <li><p>表格最下面一行的“存档中显示的嘟文与回复数”指的是在个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信.</p></li>
+            </ul>
+            <!-- I just put the styles of this table here so that it can be modified easily. -->
+            <!-- Really thankful to the excellent tool: https://www.tablesgenerator.com/html_tables# -->
+            <style type="text/css">
+                .tg  {border-collapse:collapse;border-spacing:0;}
+                .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+                    overflow:hidden;padding:10px 5px;word-break:normal;}
+                .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+                    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+                .tg .tg-nrix{border-color:#fff1e8;text-align:center;vertical-align:middle}
+            </style>
+            <table class="tg" style="undefined;table-layout: fixed; width: 469px">
+                <colgroup>
+                    <col style="width: 101px">
+                    <col style="width: 81px">
+                    <col style="width: 81px">
+                    <col style="width: 81px">
+                    <col style="width: 3px">
+                    <col style="width: 301px">
+                    <col style="width: 301px">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td class="tg-nrix"><b><span style="color:white">发嘟</span></b>概览</td>
+                        <td class="tg-nrix">原创</td>
+                        <td class="tg-nrix">回复</td>
+                        <td class="tg-nrix">总计</td>
+                        <td class="tg-nrix" rowspan="9"></td>
+                        <td class="tg-nrix">不含私信总计</td>
+                        <td class="tg-nrix"><b><span style="color:white">转嘟</span></b>总计</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix">公开</td>
+                        <td class="tg-nrix"><span id="overviews_public_original"></span></td>
+                        <td class="tg-nrix"><span id="overviews_public_reply"></span></td>
+                        <td class="tg-nrix"><span id="overviews_public"></span></td>
+                        <td class="tg-nrix" rowspan="3"><span id="overviews_total_without_direct"></span>
+                            <br /><br />平均 <span id="overviews_total_without_direct_a"></span> / 天
+                        </td>
+                        <td class="tg-nrix" rowspan="3"><b><span id="overviews_boost" style="color:white"></span></b>
+                            <br /><br />平均 <span id="overviews_boost_a"></span> / 天
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix">不公开</td>
+                        <td class="tg-nrix"><span id="overviews_unlisted_original"></span></td>
+                        <td class="tg-nrix"><span id="overviews_unlisted_reply"></span></td>
+                        <td class="tg-nrix"><span id="overviews_unlisted"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix">仅关注者</td>
+                        <td class="tg-nrix"><span id="overviews_followers-only_original"></span></td>
+                        <td class="tg-nrix"><span id="overviews_followers-only_reply"></span></td>
+                        <td class="tg-nrix"><span id="overviews_followers-only"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix">私信</td>
+                        <td class="tg-nrix"><span id="overviews_direct_original"></span></td>
+                        <td class="tg-nrix"><span id="overviews_direct_reply"></span></td>
+                        <td class="tg-nrix"><span id="overviews_direct"></span></td>
+                        <td class="tg-nrix" colspan="2" rowspan="2">以上两项总计（不含私信的发嘟和转嘟）：<span id="overviews_without_reply_and_boost"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix">总计</td>
+                        <td class="tg-nrix"><span id="overviews_original"></span></td>
+                        <td class="tg-nrix"><span id="overviews_reply"></span></td>
+                        <td class="tg-nrix"><b><span id="overviews_total" style="color:white"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix" colspan="4">上面数据的日期范围（根据在本页最上方的选择）</td>
+                        <td class="tg-nrix" colspan="2"><span id="date_input_from"></span> 至 <span id="date_input_to"></span>
+                            （共 <span id="date_input_diff"></span> 天）</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix" colspan="4">存档中所有嘟文的日期范围（根据请求存档的时刻）</td>
+                        <td class="tg-nrix" colspan="2"><span id="date_from"></span> 至 <span id="date_to"></span>
+                            （共 <span id="date_diff"></span> 天）</td>
+                    </tr>
+                    <tr>
+                        <td class="tg-nrix" colspan="4">存档中显示的嘟文与回复数</td>
+                        <td class="tg-nrix" colspan="2"><span id="overviews_display"></span></td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
     </div>
     <div class="container">

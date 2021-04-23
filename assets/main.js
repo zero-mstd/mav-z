@@ -98,14 +98,20 @@ document.getElementById("actor-file-input")
         });
         reader.readAsText(file);
     });
+var days_ct;
+function days_diff(start, end) {
+    var s = new Date(start);
+    var e = new Date(end);
+    return (e.getTime() - s.getTime()) / (1000 * 3600 * 24) + 1;
+}
+var date_from = document.getElementById("date-input-from");
+var date_to = document.getElementById("date-input-to");
 document.getElementById("outbox-file-input")
     .addEventListener("change", function(event) {
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
             outbox = JSON.parse(this.result);
-            var date_from = document.getElementById("date-input-from");
-            var date_to = document.getElementById("date-input-to");
             var earliest_number = 0;
             var latest_number = outbox.orderedItems.length - 1;
             var earliest_date = outbox.orderedItems[earliest_number].published.substring(0,10);
@@ -113,9 +119,16 @@ document.getElementById("outbox-file-input")
             date_from.value = earliest_date;
             date_from.min = earliest_date;
             date_from.max = latest_date;
+            document.getElementById("date_from").innerHTML = earliest_date;
+            document.getElementById("date_input_from").innerHTML = earliest_date;
             date_to.value = latest_date;
             date_to.min = earliest_date;
             date_to.max = latest_date;
+            document.getElementById("date_to").innerHTML = latest_date;
+            document.getElementById("date_input_to").innerHTML = latest_date;
+            days_ct = days_diff(earliest_date, latest_date);
+            document.getElementById("date_diff").innerHTML = days_ct;
+            document.getElementById("date_input_diff").innerHTML = days_ct;
             buildArchiveView(outbox, actor);
         });
         reader.readAsText(file);
@@ -125,11 +138,19 @@ var date_from_value = date_from.value;
 var date_to_value = date_to.value;
 function save_date_from(v) {
     date_from_value = v.target.value;
+    days_ct = days_diff(date_from_value, date_to_value);
+    document.getElementById("date_input_from").innerHTML = date_from_value;
+    document.getElementById("date_input_diff").innerHTML = days_ct;
     // todo: delete toots before the "from" value and then buildArchiveView.
+    // buildArchiveView(outbox, actor);
 }
 function save_date_to(v) {
     date_to_value = v.target.value;
+    days_ct = days_diff(date_from_value, date_to_value);
+    document.getElementById("date_input_to").innerHTML = date_to_value;
+    document.getElementById("date_input_diff").innerHTML = days_ct;
     // todo: delete toots after the "to" value and then buildArchiveView.
+    // buildArchiveView(outbox, actor);
 }
 
 function buildArchiveView(outbox, actor) {
@@ -324,8 +345,11 @@ function buildArchiveView(outbox, actor) {
     document.getElementById("overviews_reply").innerHTML = (public_reply_ct + unlisted_reply_ct + followers_only_reply_ct + direct_reply_ct).toString();
     document.getElementById("overviews_total").innerHTML = with_reply_ct.toString();
     document.getElementById("overviews_total_without_direct").innerHTML = (public_ct + unlisted_ct + followers_only_ct).toString();
+    document.getElementById("overviews_total_without_direct_a").innerHTML = ((public_ct + unlisted_ct + followers_only_ct) / days_ct).toFixed(2).toString();
     document.getElementById("overviews_boost").innerHTML = boost_ct.toString();
+    document.getElementById("overviews_boost_a").innerHTML = (boost_ct / days_ct).toFixed(2).toString();
     document.getElementById("overviews_display").innerHTML = outbox.totalItems.toString();
+    document.getElementById("overviews_without_reply_and_boost").innerHTML = (public_ct + unlisted_ct + followers_only_ct + boost_ct).toString();
 
 
     var month_section_html =

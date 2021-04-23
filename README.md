@@ -34,6 +34,8 @@ A html script to take a mastodon archive and convert it into a human-readable we
 * added a statistical table to show the numbers of all kinds of toots
 ## modified by Zero 04/22/2021
 * added a favicon.ico
+## modified by Zero 04/23/2021
+* added more informatiion to the table
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
