@@ -49,12 +49,11 @@ A html script to take a mastodon archive and convert it into a human-readable we
 	- [x] make medias easier to view
 	- [x] click to open pictures (why `addEventListener click` didn't work...)
 - [ ] prettier interface
-- [ ] select a period of toots
+- [x] select a period of toots
 - [ ] assistant for my season's exhibition
 - [ ] open the .tar.gz directly
 - [ ] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
-- [ ] timezone problem, all the time need to be +8 hrs fixed
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
 
 Open to suggestions. Chinese and English ok.
