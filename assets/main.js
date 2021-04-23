@@ -153,7 +153,22 @@ function save_date_to(v) {
     // buildArchiveView(outbox, actor);
 }
 
+function clear_grid() {
+    document.getElementById("grid_section")
+        .innerHTML = '<div class="column-0">\
+                        <div class="account__section-headline" id="account__section-headline">\
+                        </div>\
+                        <main id="articles">\
+                        </main>\
+                    </div>\
+                    <div class="column-1">\
+                        <div class="archive__section" id="archive__section">\
+                        </div>\
+                    </div>';
+}
+
 function buildArchiveView(outbox, actor) {
+    clear_grid();
     var articleTemplate = document.getElementById("article"),
         articleCWTemplate = document.getElementById("article--CW"),
         videoTemplate = document.getElementById("media-video"),
