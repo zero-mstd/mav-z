@@ -215,7 +215,7 @@ label:active, label:focus, label:hover,button:hover {
         
 }
 .account__header__content {
-    text-align: center;
+    /* text-align: center; */
     font-weight: 400;
     overflow: hidden;
     word-break: normal;
