@@ -55,5 +55,7 @@ A html script to take a mastodon archive and convert it into a human-readable we
 - [ ] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
+- [ ] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
+- [ ] more information? for example, the one you liked the most, the one you boost the most…
 
 Open to suggestions. Chinese and English ok.
