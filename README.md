@@ -1,5 +1,6 @@
 # Mastodon Archive Viewer (based on the modified version by slshyn 11/09/2020)
 A html script to take a mastodon archive and convert it into a human-readable webpage for viewing.
+The branch "exhibition" is for my season's toots exhibition.
 
 # Features:
 ## original
@@ -37,6 +38,8 @@ A html script to take a mastodon archive and convert it into a human-readable we
 ## modified by Zero 04/23/2021
 * added more information to the table
 * finished the function of date selector! Hooray!
+## modified by Zero 04/29/2021
+* self-reply is no longer counted as a reply, so they would show in "Toots" column
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).

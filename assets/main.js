@@ -47,8 +47,7 @@ var archive = document.getElementById("archive__section"),
     stop = archive.offsetTop - 20,
     stop_val = stop;
 
-
-
+var actor_id;
 //load actor
 document.getElementById("actor-file-input")
     .addEventListener("change", function(event) {
@@ -57,6 +56,7 @@ document.getElementById("actor-file-input")
         reader.addEventListener("load", function() {
             actor = JSON.parse(this.result);
 
+            actor_id = actor.id;
             var accounturl = actor.url,
                 url_sp = accounturl.split("/"),
                 id = url_sp[3] + '@' + url_sp[2];
@@ -219,7 +219,7 @@ function buildArchiveView(outbox, actor) {
     }
 
     function checkIfReply(status) {
-        if (status.inReplyTo != null) {
+        if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
             return 1;
         } else {
             nonreply_ct += 1;
@@ -276,7 +276,7 @@ function buildArchiveView(outbox, actor) {
             article.querySelector(".status__box")
                 .classList.add("direct");
         }
-        if (status.inReplyTo != null) {
+        if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
             article.querySelector(".status__box")
                 .classList.add("reply");
         }
