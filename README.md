@@ -1,6 +1,6 @@
 # Mastodon Archive Viewer (based on the modified version by slshyn 11/09/2020)
 A html script to take a mastodon archive and convert it into a human-readable webpage for viewing.
-The branch "exhibition" is for my season's toots exhibition.
+The branch "exhibition" is for [my season's toots exhibition](https://zero-mstd.netlify.app/exhibition/).
 
 # Features:
 ## original
@@ -40,6 +40,8 @@ The branch "exhibition" is for my season's toots exhibition.
 * finished the function of date selector! Hooray!
 ## modified by Zero 04/29/2021
 * self-reply is no longer counted as a reply, so they would show in "Toots" column
+## modified by Zero 04/30/2021
+* (branch: exhibition) finish the season's exhibition selector function
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
@@ -53,12 +55,13 @@ The branch "exhibition" is for my season's toots exhibition.
 	- [x] click to open pictures (why `addEventListener click` didn't work...)
 - [ ] prettier interface
 - [x] select a period of toots
-- [ ] assistant for my season's exhibition
+- [x]  (branch: exhibition) assistant for my season's exhibition
 - [ ] open the .tar.gz directly
 - [ ] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
 - [ ] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
 - [ ] more information? for example, the one you liked the most, the one you boost the most…
+- [ ] add a line graph, maybe?
 
 Open to suggestions. Chinese and English ok.

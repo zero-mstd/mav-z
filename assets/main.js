@@ -86,6 +86,7 @@ var archive = document.getElementById("archive__section"),
     stop_val = stop;
 
 var actor_id;
+var accounturl;
 //load actor
 document.getElementById("actor-file-input")
     .addEventListener("change", function(event) {
@@ -95,8 +96,8 @@ document.getElementById("actor-file-input")
             actor = JSON.parse(this.result);
 
             actor_id = actor.id;
-            var accounturl = actor.url,
-                url_sp = accounturl.split("/"),
+            accounturl = actor.url;
+            var url_sp = accounturl.split("/"),
                 id = url_sp[3] + '@' + url_sp[2];
 
             var avatar_img, header_img = ''
@@ -343,11 +344,21 @@ function buildArchiveView(outbox, actor) {
 
         var ex_id_n = status.url.lastIndexOf("/");
         var ex_id = status.url.substring(ex_id_n + 1);
-        var exhibition_html = '<select onchange="AfterSelect(this)" id="' +
+        var exhibition_html;
+
+        if (visibility == '✉️' || visibility == '🔒') {
+            exhibition_html = `
+                <select disabled="disabled">
+                    <option>不公开</option>
+                </select>
+            `
+        } else {
+            exhibition_html = '<select onchange="AfterSelect(this)" id="' +
             ex_id + '" class="exhibition_selector"> \
                 <option value="0">-</option> \
                 <option value="new">添加分区</option> \
                 </select>'
+        }
 
         article.querySelector(".status__date")
             .insertAdjacentHTML("afterbegin", date_html);
@@ -505,3 +516,40 @@ function clickcloseimg() {
         .style.display = 'none'
 }
 
+var exhibitionText = `
+---
+title: 季度嘟文精华展 - 20xx X
+date: 20xx-xx-xx
+---
+
+
+`;
+
+// ref: https://www.thecodehubs.com/generate-text-file-using-plain-javascript/
+function generateTxtFile(text){
+    var textFile = null;
+    var data = new Blob([text], {type: 'text/plain'});
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+    textFile = window.URL.createObjectURL(data);
+    return textFile;
+}
+(function () {
+    var btnCreateFile = document.getElementById('btnCreateFile');
+    btnCreateFile.addEventListener('click', function () {
+        for (var i = 1; i <= exhibition_title_ct; i++) {
+            exhibitionText += '## ' + exhibition_title_json[i][0] + '\n\n';
+            exhibitionText += exhibition_title_json[i][1] + '\n\n';
+            for (var j in exhibition_content_json[i]) {
+                exhibitionText += '<iframe src="' + accounturl + '/' +
+                    exhibition_content_json[i][j] +
+                    `/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="100%" allowfullscreen="allowfullscreen"></iframe>` +
+                    '\n\n';
+            }
+        }
+        var link = document.getElementById('downloadFile');
+        link.href = generateTxtFile(exhibitionText);
+        link.style.display = 'inline-block';
+    }, false);
+})();
