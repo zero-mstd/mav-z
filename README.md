@@ -42,6 +42,7 @@ The branch "exhibition" is for [my season's toots exhibition](https://zero-mstd.
 * self-reply is no longer counted as a reply, so they would show in "Toots" column
 ## modified by Zero 04/30/2021
 * (branch: exhibition) finish the season's exhibition selector function
+* ask users to load actor.json first
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).

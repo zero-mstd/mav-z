@@ -147,6 +147,10 @@ function days_diff(start, end) {
 var date_from, date_to;
 document.getElementById("outbox-file-input")
     .addEventListener("change", function(event) {
+        if (actor == null) {
+            alert('请先选择 actor.json');
+            return 1;
+        }
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
