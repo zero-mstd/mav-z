@@ -79,9 +79,9 @@
                 <li><p>按顺序加载完 actor.json 和 outbox.json 后这个表格会自动生成统计数据.</p></li>
                 <li><p>自己回复自己的嘟文算做是原创，显示在“嘟文”那一列里. 这与网页版 Mastodon 是一致的.</p></li>
                 <li><p>一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条嘟文会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.</p></li>
-                <li><p>注意：上一条与网页版 Mastodon 并不一致，删除了的原嘟文下面的回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.</p></li>
+                <li><p>注意：上一条与网页版 Mastodon 并不一致，如果原嘟文被删除，则其回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.</p></li>
                 <li><p>如果实例没有魔改的话，申请存档中的时间都是格林威治时间，本页面上显示的时间没有做任何处理，加上 8 小时后才得到北京时间.</p></li>
-                <li><p>表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信.</p></li>
+                <li><p>表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信. 这个数字可能会大于倒数第四行的“以上两项总计”，初步判断是实例的计数有 bug：删除一条嘟文后，其他实例 api/v1/accounts/id 中的 statuses_count 有所减少，但有时候自己实例 api/v1/accounts/id 中的 statuses_count 没有变化. 我觉得非常奇怪，请各位象友指点.</p></li>
             </ul>
             <!-- I just put the styles of this table here so that it can be modified easily. -->
             <!-- Really thankful to the excellent tool: https://www.tablesgenerator.com/html_tables# -->
