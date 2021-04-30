@@ -41,6 +41,44 @@ function topFunction() {
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
 
+var exhibition_title_json = {"0":"exhibition_title_json"};
+var exhibition_content_json = {"0":"exhibition_content_json"};
+var exhibition_title_ct = 0;
+function delete_one_item(lists, n, item) {
+    for (var i = 0; i <= n; i++) {
+        if (lists[i].includes(item)) {
+            var tem_index = lists[i].indexOf(item);
+            lists[i].splice(tem_index, 1);
+        }
+    }
+}
+function AfterSelect(s) {
+    if (s.value == "0") {
+        delete_one_item(exhibition_content_json, exhibition_title_ct, s.id);
+    } else if (s.value == "new") {
+        delete_one_item(exhibition_content_json, exhibition_title_ct, s.id);
+        var title = prompt("请输入标题", "");
+        var descr = prompt("请输入一小段描述", "标题是：" + title);
+        exhibition_title_ct += 1;
+        exhibition_title_json[exhibition_title_ct] = [title, descr];
+        exhibition_content_json[exhibition_title_ct] = [s.id];
+        var all_selectors = document.getElementsByClassName("exhibition_selector");
+        for (var i = 0; i < all_selectors.length; i++) {
+            var cur_selector = all_selectors.item(i);
+            var opt = document.createElement("option");
+            opt.text = title;
+            opt.value = exhibition_title_ct;
+            cur_selector.add(opt, exhibition_title_ct);
+        }
+        s.value = exhibition_title_ct;
+    } else {
+        delete_one_item(exhibition_content_json, exhibition_title_ct, s.id);
+        exhibition_content_json[s.value].push(s.id);
+    }
+    // console.log(exhibition_title_json);
+    // console.log(exhibition_content_json);
+}
+
 // stick archive
 var archive = document.getElementById("archive__section"),
 
@@ -170,6 +208,9 @@ function save_date_to(v) {
 }
 
 function clear_grid() {
+    exhibition_title_json = {"0":"exhibition_title_json"};
+    exhibition_content_json = {"0":"exhibition_content_json"};
+    exhibition_title_ct = 0;
     document.getElementById("grid_section")
         .innerHTML = '<div class="column-0">\
                         <div class="account__section-headline" id="account__section-headline">\
@@ -300,10 +341,20 @@ function buildArchiveView(outbox, actor) {
             month_ct[month_list.length - 1] += 1
         }
 
+        var ex_id_n = status.url.lastIndexOf("/");
+        var ex_id = status.url.substring(ex_id_n + 1);
+        var exhibition_html = '<select onchange="AfterSelect(this)" id="' +
+            ex_id + '" class="exhibition_selector"> \
+                <option value="0">-</option> \
+                <option value="new">添加分区</option> \
+                </select>'
+
         article.querySelector(".status__date")
             .insertAdjacentHTML("afterbegin", date_html);
         article.querySelector(".status__content")
             .insertAdjacentHTML("afterbegin", status.content);
+        article.querySelector(".status__exhibition")
+            .insertAdjacentHTML("afterbegin", exhibition_html);
         if (attachmentUrls.length > 0) {
 
             var mediaDiv = article.querySelector(".status__media");
