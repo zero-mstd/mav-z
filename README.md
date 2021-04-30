@@ -40,6 +40,8 @@ The branch "exhibition" is for my season's toots exhibition.
 * finished the function of date selector! Hooray!
 ## modified by Zero 04/29/2021
 * self-reply is no longer counted as a reply, so they would show in "Toots" column
+## modified by Zero 04/30/2021
+* ask users to load actor.json first
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
