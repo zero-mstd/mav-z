@@ -43,6 +43,9 @@ The branch "exhibition" is for [my season's toots exhibition](https://zero-mstd.
 ## modified by Zero 04/30/2021
 * (branch: exhibition) finish the season's exhibition selector function
 * ask users to load actor.json first
+## modified by Zero 05/02/2021
+* finish the line graph function, thanks to [chart.js](https://www.chartjs.org/)
+* adjusted some color and background-color in the table, one can choose whether show their direct messages' count or not
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
@@ -63,6 +66,6 @@ The branch "exhibition" is for [my season's toots exhibition](https://zero-mstd.
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
 - [ ] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
 - [ ] more information? for example, the one you liked the most, the one you boost the most…
-- [ ] add a line graph, maybe?
+- [x] add a line graph, maybe?
 
 Open to suggestions. Chinese and English ok.
