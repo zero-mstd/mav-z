@@ -98,6 +98,7 @@ document.getElementById("actor-file-input")
         });
         reader.readAsText(file);
     });
+
 var days_ct;
 function days_diff(start, end) {
     var s = new Date(start);
@@ -135,18 +136,17 @@ document.getElementById("outbox-file-input")
             days_ct = days_diff(earliest_date, latest_date);
             document.getElementById("date_diff").innerHTML = days_ct;
             document.getElementById("date_input_diff").innerHTML = days_ct;
+
             buildArchiveView(outbox, actor);
         });
         reader.readAsText(file);
     });
 
 function deal_with_period(date_from_value, date_to_value) {
+    date_from.max = date_to_value;
+    date_to.min = date_from_value;
     var date_from_number = new Date(date_from_value);
     var date_to_number = new Date(date_to_value);
-    if (date_from_number.getTime() > date_to_number.getTime()) {
-        alert('开始日期应不晚于结束日期');
-        return 1;
-    }
 
     days_ct = days_diff(date_from_value, date_to_value);
     document.getElementById("date_input_to").innerHTML = date_to_value;
@@ -162,6 +162,8 @@ function deal_with_period(date_from_value, date_to_value) {
             delete outbox_operate.orderedItems[toot];
         }
     }
+    outbox_operate.orderedItems = outbox_operate.orderedItems.filter(Boolean);
+    // ref: https://stackoverflow.com/a/281335/9783145
 
     buildArchiveView(outbox_operate, actor);
 }
@@ -173,7 +175,13 @@ function save_date_to(v) {
     deal_with_period(date_from.value, v.target.value);
 }
 
+var tootCanvas = document.getElementById("tootChart");
+var lineChart = new Chart(tootCanvas, {
+        type: 'line',
+        data: {}
+    });
 function clear_grid() {
+    lineChart.destroy();
     document.getElementById("grid_section")
         .innerHTML = '<div class="column-0">\
                         <div class="account__section-headline" id="account__section-headline">\
@@ -213,20 +221,41 @@ function buildArchiveView(outbox, actor) {
         month_list = [],
         month_ct = [];
 
+    // prepare for the plotting
+    function millisec_to_date(millisec) {
+        var date = new Date(millisec);
+        return date.toISOString().substring(0,10);
+    }
+
+    var temp_plot_data = {};
+
+    if (outbox.orderedItems[0] != null) {
+        var earliest_number = 0;
+        var latest_number = outbox.orderedItems.length - 1;
+        var earliest_date = new Date(outbox.orderedItems[earliest_number].published.substring(0,10));
+        var latest_date = new Date(outbox.orderedItems[latest_number].published.substring(0,10));
+        var earliest_millisec = earliest_date.getTime();
+        var latest_millisec = latest_date.getTime();
+        for (var i = earliest_millisec; i <= latest_millisec; i += 86400000) {
+            temp_plot_data[millisec_to_date(i)] = [0, 0, 0]; // toots, replies, boosts
+        }
+    }
+
     let toot;
     for (toot in outbox.orderedItems) {
         if (outbox.orderedItems[toot].type == "Create") {
             with_reply_ct += 1;
         } else if (outbox.orderedItems[toot].type == "Announce") {
             boost_ct += 1;
+            temp_plot_data[outbox.orderedItems[toot].published.substring(0,10)][2] += 1;
         }
     }
+    // end prepare
 
     function checkIfReply(status) {
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
             return 1;
         } else {
-            nonreply_ct += 1;
             return 0;
         }
     }
@@ -246,19 +275,23 @@ function buildArchiveView(outbox, actor) {
                     visibility = '🔓';
                     unlisted_reply_ct += checkIfReply(status);
                     unlisted_ct += 1;
+                    nonreply_ct += (1 - checkIfReply(status));
                 } else {
                     visibility = '🔒';
                     followers_only_reply_ct += checkIfReply(status);
                     followers_only_ct += 1;
+                    nonreply_ct += (1 - checkIfReply(status));
                 }
             } else if (status.to.includes(activitystreams)) {
                 visibility = '🌍';
                 public_reply_ct += checkIfReply(status);
                 public_ct += 1;
+                nonreply_ct += (1 - checkIfReply(status));
             } else {
                 visibility = '✉️';
                 direct_reply_ct += checkIfReply(status);
                 direct_ct += 1;
+                nonreply_ct += (1 - checkIfReply(status));
             }
         } catch {
             console.log('grabing visibility failed');
@@ -279,6 +312,9 @@ function buildArchiveView(outbox, actor) {
         if (visibility == '✉️') {
             article.querySelector(".status__box")
                 .classList.add("direct");
+        } else {
+            temp_plot_data[status.published.substring(0,10)][0] += (1 - checkIfReply(status));
+            temp_plot_data[status.published.substring(0,10)][1] += checkIfReply(status);
         }
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
             article.querySelector(".status__box")
@@ -356,6 +392,56 @@ function buildArchiveView(outbox, actor) {
             .appendChild(article);
 
     });
+    // console.log(temp_plot_data);
+
+    // plotting the line graph part
+    var lable_array = [],
+        toots_array = [],
+        replies_array = [],
+        boosts_array = [];
+    let t;
+    for (t in temp_plot_data) {
+        lable_array.push(t);
+        toots_array.push(temp_plot_data[t][0]);
+        replies_array.push(temp_plot_data[t][1]);
+        boosts_array.push(temp_plot_data[t][2]);
+    }
+
+    var dataToots = {
+        label: "原创数（不含私信）",
+        data: toots_array,
+        lineTension: 0,
+        fill: false,
+        borderColor: 'yellow'
+    };
+
+    var dataReplies = {
+        label: "回复数（不含私信）",
+        data: replies_array,
+        lineTension: 0,
+        fill: false,
+        borderColor: 'blue'
+    };
+
+    var dataBoosts = {
+        label: "转嘟数",
+        data: boosts_array,
+        lineTension: 0,
+        fill: false,
+        borderColor: 'red'
+    };
+
+    var tootData = {
+        labels: lable_array,
+        datasets: [dataToots, dataReplies, dataBoosts]
+    };
+
+    lineChart = new Chart(tootCanvas, {
+        type: 'line',
+        data: tootData
+    });
+    // end of plotting
+
     document.getElementById("account__section-headline")
         .innerHTML =
         '<a class="tootheadline" id="toots" onclick="clicktoots()"><span>嘟文（' +
@@ -407,7 +493,7 @@ function buildArchiveView(outbox, actor) {
 
     month_section_html += '</details>'
     document.getElementById("archive__section")
-        .innerHTML = month_section_html
+        .innerHTML = month_section_html;
 
 }
 

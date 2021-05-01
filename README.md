@@ -42,6 +42,8 @@ The branch "exhibition" is for my season's toots exhibition.
 * self-reply is no longer counted as a reply, so they would show in "Toots" column
 ## modified by Zero 04/30/2021
 * ask users to load actor.json first
+## modified by Zero 05/02/2021
+* finish the line graph function, thanks to [chart.js](https://www.chartjs.org/)
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
@@ -62,5 +64,6 @@ The branch "exhibition" is for my season's toots exhibition.
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
 - [ ] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
 - [ ] more information? for example, the one you liked the most, the one you boost the most…
+- [x] add a line graph, maybe?
 
 Open to suggestions. Chinese and English ok.
