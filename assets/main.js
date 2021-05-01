@@ -420,7 +420,7 @@ function buildArchiveView(outbox, actor) {
         data: replies_array,
         lineTension: 0,
         fill: false,
-        borderColor: 'blue'
+        borderColor: 'lightblue'
     };
 
     var dataBoosts = {
@@ -541,6 +541,16 @@ function clicktootsmedia() {
 
 function clickcloseimg() {
     document.getElementById('myModal')
-        .style.display = 'none'
+        .style.display = 'none';
 }
 
+var secret = document.getElementsByClassName("secret");
+function toggle_show() {
+    for (var i = 0; i < secret.length; i++) {
+        if (secret[i].style.color == secret[i].style.backgroundColor) {
+            secret[i].style.backgroundColor = "";
+        } else {
+            secret[i].style.backgroundColor = secret[i].style.color;
+        }
+    }
+}

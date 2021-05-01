@@ -44,6 +44,7 @@ The branch "exhibition" is for my season's toots exhibition.
 * ask users to load actor.json first
 ## modified by Zero 05/02/2021
 * finish the line graph function, thanks to [chart.js](https://www.chartjs.org/)
+* adjusted some color and background-color in the table, one can choose whether show their direct messages' count or not
 
 # Usage
 * Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
