@@ -47,9 +47,49 @@ The branch "exhibition" is for my season's toots exhibition.
 * adjusted some color and background-color in the table, one can choose whether show their direct messages' count or not
 
 # Usage
-* Clone the whole repo by using `git clone https://github.com/zero-mstd/mav-z.git`. Place all of them in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
+* Place all the files of this repo in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
 * Open `archive_page.html` in your web browser. Open the `actor.json` and `outbox.json` file from within the page and it will load it.
 
+## Linux
+* `git clone https://github.com/zero-mstd/mav-z.git`
+* `mkdir mastodon_archive`
+* `cp /the/path/of/your/archive-xxx.tar.gz mastodon_archive/`
+* `cp -r mav-z/* mastodon_archive/`
+* `cd mastodon_archive`
+* `tar -zxvf archive-xxx.tar.gz`
+* `firefox archive_page.html`
+
+## Windows
+* Open this link <https://github.com/zero-mstd/mav-z/tree/master> in a browser
+* Hit the green button `Code`
+* Choose `Download ZIP`
+* Unzip what you download
+* Unzip your archived file (named as `archive-xxx.tar.gz`) downloaded from your mastodon instance
+* Copy and paste your files, so that your directory tree is like:
+```
+mastodon_archive_or_whatever_you_like
+├── actor.json
+├── archive_page.html
+├── assets
+│   ├── avatar_default.png
+│   ├── avatar.png
+│   ├── chart.js
+│   ├── favicon.ico
+│   ├── header_default.jpg
+│   ├── header.jpg
+│   ├── main.js
+│   ├── plot_chart.js
+│   └── style.css
+├── bookmarks.json
+├── likes.json
+├── media_attachments
+│   └── files
+│       ├── ……
+│       ├── ……
+│       └── ……
+└── outbox.json
+```
+* Open the `archive_page.html` in your browser
 
 # Next steps:
 
