@@ -630,6 +630,7 @@ function generateTxtFile(text){
 (function () {
     var btnCreateFile = document.getElementById('btnCreateFile');
     btnCreateFile.addEventListener('click', function () {
+        var exhib_total = 0;
         for (var i = 1; i <= exhibition_title_ct; i++) {
             exhibitionText += '## ' + exhibition_title_json[i][0] + '\n\n';
             exhibitionText += exhibition_title_json[i][1] + '\n\n';
@@ -644,9 +645,11 @@ function generateTxtFile(text){
                     exhibition_content_json[i][j] +
                     `/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="100%" allowfullscreen="allowfullscreen"></iframe>` +
                     '\n\n';
-                exhibitionText += '---\n\n'
+                exhibitionText += '---\n\n';
+                exhib_total += 1;
             }
         }
+        exhibitionText += '一共精选了' + exhib_total + '条';
         var link = document.getElementById('downloadFile');
         link.href = generateTxtFile(exhibitionText);
         link.style.display = 'inline-block';
