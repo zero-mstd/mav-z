@@ -402,6 +402,7 @@ function buildArchiveView(outbox, actor) {
 
         article.querySelector(".status__date")
             .insertAdjacentHTML("afterbegin", date_html);
+        article.querySelector(".status__content").id = 'c_' + ex_id;
         article.querySelector(".status__content")
             .insertAdjacentHTML("afterbegin", status.content);
         article.querySelector(".status__exhibition")
@@ -632,10 +633,17 @@ function generateTxtFile(text){
             exhibitionText += '## ' + exhibition_title_json[i][0] + '\n\n';
             exhibitionText += exhibition_title_json[i][1] + '\n\n';
             for (var j in exhibition_content_json[i]) {
+                if (document.getElementById("c_" + exhibition_content_json[i][j]).parentNode.className.includes('reply')) {
+                    exhibitionText += '这是一条回复，建议点开链接查看上下文，不要断章取义，并按照发言顺序阅读，避免先入为主.\n\n'
+                }
+                exhibitionText += '<!--'
+                exhibitionText += document.getElementById("c_" + exhibition_content_json[i][j]).innerHTML;
+                exhibitionText += '-->\n\n'
                 exhibitionText += '<iframe src="' + accounturl + '/' +
                     exhibition_content_json[i][j] +
                     `/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="100%" allowfullscreen="allowfullscreen"></iframe>` +
                     '\n\n';
+                exhibitionText += '---\n\n'
             }
         }
         var link = document.getElementById('downloadFile');
