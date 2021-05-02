@@ -149,6 +149,7 @@ function deal_with_period(date_from_value, date_to_value) {
     var date_to_number = new Date(date_to_value);
 
     days_ct = days_diff(date_from_value, date_to_value);
+    document.getElementById("date_input_from").innerHTML = date_from_value;
     document.getElementById("date_input_to").innerHTML = date_to_value;
     document.getElementById("date_input_diff").innerHTML = days_ct;
 
