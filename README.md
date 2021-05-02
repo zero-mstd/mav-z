@@ -78,7 +78,6 @@ mastodon_archive_or_whatever_you_like
 │   ├── header_default.jpg
 │   ├── header.jpg
 │   ├── main.js
-│   ├── plot_chart.js
 │   └── style.css
 ├── bookmarks.json
 ├── likes.json
@@ -98,7 +97,7 @@ mastodon_archive_or_whatever_you_like
 	- [x] click to open pictures (why `addEventListener click` didn't work...)
 - [ ] prettier interface
 - [x] select a period of toots
-- [ ] assistant for my season's exhibition
+- [x]  (branch: exhibition) assistant for my season's exhibition
 - [ ] open the .tar.gz directly
 - [ ] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
