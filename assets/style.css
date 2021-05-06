@@ -477,3 +477,8 @@ border-bottom-color: #42485a;
     width: 100%;
   }
 }
+
+video {
+    width: 100%;
+    height: auto;
+}
