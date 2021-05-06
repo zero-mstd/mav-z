@@ -149,7 +149,7 @@ var date_from, date_to;
 document.getElementById("outbox-file-input")
     .addEventListener("change", function(event) {
         if (actor == null) {
-            alert('请先选择 actor.json');
+            alert('Open actor.json first!\n请先选择 actor.json! ');
             return 1;
         }
         var file = event.target.files[0],
@@ -225,17 +225,11 @@ function clear_grid() {
     exhibition_content_json = {"0":"exhibition_content_json"};
     exhibition_title_ct = 0;
     lineChart.destroy();
-    document.getElementById("grid_section")
-        .innerHTML = '<div class="column-0">\
-                        <div class="account__section-headline" id="account__section-headline">\
-                        </div>\
-                        <main id="articles">\
-                        </main>\
-                    </div>\
-                    <div class="column-1">\
-                        <div class="archive__section" id="archive__section">\
-                        </div>\
-                    </div>';
+    document.getElementById("articles").innerHTML = '';
+    document.getElementById("month_section_html").innerHTML = '';
+    document.getElementById("nonreply_ct").innerHTML = '0';
+    document.getElementById("with_reply_ct").innerHTML = '0';
+    document.getElementById("mediatoot_ct").innerHTML = '0';
 }
 
 function buildArchiveView(outbox, actor) {
@@ -472,7 +466,7 @@ function buildArchiveView(outbox, actor) {
     }
 
     var dataToots = {
-        label: "原创数（不含私信）",
+        label: "Original (without DMs)\n原创数（不含私信）",
         data: toots_array,
         lineTension: 0,
         fill: false,
@@ -480,7 +474,7 @@ function buildArchiveView(outbox, actor) {
     };
 
     var dataReplies = {
-        label: "回复数（不含私信）",
+        label: "Replies (without DMs)\n回复数（不含私信）",
         data: replies_array,
         lineTension: 0,
         fill: false,
@@ -488,7 +482,7 @@ function buildArchiveView(outbox, actor) {
     };
 
     var dataBoosts = {
-        label: "转嘟数",
+        label: "Boosts\n转嘟数",
         data: boosts_array,
         lineTension: 0,
         fill: false,
@@ -506,14 +500,9 @@ function buildArchiveView(outbox, actor) {
     });
     // end of plotting
 
-    document.getElementById("account__section-headline")
-        .innerHTML =
-        '<a class="tootheadline" id="toots" onclick="clicktoots()"><span>嘟文（' +
-        nonreply_ct.toString() +
-        '）</span></a><a class="active tootheadline" id="tootsNreplies" onclick="clicktootsNreplies()"><span>嘟文和回复（' +
-        with_reply_ct.toString() +
-        '）</span></a><a class="tootheadline" id="mediatoots" onclick="clicktootsmedia()"><span>媒体（' +
-        mediatoot_ct.toString() + '）</span></a>';
+    document.getElementById("nonreply_ct").innerHTML = nonreply_ct.toString();
+    document.getElementById("with_reply_ct").innerHTML = with_reply_ct.toString();
+    document.getElementById("mediatoot_ct").innerHTML = mediatoot_ct.toString();
     document.getElementById("overviews_public").innerHTML = public_ct.toString();
     document.getElementById("overviews_public_original").innerHTML = (public_ct - public_reply_ct).toString();
     document.getElementById("overviews_public_reply").innerHTML = public_reply_ct.toString();
@@ -537,26 +526,24 @@ function buildArchiveView(outbox, actor) {
     document.getElementById("overviews_without_reply_and_boost").innerHTML = (public_ct + unlisted_ct + followers_only_ct + boost_ct).toString();
 
 
-    var month_section_html =
-        '<dl class="account__section-headline" style="background: #1f232b;border-bottom: 1px solid #393f4f; margin:0"><dd style="padding:15px;color:#d9e1e8">索引</dd></dl>'
-
-    var yr_last = ''
-    var yr_cur = ''
+    var month_section_html = '';
+    var yr_last = '';
+    var yr_cur = '';
     for (var i = 0; i < month_list.length; i++) {
-        yr_cur = month_list[i].slice(0, 4)
+        yr_cur = month_list[i].slice(0, 4);
         if (yr_cur != yr_last) {
             month_section_html +=
                 '</details><details><summary class="archive year">' + yr_cur +
-                '</summary>'
-            yr_last = yr_cur
+                '</summary>';
+            yr_last = yr_cur;
         }
         month_section_html += '<dl><dd><a href="#' + month_list[i] + '">' +
-            month_list[i] + ' (' + month_ct[i] + ')</a></dd></dl>'
+            month_list[i] + ' (' + month_ct[i] + ')</a></dd></dl>';
 
     }
 
-    month_section_html += '</details>'
-    document.getElementById("archive__section")
+    month_section_html += '</details>';
+    document.getElementById("month_section_html")
         .innerHTML = month_section_html;
 
 }
@@ -608,6 +595,7 @@ function clickcloseimg() {
         .style.display = 'none';
 }
 
+<<<<<<< HEAD
 var exhibitionText = `
 ---
 title: 季度嘟文精华展 - 20xx X
@@ -657,6 +645,7 @@ function generateTxtFile(text){
     }, false);
 })();
 
+// hide the # of DM
 var secret = document.getElementsByClassName("secret");
 function toggle_show() {
     for (var i = 0; i < secret.length; i++) {
@@ -667,3 +656,4 @@ function toggle_show() {
         }
     }
 }
+
