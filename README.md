@@ -1,6 +1,8 @@
 # Mastodon Archive Viewer (based on the modified version by slshyn 11/09/2020)
 An offline web page to view a mastodon archive. It gives a powerful data table to tell you what the composition of all your toots is. There is also a line graph telling you the tooting trend. You can select a period of time to view.
 
+![Screenshot](https://cdn.jsdelivr.net/gh/zero-mstd/figure-bed@master/mav-z_screenshot.png "Screenshot of this tool")
+
 The branch "exhibition" is for my season's toots exhibition.
 
 # Features (and changelog):
