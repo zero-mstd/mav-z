@@ -1,5 +1,7 @@
 # Mastodon Archive Viewer (based on the modified version by slshyn 11/09/2020)
-A html script to take a mastodon archive and convert it into a human-readable webpage for viewing.
+An offline web page to view a mastodon archive. It gives a powerful data table to tell you what the composition of all your toots is. There is also a line graph telling you the tooting trend. You can select a period of time to view.
+
+![Screenshot](https://cdn.jsdelivr.net/gh/zero-mstd/figure-bed@master/mav-z_screenshot.png "Screenshot of this tool")
 
 The branch "exhibition" is for [my season's toots exhibition](https://zero-mstd.netlify.app/exhibition/).
 
@@ -104,7 +106,7 @@ mastodon_archive_or_whatever_you_like
 - [x] select a period of toots
 - [x]  (branch: exhibition) assistant for my season's exhibition
 - [ ] open the .tar.gz directly
-- [ ] the display of vedio problem, width out of box
+- [x] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
 - [x] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
