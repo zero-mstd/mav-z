@@ -1,8 +1,9 @@
 # Mastodon Archive Viewer (based on the modified version by slshyn 11/09/2020)
 A html script to take a mastodon archive and convert it into a human-readable webpage for viewing.
+
 The branch "exhibition" is for my season's toots exhibition.
 
-# Features:
+# Features (and changelog):
 ## original
 * organizes your old posts into a conveniently readable timeline
 * includes media attachments in posts
@@ -45,6 +46,8 @@ The branch "exhibition" is for my season's toots exhibition.
 ## modified by Zero 05/02/2021
 * finish the line graph function, thanks to [chart.js](https://www.chartjs.org/)
 * adjusted some color and background-color in the table, one can choose whether show their direct messages' count or not
+## modified by Zero 05/06/2021
+* i18n supported. Can be viewed in Chinese or English now. A shoutout to [this code](https://codesandbox.io/s/ipfeu)
 
 # Usage
 * Place all the files of this repo in the root of the archive (the folder that has `outbox.json` and `media_attachments/` in it).
@@ -78,7 +81,8 @@ mastodon_archive_or_whatever_you_like
 │   ├── header_default.jpg
 │   ├── header.jpg
 │   ├── main.js
-│   └── style.css
+│   ├── style.css
+│   └── translator.js
 ├── bookmarks.json
 ├── likes.json
 ├── media_attachments
@@ -102,7 +106,7 @@ mastodon_archive_or_whatever_you_like
 - [ ] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
-- [ ] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
+- [x] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
 - [ ] more information? for example, the one you liked the most, the one you boost the most…
 - [x] add a line graph, maybe?
 

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Mastodon Archive</title>
+    <title data-i18n="title">长毛象嘟文备份</title>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel="stylesheet" type="text/css" href="./assets/style.css" />
@@ -42,20 +42,28 @@
 <body>
     <button onclick="topFunction()" id="scroll_top_button" title="Go to top">⇧</button>
     <div class="container">
-        嘟嘟概览：
+        <form>
+            <!-- ref: https://codesandbox.io/s/ipfeu -->
+            <fieldset>
+                <legend data-i18n="language">Choose a language: </legend>
+                <input type="radio" name="lang" value="zh" checked /> 中文
+                <input type="radio" name="lang" value="en" /> English
+            </fieldset>
+        </form>
+        <p data-i18n="notes">说明：</p>
             <ul>
-                <li><p>按顺序加载完 actor.json 和 outbox.json 后这个表格会自动生成统计数据.</p></li>
-                <li><p>自己回复自己的嘟文算做是原创，显示在“嘟文”那一列里. 这与网页版 Mastodon 是一致的.</p></li>
-                <li><p>一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条嘟文会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.</p></li>
-                <li><p>注意：上一条与网页版 Mastodon 并不一致，如果原嘟文被删除，则其回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.</p></li>
-                <li><p>如果实例没有魔改的话，申请存档中的时间都是格林威治时间，本页面上显示的时间没有做任何处理，加上 8 小时后才得到北京时间.</p></li>
-                <li><p>表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信. 这个数字可能会大于倒数第四行的“以上两项总计”，初步判断是实例的计数有 bug：删除一条嘟文后，其他实例 api/v1/accounts/id 中的 statuses_count 有所减少，但有时候自己实例 api/v1/accounts/id 中的 statuses_count 没有变化. 我觉得非常奇怪，请各位象友指点.</p></li>
-                <li><p>私信的数量默认隐藏，点击方块的位置可以显示数字，再次点击数字则隐藏.</p></li>
+                <li><p data-i18n="note.p1">按顺序加载完 <code>actor.json</code> 和 <code>outbox.json</code> 后这个表格会自动生成统计数据.</p></li>
+                <li><p data-i18n="note.p2">自己回复自己的嘟文算做是原创，显示在“嘟文”那一列里. 这与网页版 Mastodon 是一致的.</p></li>
+                <li><p data-i18n="note.p3">一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条嘟文会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.</p></li>
+                <li><p data-i18n="note.p4">注意：上一条与网页版 Mastodon 并不一致，如果原嘟文被删除，则其回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.</p></li>
+                <li><p data-i18n="note.p5">申请存档中的时间都是格林威治时间，本页面上显示的时间没有做任何处理，加上 8 小时后才得到北京时间.</p></li>
+                <li><p data-i18n="note.p6">表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信. 这个数字可能会大于倒数第四行的“以上两项总计”，初步判断是实例的计数有 bug：删除一条嘟文后，其他实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 有所减少，但有时候自己实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 没有变化. 我觉得非常奇怪，请各位象友指点.</p></li>
+                <li><p data-i18n="note.p7">私信的数量默认隐藏，点击方块的位置可以显示数字，再次点击数字则隐藏.</p></li>
             </ul>
         <section id="loading">
             <div id="div-import-prompt">
-                <p>
-                    Select <b>actor.json</b> and <b>outbox.json</b> in the archive folder.
+                <p data-i18n="instruction">
+                    在存档文件夹中选择 <b><code>actor.json</code></b> 和 <b><code>outbox.json</code></b>.
                 </p>
                 <div>
                     <label id="actor-input">
@@ -67,9 +75,9 @@
                         <input accept="application/json" id="outbox-file-input" type="file" style="display:none">
                     </label>
                     <label>
-                        From
+                        <span data-i18n="from"> 从 </span>
                         <input id="date-input-from" type="date" onchange="save_date_from(event);"/>
-                        To
+                        <span data-i18n="to"> 至 </span>
                         <input id="date-input-to" type="date" onchange="save_date_to(event);"/>
                     </label>
                 </div>
@@ -98,63 +106,63 @@
                 </colgroup>
                 <tbody>
                     <tr>
-                        <td class="tg-nrix"><b><span style="color:lightgreen">发嘟</span></b>概览</td>
-                        <td class="tg-nrix">原创</td>
-                        <td class="tg-nrix">回复</td>
-                        <td class="tg-nrix">总计</td>
+                        <td class="tg-nrix" data-i18n="table.title"><b><span style="color:lightgreen">发嘟</span></b>概览</td>
+                        <td class="tg-nrix" data-i18n="table.original">原创</td>
+                        <td class="tg-nrix" data-i18n="table.reply">回复</td>
+                        <td class="tg-nrix" data-i18n="table.total">总计</td>
                         <td class="tg-nrix" rowspan="9"></td>
-                        <td class="tg-nrix">不含私信总计</td>
-                        <td class="tg-nrix"><b><span style="color:red">转嘟</span></b>总计</td>
+                        <td class="tg-nrix" data-i18n="table.tot2">不含私信总计</td>
+                        <td class="tg-nrix" data-i18n="table.tot3"><b><span style="color:red">转嘟</span></b>总计</td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix">公开</td>
+                        <td class="tg-nrix" data-i18n="table.public">公开</td>
                         <td class="tg-nrix"><b><span id="overviews_public_original" style="color:yellow"></span></b></td>
                         <td class="tg-nrix"><b><span id="overviews_public_reply" style="color:lightblue"></span></b></td>
                         <td class="tg-nrix"><span id="overviews_public"></span></td>
                         <td class="tg-nrix" rowspan="3"><span id="overviews_total_without_direct"></span>
-                            <br /><br />平均 <span id="overviews_total_without_direct_a"></span> / 天
+                            <br /><br /><span data-i18n="table.average"> 平均 </span> <span id="overviews_total_without_direct_a"></span><span data-i18n="table.perd"> / 天 </span>
                         </td>
                         <td class="tg-nrix" rowspan="3"><b><span id="overviews_boost" style="color:red"></span></b>
-                            <br /><br />平均 <span id="overviews_boost_a"></span> / 天
+                            <br /><br /><span data-i18n="table.average"> 平均 </span> <span id="overviews_boost_a"></span><span data-i18n="table.perd"> / 天</span>
                         </td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix">不公开</td>
+                        <td class="tg-nrix" data-i18n="table.unlisted">不公开</td>
                         <td class="tg-nrix"><b><span id="overviews_unlisted_original" style="color:yellow"></span></b></td>
                         <td class="tg-nrix"><b><span id="overviews_unlisted_reply" style="color:lightblue"></span></b></td>
                         <td class="tg-nrix"><span id="overviews_unlisted"></span></td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix">仅关注者</td>
+                        <td class="tg-nrix" data-i18n="table.fonly">仅关注者</td>
                         <td class="tg-nrix"><b><span id="overviews_followers-only_original" style="color:yellow"></span></b></td>
                         <td class="tg-nrix"><b><span id="overviews_followers-only_reply" style="color:lightblue"></span></b></td>
                         <td class="tg-nrix"><span id="overviews_followers-only"></span></td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix">私信</td>
+                        <td class="tg-nrix" data-i18n="table.direct">私信</td>
                         <td class="tg-nrix"><span id="overviews_direct_original" style="color:#fff1e8;background-color:#fff1e8" class="secret" onclick="toggle_show()"></span></td>
                         <td class="tg-nrix"><span id="overviews_direct_reply" style="color:#fff1e8;background-color:#fff1e8" class="secret" onclick="toggle_show()"></span></td>
                         <td class="tg-nrix"><span id="overviews_direct" style="color:#fff1e8;background-color:#fff1e8" class="secret" onclick="toggle_show()"></span></td>
-                        <td class="tg-nrix" colspan="2" rowspan="2">以上两项总计（不含私信的发嘟和转嘟）：<span id="overviews_without_reply_and_boost"></span></td>
+                        <td class="tg-nrix" colspan="2" rowspan="2"><span data-i18n="table.tot4">以上两项总计（不含私信的发嘟和转嘟）：</span><span id="overviews_without_reply_and_boost"></span></td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix">总计</td>
+                        <td class="tg-nrix" data-i18n="table.total">总计</td>
                         <td class="tg-nrix"><span id="overviews_original" style="color:#fff1e8;background-color:#fff1e8" class="secret" onclick="toggle_show()"></span></td>
                         <td class="tg-nrix"><span id="overviews_reply" style="color:#fff1e8;background-color:#fff1e8" class="secret" onclick="toggle_show()"></span></td>
                         <td class="tg-nrix"><b><span id="overviews_total" style="color:lightgreen;background-color:lightgreen" class="secret" onclick="toggle_show()"></span></b></td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix" colspan="4">上面数据的日期范围（根据在本页最上方的选择）</td>
-                        <td class="tg-nrix" colspan="2"><span id="date_input_from"></span> 至 <span id="date_input_to"></span>
-                            （共 <span id="date_input_diff"></span> 天）</td>
+                        <td class="tg-nrix" colspan="4" data-i18n="table.period1">上面数据的日期范围（根据在本页最上方的选择）</td>
+                        <td class="tg-nrix" colspan="2"><span id="date_input_from"></span><span data-i18n="to">  至 </span><span id="date_input_to"></span>
+                            <span data-i18n="table.tot5"> （共 </span><span id="date_input_diff"></span><span data-i18n="table.tot6"> 天）</span></td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix" colspan="4">存档中所有嘟文的日期范围（根据请求存档的时刻）</td>
-                        <td class="tg-nrix" colspan="2"><span id="date_from"></span> 至 <span id="date_to"></span>
-                            （共 <span id="date_diff"></span> 天）</td>
+                        <td class="tg-nrix" colspan="4" data-i18n="table.period2">存档中所有嘟文的日期范围（根据请求存档的时刻）</td>
+                        <td class="tg-nrix" colspan="2"><span id="date_from"></span><span data-i18n="to">  至 </span><span id="date_to"></span>
+                            <span data-i18n="table.tot5"> （共 </span><span id="date_diff"></span><span data-i18n="table.tot6"> 天）</span></td>
                     </tr>
                     <tr>
-                        <td class="tg-nrix" colspan="4">存档中显示的嘟文与回复数</td>
+                        <td class="tg-nrix" colspan="4" data-i18n="table.display">存档中显示的嘟文与回复数</td>
                         <td class="tg-nrix" colspan="2"><span id="overviews_display"></span></td>
                     </tr>
                 </tbody>
@@ -187,12 +195,25 @@
         <section class="grid" id="grid_section">
             <div class="column-0">
                 <div class="account__section-headline" id="account__section-headline">
+                    <a class="tootheadline" id="toots" onclick="clicktoots()">
+                        <span><span data-i18n="toots">嘟文</span> ( <span id="nonreply_ct">0</span> )</span>
+                    </a>
+                    <a class="active tootheadline" id="tootsNreplies" onclick="clicktootsNreplies()">
+                        <span><span data-i18n="tnr">嘟文和回复</span> ( <span id="with_reply_ct">0</span> ）</span>
+                    </a>
+                    <a class="tootheadline" id="mediatoots" onclick="clicktootsmedia()">
+                        <span><span data-i18n="media">媒体</span> ( <span id="mediatoot_ct">0</span> ）</span>
+                    </a>
                 </div>
                 <main id="articles">
                 </main>
             </div>
             <div class="column-1">
                 <div class="archive__section" id="archive__section">
+                    <dl class="account__section-headline" style="background: #1f232b;border-bottom: 1px solid #393f4f; margin:0">
+                        <dd style="padding:15px;color:#d9e1e8" data-i18n="index">索引</dd>
+                    </dl>
+                    <div id="month_section_html"></div>
                 </div>
             </div>
         </section>
@@ -210,6 +231,7 @@
 	</div>
 
     <script type="text/javascript" src="./assets/chart.js"></script>
+    <script type="text/javascript" src="./assets/translator.js"></script>
     <script type="text/javascript" src="./assets/main.js"></script>
 </body>
 
