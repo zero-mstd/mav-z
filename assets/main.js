@@ -595,7 +595,6 @@ function clickcloseimg() {
         .style.display = 'none';
 }
 
-<<<<<<< HEAD
 var exhibitionText = `
 ---
 title: 季度嘟文精华展 - 20xx X
