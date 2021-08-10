@@ -41,6 +41,7 @@ The branch "exhibition" is for my season's toots exhibition.
 * (08/10/2021, Zero) use 🔑 to mark unlisted toot, because 🔓 (unlisted) is not often easy to distinguish from 🔒 (followers-only)
 * (08/10/2021, Zero) fix the problem that `captionText` is not defined: `var captionText = document.getElementById("caption");`
 * (08/10/2021, Zero) no need to unzip `archive-xxx.tar.gz` file anymore, just select directly the archive file in browser, then everything should be fine. This feature benefits from [pako](https://github.com/nodeca/pako) and [js-untar](https://github.com/InvokIT/js-untar), which are greatly appreciated. (and this [code](https://stackoverflow.com/a/65448758) provides an out-of-the-box idea)
+* (08/10/2021, Zero) add the time zone feature, use your system time zone by default, and can be customized.
 
 # Usage
 
@@ -81,6 +82,7 @@ $ firefox archive_page.html
 - [x] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
 - [ ] more information? for example, the one you liked the most, the one you boost the most…
 - [x] add a line graph, maybe?
+- [x] time zone problem
 
 # Similar Projects:
 - [kit-ty-kate, mastodon-archive-viewer](https://github.com/kit-ty-kate/mastodon-archive-viewer), written in [OCaml](https://ocaml.org/), need [OPAM](https://opam.ocaml.org/) installed.

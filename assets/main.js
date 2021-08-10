@@ -153,8 +153,8 @@ function outbox_input() {
         date_to = document.getElementById("date-input-to");
         var earliest_number = 0;
         var latest_number = outbox.orderedItems.length - 1;
-        var earliest_date = outbox.orderedItems[earliest_number].published.substring(0,10);
-        var latest_date = outbox.orderedItems[latest_number].published.substring(0,10);
+        var earliest_date = offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10);
+        var latest_date = offsetTime(outbox.orderedItems[latest_number].published).substring(0,10);
         date_from.value = earliest_date;
         date_from.min = earliest_date;
         date_from.max = latest_date;
@@ -189,7 +189,7 @@ function deal_with_period(date_from_value, date_to_value) {
     // deep copy so that the change won't affect the original data.
     let toot;
     for (toot in outbox_operate.orderedItems) {
-        var published_date = new Date(outbox_operate.orderedItems[toot].published.substring(0,10));
+        var published_date = new Date(offsetTime(outbox_operate.orderedItems[toot].published).substring(0,10));
         if (published_date.getTime() < date_from_number.getTime() ||
             published_date.getTime() > date_to_number.getTime()) {
             delete outbox_operate.orderedItems[toot];
@@ -259,8 +259,8 @@ function buildArchiveView(outbox, actor) {
     if (outbox.orderedItems[0] != null) {
         var earliest_number = 0;
         var latest_number = outbox.orderedItems.length - 1;
-        var earliest_date = new Date(outbox.orderedItems[earliest_number].published.substring(0,10));
-        var latest_date = new Date(outbox.orderedItems[latest_number].published.substring(0,10));
+        var earliest_date = new Date(offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10));
+        var latest_date = new Date(offsetTime(outbox.orderedItems[latest_number].published).substring(0,10));
         var earliest_millisec = earliest_date.getTime();
         var latest_millisec = latest_date.getTime();
         for (var i = earliest_millisec; i <= latest_millisec; i += 86400000) {
@@ -274,7 +274,7 @@ function buildArchiveView(outbox, actor) {
             with_reply_ct += 1;
         } else if (outbox.orderedItems[toot].type == "Announce") {
             boost_ct += 1;
-            temp_plot_data[outbox.orderedItems[toot].published.substring(0,10)][2] += 1;
+            temp_plot_data[offsetTime(outbox.orderedItems[toot].published).substring(0,10)][2] += 1;
         }
     }
     // end prepare
@@ -340,20 +340,20 @@ function buildArchiveView(outbox, actor) {
             article.querySelector(".status__box")
                 .classList.add("direct");
         } else {
-            temp_plot_data[status.published.substring(0,10)][0] += (1 - checkIfReply(status));
-            temp_plot_data[status.published.substring(0,10)][1] += checkIfReply(status);
+            temp_plot_data[offsetTime(status.published).substring(0,10)][0] += (1 - checkIfReply(status));
+            temp_plot_data[offsetTime(status.published).substring(0,10)][1] += checkIfReply(status);
         }
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
             article.querySelector(".status__box")
                 .classList.add("reply");
         }
 
-        var publish_date = status.published;
+        var publish_date = offsetTime(status.published);
         var publish_month = publish_date.slice(0, 7);
 
         var date_html = '<a class="date" href="' + status.url +
-            '"  target="_blank">' + visibility + ' ' + publish_date.slice(
-                0, 10) + ' ' + publish_date.slice(11, 19) + '</a>';
+            '"  target="_blank">' + visibility + ' <div id="toot_date_time">' + publish_date.slice(
+                0, 10) + ' ' + publish_date.slice(11, 19) + '</div></a>';
         if ((month_cur != publish_month)) {
             date_html = '<a class="date" id="' + publish_month +
                 '" href="' + status.url + '"  target="_blank">' +
@@ -578,5 +578,23 @@ function toggle_show() {
             secret[i].style.backgroundColor = secret[i].style.color;
         }
     }
+}
+
+// set the Time Zone
+var offset = new Date().getTimezoneOffset();
+document.getElementById('timezone_sel').value = - offset / 60;
+
+function setTimeZone(timezone_value) {
+    offset = - timezone_value * 60;
+    if (all_files['outbox.json']) {
+        outbox_input();
+    }
+}
+
+function offsetTime(datetime) {
+    var timeInMillis = Date.parse(datetime);
+    var correctTime = new Date(timeInMillis - offset * 60 * 1000);
+    var correct_datetime = correctTime.toISOString().split('.')[0] + "Z";
+    return correct_datetime;
 }
 

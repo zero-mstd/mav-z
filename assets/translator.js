@@ -39,6 +39,7 @@ var i18n_data = {
         'tnr': '嘟文和回复',
         'media': '媒体',
         'index': '索引',
+        'timezone': '时区：',
     },
     'en': {
         'title': 'Mastodon Archive',
@@ -80,6 +81,7 @@ var i18n_data = {
         'tnr': 'Toots and replies',
         'media': 'Media',
         'index': 'Index',
+        'timezone': 'Time Zone:',
     }
 }
 
