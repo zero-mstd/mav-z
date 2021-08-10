@@ -129,16 +129,18 @@
                 .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
                     font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
                 .tg .tg-nrix{border-color:#fff1e8;text-align:center;vertical-align:middle}
+                .tg .tg-nrit{border-color:#fff1e8;text-align:center;vertical-align:top}
+                .cell_hide{display:none}
             </style>
-            <table class="tg" style="undefined;table-layout: fixed; width: 469px">
+            <table class="tg" style="undefined; table-layout: fixed; width: 943px">
                 <colgroup>
-                    <col style="width: 101px">
-                    <col style="width: 81px">
-                    <col style="width: 81px">
-                    <col style="width: 81px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                    <col style="width: 80px">
+                    <col style="width: 80px">
                     <col style="width: 3px">
-                    <col style="width: 301px">
-                    <col style="width: 301px">
+                    <col style="width: 300px">
+                    <col style="width: 300px">
                 </colgroup>
                 <tbody>
                     <tr>
@@ -204,6 +206,43 @@
                 </tbody>
             </table>
             <div>
+                <p>
+                    <span data-i18n="my">
+                        我与这些站的用户有过互动（括号里的数字表示互动次数）：
+                    </span>
+                    <button onclick="toggleFold()" data-i18n="togglefold">展开/折叠</button>
+                </p>
+                <table class="tg" style="undefined;table-layout: fixed; width: 944px">
+                    <colgroup>
+                        <col style="width: 236px">
+                        <col style="width: 236px">
+                        <col style="width: 236px">
+                        <col style="width: 236px">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="tg-nrix"><span data-i18n="mReply">回复</span></th>
+                            <th class="tg-nrix"><span data-i18n="mBoost">转发</span></th>
+                            <th class="tg-nrix"><span data-i18n="mFavourite">喜欢</span></th>
+                            <th class="tg-nrix"><span data-i18n="mBookmark">收藏</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tg-nrit"><div id="most_reply"></div></td>
+                            <td class="tg-nrit"><div id="most_boost"></div></td>
+                            <td class="tg-nrit"><div id="most_favourite"></div></td>
+                            <td class="tg-nrit"><div id="most_bookmark"></div></td>
+                        </tr>
+                    </tbody>
+</table>
+            </div>
+            <div>
+                <p>
+                    <span data-i18n="trend">
+                        嘟嘟趋势图：
+                    </span>
+                </p>
                 <canvas id="tootChart"></canvas>
             </div>
 

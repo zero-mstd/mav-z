@@ -40,6 +40,13 @@ var i18n_data = {
         'media': '媒体',
         'index': '索引',
         'timezone': '时区：',
+        'my': '我与这些站的用户有过互动（括号里的数字表示互动次数）：',
+        'mReply': '回复',
+        'mBoost': '转发',
+        'mFavourite': '喜欢',
+        'mBookmark': '收藏',
+        'togglefold': '展开/折叠',
+        'trend': '嘟嘟趋势图：',
     },
     'en': {
         'title': 'Mastodon Archive',
@@ -82,6 +89,13 @@ var i18n_data = {
         'media': 'Media',
         'index': 'Index',
         'timezone': 'Time Zone:',
+        'my': 'I have interacted with users in these site (the number following indicates the number of interactions):',
+        'mReply': 'Reply',
+        'mBoost': 'Boost',
+        'mFavourite': 'Favourite',
+        'mBookmark': 'Bookmark',
+        'togglefold': 'fold/unfold',
+        'trend': 'The trend of your toot:',
     }
 }
 

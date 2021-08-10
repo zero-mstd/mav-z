@@ -49,6 +49,11 @@ var archive = document.getElementById("archive__section"),
 
 var actor_id;
 
+var my_reply = {},
+    my_boost = {},
+    my_favourite = {},
+    my_bookmark = {};
+
 var all_files = {};
 const take_files = (files) => {
     //console.log(files); // `files` is an array
@@ -57,6 +62,8 @@ const take_files = (files) => {
         all_files[files[f].name] = files[f];
     }
     //console.log(all_files); // `all_files` is a javascript object, key = file's name
+    bookmarks_input();
+    likes_input();
     actor_input();
     outbox_input();
 };
@@ -84,7 +91,7 @@ function actor_input() {
     // BUT all the chinese characters then become messy (mojibake),
     // seemed that the js-untar didn't consider about the encoded thing?
     // So, I have to use the more complex way (.blob),
-    // and it is the same situation about `outbox_input` function.
+    // and it is the same situation about `{outbox|bookmarks|likes}_input` function.
 
     var file = all_files['actor.json'].blob,
         reader = new FileReader();
@@ -132,6 +139,61 @@ function actor_input() {
             accounturl + '"><img src="' + avatar_img + '"></a>';
         document.getElementById("account__header__content")
             .innerHTML = actor.summary;
+    });
+    reader.readAsText(file);
+}
+
+
+function link2name(link) {
+    var link_arr = link.substr(8).split('/');
+    return link_arr[0];
+    // return '@' + link_arr[2] + '@' + link_arr[0];
+}
+function bookmarks_input() {
+    var file = all_files['bookmarks.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        var bookmarks = JSON.parse(this.result);
+        for (var i in bookmarks.orderedItems) {
+            var name = link2name(bookmarks.orderedItems[i]);
+            if (my_bookmark[name] == null) {
+                my_bookmark[name] = 1;
+            } else {
+                my_bookmark[name] += 1;
+            }
+        }
+        var order_bookmark = Object.keys(my_bookmark)
+            .sort(function(a,b){return my_bookmark[b] - my_bookmark[a]});
+        var h = '';
+        for (var i in order_bookmark) {
+            h += order_bookmark[i] + '(' + my_bookmark[order_bookmark[i]] + ')<br>';
+        }
+        document.getElementById("most_bookmark").innerHTML = h;
+        my_bookmark = {}; //clear mem
+    });
+    reader.readAsText(file);
+}
+function likes_input() {
+    var file = all_files['likes.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        var likes = JSON.parse(this.result);
+        for (var i in likes.orderedItems) {
+            var name = link2name(likes.orderedItems[i]);
+            if (my_favourite[name] == null) {
+                my_favourite[name] = 1;
+            } else {
+                my_favourite[name] += 1;
+            }
+        }
+        var order_favourite = Object.keys(my_favourite)
+            .sort(function(a,b){return my_favourite[b] - my_favourite[a]});
+        var h = '';
+        for (var i in order_favourite) {
+            h += order_favourite[i] + '(' + my_favourite[order_favourite[i]] + ')<br>';
+        }
+        document.getElementById("most_favourite").innerHTML = h;
+        my_favourite = {}; //clear mem
     });
     reader.readAsText(file);
 }
@@ -275,12 +337,32 @@ function buildArchiveView(outbox, actor) {
         } else if (outbox.orderedItems[toot].type == "Announce") {
             boost_ct += 1;
             temp_plot_data[offsetTime(outbox.orderedItems[toot].published).substring(0,10)][2] += 1;
+            var name = link2name(outbox.orderedItems[toot].object);
+            if (my_boost[name] == null) {
+                my_boost[name] = 1;
+            } else {
+                my_boost[name] += 1;
+            }
         }
     }
     // end prepare
+    var order_boost = Object.keys(my_boost)
+        .sort(function(a,b){return my_boost[b] - my_boost[a]});
+    var h = '';
+    for (var i in order_boost) {
+        h += order_boost[i] + '(' + my_boost[order_boost[i]] + ')<br>';
+    }
+    document.getElementById("most_boost").innerHTML = h;
+    my_boost = {}; //clear mem
 
     function checkIfReply(status) {
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
+            var name = link2name(status.inReplyTo);
+            if (my_reply[name] == null) {
+                my_reply[name] = 1;
+            } else {
+                my_reply[name] += 1;
+            }
             return 1;
         } else {
             return 0;
@@ -424,6 +506,14 @@ function buildArchiveView(outbox, actor) {
 
     });
     // console.log(temp_plot_data);
+    var order_reply = Object.keys(my_reply)
+        .sort(function(a,b){return my_reply[b] - my_reply[a]});
+    var h = '';
+    for (var i in order_reply) {
+        h += order_reply[i] + '(' + my_reply[order_reply[i]] + ')<br>';
+    }
+    document.getElementById("most_reply").innerHTML = h;
+    my_reply = {}; //clear mem
 
     // plotting the line graph part
     var lable_array = [],
@@ -569,14 +659,22 @@ function clickcloseimg() {
 }
 
 // hide the # of DM
-var secret = document.getElementsByClassName("secret");
 function toggle_show() {
+    var secret = document.getElementsByClassName("secret");
     for (var i = 0; i < secret.length; i++) {
         if (secret[i].style.color == secret[i].style.backgroundColor) {
             secret[i].style.backgroundColor = "";
         } else {
             secret[i].style.backgroundColor = secret[i].style.color;
         }
+    }
+}
+
+// fold the table
+function toggleFold() {
+    var cell = document.getElementsByClassName("tg-nrit");
+    for (var i = 0; i < cell.length; i++) {
+        cell[i].classList.toggle("cell_hide");
     }
 }
 

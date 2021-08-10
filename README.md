@@ -2,7 +2,7 @@
 
 An offline web page to view a [Mastodon](https://joinmastodon.org) archive. It gives a powerful data table to tell you what the composition of all your toots is. There is also a line graph telling you the tooting trend. You can select a period of time to view.
 
-![Screenshot](https://cdn.jsdelivr.net/gh/zero-mstd/figure-bed@master/mav-z_screenshot.png "Screenshot of this tool")
+![Screenshot](https://cdn.jsdelivr.net/gh/zero-mstd/figure-bed@master/mav-z_screenshot_2.png "Screenshot of this tool")
 
 The branch "exhibition" is for my season's toots exhibition.
 
@@ -42,6 +42,7 @@ The branch "exhibition" is for my season's toots exhibition.
 * (08/10/2021, Zero) fix the problem that `captionText` is not defined: `var captionText = document.getElementById("caption");`
 * (08/10/2021, Zero) no need to unzip `archive-xxx.tar.gz` file anymore, just select directly the archive file in browser, then everything should be fine. This feature benefits from [pako](https://github.com/nodeca/pako) and [js-untar](https://github.com/InvokIT/js-untar), which are greatly appreciated. (and this [code](https://stackoverflow.com/a/65448758) provides an out-of-the-box idea)
 * (08/10/2021, Zero) add the time zone feature, use your system time zone by default, and can be customized.
+* (08/11/2021, Zero) tell you the fedi sites whose users you usually interacted with. At first I want to show the users you most interacted with, but the toots of [pleroma](https://pleroma.social) users in `likes.json` and `bookmarks.json` don't have a link formated as `https://<mastodon.example.com>/users/<username>/statuses/<status_id>`, they are like `https://<pleroma.example.com>/objects/<object-id>`. It is not fair to exclude them.
 
 # Usage
 
@@ -80,7 +81,7 @@ $ firefox archive_page.html
 - [ ] add reverse mode to view all toots
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
 - [x] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
-- [ ] more information? for example, the one you liked the most, the one you boost the most…
+- [x] more information? for example, the one you liked the most, the one you boost the most…
 - [x] add a line graph, maybe?
 - [x] time zone problem
 
