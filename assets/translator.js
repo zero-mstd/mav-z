@@ -4,7 +4,7 @@ var i18n_data = {
         'language': 'Choose a language: ',
         'notes': '说明：',
         'note': {
-            'p1': '按顺序加载完 <code>actor.json</code> 和 <code>outbox.json</code> 后这个表格会自动生成统计数据.',
+            'p1': '先去你的长毛象实例请求你的账户数据存档（设置 - 导入和导出 - 导出）并下载下来，然后直接在下面选择并打开整个 .tar.gz 格式的文件.',
             'p2': '自己回复自己的嘟文算做是原创，显示在“嘟文”那一列里. 这与网页版 Mastodon 是一致的.',
             'p3': '一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条嘟文会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.',
             'p4': '注意：上一条与网页版 Mastodon 并不一致，如果原嘟文被删除，则其回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.',
@@ -12,7 +12,7 @@ var i18n_data = {
             'p6': '表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信. 这个数字可能会大于倒数第四行的“以上两项总计”，初步判断是实例的计数有 bug：删除一条嘟文后，其他实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 有所减少，但有时候自己实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 没有变化. 我觉得非常奇怪，请各位象友指点.',
             'p7': '私信的数量默认隐藏，点击方块的位置可以显示数字，再次点击数字则隐藏.',
         },
-        'instruction': '在存档文件夹中选择 <b><code>actor.json</code></b> 和 <b><code>outbox.json</code></b>.',
+        'instruction': '请直接选择你的长毛象存档文件，它的格式应该是 <b><code>archive-xxx.tar.gz</code></b>.',
         'from': ' 从 ',
         'to': ' 至 ',
         'table': {
@@ -45,7 +45,7 @@ var i18n_data = {
         'language': '切换语言：',
         'notes': 'Notes: ',
         'note': {
-            'p1': 'After loading <code>actor.json</code> and then <code>outbox.json</code>, the table will generate statistical data automatically.',
+            'p1': 'First go to your Mastodon instance, request an archive of your toots and uploaded media (Settings - Import and export - Data export), and download your archive. Then choose and open directly the entire .tar.gz file below.',
             'p2': 'Self-reply counts as original, and will be shown in the “Toots” column. Same as the Mastodon web side.',
             'p3': 'If the original toot you replied was deleted (may also caused by the account deletion), your reply will become original and be shown in the “Toots” column. As a result, the number of original toots in the table increased, while the number of replies decreased.',
             'p4': 'Note that the behavior described in the previous line is not consistent with the Mastodon web side. Your reply won’t be displayed in the “Toots” column even if the original toot is gone.',
@@ -53,7 +53,7 @@ var i18n_data = {
             'p6': '“The number displayed on the web side” item (in the last row of the table) refers to the number displayed on the left of “Following” number and “Followers” number on the web side of Mastodon. It should count boosts but does not count DMs. In practice, this number is probably greater than the fourth-to-last line in the table, i.e., “Total of the above two (boosts contained, but DMs not)”, I feel very strange about this. My preliminary thought is that there is a bug with the counting of Mastodon, because sometimes when I delete one toot, the <code>statuses_count</code> in <code>api/v1/accounts/id</code> on another instance indeed decreased, while on my own instance, it stay the same. Feel free to tell me if you have a clue.',
             'p7': 'The count of DMs is hidden by default, click to toggle between visible and invisible.',
         },
-        'instruction': 'Select <b><code>actor.json</code></b> and <b><code>outbox.json</code></b> in the archive folder.',
+        'instruction': 'Choose and open directly the archive file, its file name format should be like <b><code>archive-xxx.tar.gz</code></b>.',
         'from': ' From ',
         'to': ' To ',
         'table': {

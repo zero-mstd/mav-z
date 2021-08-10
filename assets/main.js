@@ -48,56 +48,93 @@ var archive = document.getElementById("archive__section"),
     stop_val = stop;
 
 var actor_id;
-//load actor
-document.getElementById("actor-file-input")
+
+var all_files = {};
+const take_files = (files) => {
+    //console.log(files); // `files` is an array
+    let f;
+    for (f in files) {
+        all_files[files[f].name] = files[f];
+    }
+    //console.log(all_files); // `all_files` is a javascript object, key = file's name
+    actor_input();
+    outbox_input();
+};
+
+document.getElementById("tgz-file-input")
     .addEventListener("change", function(event) {
+    // 1. read the xxx.tar.gz here
+    // 2. use pako.min.js to uncompress
+    // 3. use untar.js to open the .tar file
+    // 4. deal it with the take_files function
+        // console.log(this.files);
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
-            actor = JSON.parse(this.result);
-
-            actor_id = actor.id;
-            var accounturl = actor.url,
-                url_sp = accounturl.split("/"),
-                id = url_sp[3] + '@' + url_sp[2];
-
-            var avatar_img, header_img = ''
-            try {
-                avatar_img = actor.icon["url"];
-            } catch {
-                console.log("no profile avatar");
-                avatar_img = "avatar_default.png";
-            }
-            try {
-                header_img = actor.image["url"]
-            } catch {
-                console.log("no profile header image");
-                header_img = "header_default.jpg";
-            }
-
-            var header_fields = '';
-            actor.attachment.forEach((item) => {
-                header_fields += '<dl><dt>' + item.name +
-                    '</dt><dd><span>' + item.value +
-                    '</span></dd></dl>'
-            });
-            document.getElementById("account__header__fields")
-                .innerHTML = header_fields;
-            document.getElementById("public-account-header__image")
-                .innerHTML = '<img class="parallax" src="assets/' +
-                header_img +
-                '" style="transform: translate3d(0px, 0px, 0px);">';
-            document.getElementById("account__header__tabs__name")
-                .innerHTML = '<h1><span>' + actor.name +
-                '</span><small>' + id + '</small></h1>'
-            document.getElementById("public-account-header__bar")
-                .innerHTML = '<a class="avatar" href="' +
-                accounturl + '"><img src="assets/' + avatar_img + '"></a>';
-            document.getElementById("account__header__content")
-                .innerHTML = actor.summary;
+            untar(pako.inflate(this.result).buffer).then(take_files);
         });
-        reader.readAsText(file);
+        reader.readAsArrayBuffer(file);
     });
+
+function actor_input() {
+    // The js-untar package indeed has a `readAsJSON()` method, see:
+    //      https://github.com/InvokIT/js-untar#file-object,
+    // which means I should could use the following easier sentence:
+    // actor = all_files['actor.json'].readAsJSON();
+    // BUT all the chinese characters then become messy (mojibake),
+    // seemed that the js-untar didn't consider about the encoded thing?
+    // So, I have to use the more complex way (.blob),
+    // and it is the same situation about `outbox_input` function.
+
+    var file = all_files['actor.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        actor = JSON.parse(this.result);
+
+        actor_id = actor.id;
+        var accounturl = actor.url,
+            url_sp = accounturl.split("/"),
+            id = url_sp[3] + '@' + url_sp[2];
+
+        var avatar_img, header_img = ''
+        try {
+            avatar_img_address = actor.icon["url"];
+            avatar_img = URL.createObjectURL(all_files[avatar_img_addres].blob);
+        } catch {
+            console.log("no profile avatar");
+            avatar_img = "assets/avatar.png";
+        }
+        try {
+            header_img_address = actor.image["url"];
+            header_img = URL.createObjectURL(all_files[header_img_address].blob);
+        } catch {
+            console.log("no profile header image");
+            header_img = "assets/header.jpg";
+        }
+
+        var header_fields = '';
+        actor.attachment.forEach((item) => {
+            header_fields += '<dl><dt>' + item.name +
+                '</dt><dd><span>' + item.value +
+                '</span></dd></dl>'
+        });
+        document.getElementById("account__header__fields")
+            .innerHTML = header_fields;
+        document.getElementById("public-account-header__image")
+            .innerHTML = '<img class="parallax" src="' +
+            header_img +
+            '" style="transform: translate3d(0px, 0px, 0px);">';
+        document.getElementById("account__header__tabs__name")
+            .innerHTML = '<h1><span>' + actor.name +
+            '</span><small>' + id + '</small></h1>'
+        document.getElementById("public-account-header__bar")
+            .innerHTML = '<a class="avatar" href="' +
+            accounturl + '"><img src="' + avatar_img + '"></a>';
+        document.getElementById("account__header__content")
+            .innerHTML = actor.summary;
+    });
+    reader.readAsText(file);
+}
 
 var days_ct;
 function days_diff(start, end) {
@@ -107,40 +144,35 @@ function days_diff(start, end) {
 }
 
 var date_from, date_to;
-document.getElementById("outbox-file-input")
-    .addEventListener("change", function(event) {
-        if (actor == null) {
-            alert('Open actor.json first!\n请先选择 actor.json! ');
-            return 1;
-        }
-        var file = event.target.files[0],
-            reader = new FileReader();
-        reader.addEventListener("load", function() {
-            outbox = JSON.parse(this.result);
-            date_from = document.getElementById("date-input-from");
-            date_to = document.getElementById("date-input-to");
-            var earliest_number = 0;
-            var latest_number = outbox.orderedItems.length - 1;
-            var earliest_date = outbox.orderedItems[earliest_number].published.substring(0,10);
-            var latest_date = outbox.orderedItems[latest_number].published.substring(0,10);
-            date_from.value = earliest_date;
-            date_from.min = earliest_date;
-            date_from.max = latest_date;
-            document.getElementById("date_from").innerHTML = earliest_date;
-            document.getElementById("date_input_from").innerHTML = earliest_date;
-            date_to.value = latest_date;
-            date_to.min = earliest_date;
-            date_to.max = latest_date;
-            document.getElementById("date_to").innerHTML = latest_date;
-            document.getElementById("date_input_to").innerHTML = latest_date;
-            days_ct = days_diff(earliest_date, latest_date);
-            document.getElementById("date_diff").innerHTML = days_ct;
-            document.getElementById("date_input_diff").innerHTML = days_ct;
+function outbox_input() {
+    var file = all_files['outbox.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        outbox = JSON.parse(this.result);
+        date_from = document.getElementById("date-input-from");
+        date_to = document.getElementById("date-input-to");
+        var earliest_number = 0;
+        var latest_number = outbox.orderedItems.length - 1;
+        var earliest_date = outbox.orderedItems[earliest_number].published.substring(0,10);
+        var latest_date = outbox.orderedItems[latest_number].published.substring(0,10);
+        date_from.value = earliest_date;
+        date_from.min = earliest_date;
+        date_from.max = latest_date;
+        document.getElementById("date_from").innerHTML = earliest_date;
+        document.getElementById("date_input_from").innerHTML = earliest_date;
+        date_to.value = latest_date;
+        date_to.min = earliest_date;
+        date_to.max = latest_date;
+        document.getElementById("date_to").innerHTML = latest_date;
+        document.getElementById("date_input_to").innerHTML = latest_date;
+        days_ct = days_diff(earliest_date, latest_date);
+        document.getElementById("date_diff").innerHTML = days_ct;
+        document.getElementById("date_input_diff").innerHTML = days_ct;
 
-            buildArchiveView(outbox, actor);
-        });
-        reader.readAsText(file);
+        buildArchiveView(outbox, actor);
     });
+    reader.readAsText(file);
+}
 
 function deal_with_period(date_from_value, date_to_value) {
     date_from.max = date_to_value;
@@ -267,7 +299,7 @@ function buildArchiveView(outbox, actor) {
         try {
             if (status.to.includes(actor.followers)) {
                 if (status.cc.includes(activitystreams)) {
-                    visibility = '🔓';
+                    visibility = '🔑';
                     unlisted_reply_ct += checkIfReply(status);
                     unlisted_ct += 1;
                     nonreply_ct += (1 - checkIfReply(status));
@@ -343,6 +375,9 @@ function buildArchiveView(outbox, actor) {
 
             var mediaDiv = article.querySelector(".status__media");
 
+            //
+            //console.log(attachmentUrls)
+            //console.log(attachmentNames)
             for (var i = 0; i < attachmentUrls.length; i++) {
 
                 var url = attachmentUrls[i]
@@ -359,15 +394,16 @@ function buildArchiveView(outbox, actor) {
                         true);
                 }
 
-                var src_img = "media_attachments/" + url.split(
-                        "/media_attachments/")
-                    .pop();
+                var address_img = url.split("/mastodon/")[1];
+                var src_img = URL.createObjectURL(all_files[address_img].blob);
+
                 media.querySelector(".status__media")
                     .src = src_img
                 media.querySelector(".status__media")
                     .onclick = function(src_img) { // insert image inside the modal - use name as a caption
                         var modal = document.getElementById("myModal");
                         var modalImg = document.getElementById("img01");
+                        var captionText = document.getElementById("caption");
                         modal.style.display = "block";
                         modalImg.src = src_img.target.src;
                         if (caption) {
