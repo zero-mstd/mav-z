@@ -87,56 +87,155 @@ var archive = document.getElementById("archive__section"),
 
 var actor_id;
 var accounturl;
-//load actor
-document.getElementById("actor-file-input")
+
+var my_reply = {},
+    my_boost = {},
+    my_favourite = {},
+    my_bookmark = {};
+
+var all_files = {};
+const take_files = (files) => {
+    //console.log(files); // `files` is an array
+    let f;
+    for (f in files) {
+        all_files[files[f].name] = files[f];
+    }
+    //console.log(all_files); // `all_files` is a javascript object, key = file's name
+    bookmarks_input();
+    likes_input();
+    actor_input();
+    outbox_input();
+};
+
+document.getElementById("tgz-file-input")
     .addEventListener("change", function(event) {
+    // 1. read the xxx.tar.gz here
+    // 2. use pako.min.js to uncompress
+    // 3. use untar.js to open the .tar file
+    // 4. deal it with the take_files function
+        // console.log(this.files);
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
-            actor = JSON.parse(this.result);
-
-            actor_id = actor.id;
-            accounturl = actor.url;
-            var url_sp = accounturl.split("/"),
-                id = url_sp[3] + '@' + url_sp[2];
-
-            var avatar_img, header_img = ''
-            try {
-                avatar_img = actor.icon["url"];
-            } catch {
-                console.log("no profile avatar");
-                avatar_img = "avatar_default.png";
-            }
-            try {
-                header_img = actor.image["url"]
-            } catch {
-                console.log("no profile header image");
-                header_img = "header_default.jpg";
-            }
-
-            var header_fields = '';
-            actor.attachment.forEach((item) => {
-                header_fields += '<dl><dt>' + item.name +
-                    '</dt><dd><span>' + item.value +
-                    '</span></dd></dl>'
-            });
-            document.getElementById("account__header__fields")
-                .innerHTML = header_fields;
-            document.getElementById("public-account-header__image")
-                .innerHTML = '<img class="parallax" src="assets/' +
-                header_img +
-                '" style="transform: translate3d(0px, 0px, 0px);">';
-            document.getElementById("account__header__tabs__name")
-                .innerHTML = '<h1><span>' + actor.name +
-                '</span><small>' + id + '</small></h1>'
-            document.getElementById("public-account-header__bar")
-                .innerHTML = '<a class="avatar" href="' +
-                accounturl + '"><img src="assets/' + avatar_img + '"></a>';
-            document.getElementById("account__header__content")
-                .innerHTML = actor.summary;
+            untar(pako.inflate(this.result).buffer).then(take_files);
         });
-        reader.readAsText(file);
+        reader.readAsArrayBuffer(file);
     });
+
+function actor_input() {
+    // The js-untar package indeed has a `readAsJSON()` method, see:
+    //      https://github.com/InvokIT/js-untar#file-object,
+    // which means I should could use the following easier sentence:
+    // actor = all_files['actor.json'].readAsJSON();
+    // BUT all the chinese characters then become messy (mojibake),
+    // seemed that the js-untar didn't consider about the encoded thing?
+    // So, I have to use the more complex way (.blob),
+    // and it is the same situation about `{outbox|bookmarks|likes}_input` function.
+
+    var file = all_files['actor.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        actor = JSON.parse(this.result);
+
+        actor_id = actor.id;
+        var accounturl = actor.url,
+            url_sp = accounturl.split("/"),
+            id = url_sp[3] + '@' + url_sp[2];
+
+        var avatar_img, header_img = ''
+        try {
+            avatar_img_address = actor.icon["url"];
+            avatar_img = URL.createObjectURL(all_files[avatar_img_addres].blob);
+        } catch {
+            console.log("no profile avatar");
+            avatar_img = "assets/avatar.png";
+        }
+        try {
+            header_img_address = actor.image["url"];
+            header_img = URL.createObjectURL(all_files[header_img_address].blob);
+        } catch {
+            console.log("no profile header image");
+            header_img = "assets/header.jpg";
+        }
+
+        var header_fields = '';
+        actor.attachment.forEach((item) => {
+            header_fields += '<dl><dt>' + item.name +
+                '</dt><dd><span>' + item.value +
+                '</span></dd></dl>'
+        });
+        document.getElementById("account__header__fields")
+            .innerHTML = header_fields;
+        document.getElementById("public-account-header__image")
+            .innerHTML = '<img class="parallax" src="' +
+            header_img +
+            '" style="transform: translate3d(0px, 0px, 0px);">';
+        document.getElementById("account__header__tabs__name")
+            .innerHTML = '<h1><span>' + actor.name +
+            '</span><small>' + id + '</small></h1>'
+        document.getElementById("public-account-header__bar")
+            .innerHTML = '<a class="avatar" href="' +
+            accounturl + '"><img src="' + avatar_img + '"></a>';
+        document.getElementById("account__header__content")
+            .innerHTML = actor.summary;
+    });
+    reader.readAsText(file);
+}
+
+
+function link2name(link) {
+    var link_arr = link.substr(8).split('/');
+    return link_arr[0];
+    // return '@' + link_arr[2] + '@' + link_arr[0];
+}
+function bookmarks_input() {
+    var file = all_files['bookmarks.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        var bookmarks = JSON.parse(this.result);
+        for (var i in bookmarks.orderedItems) {
+            var name = link2name(bookmarks.orderedItems[i]);
+            if (my_bookmark[name] == null) {
+                my_bookmark[name] = 1;
+            } else {
+                my_bookmark[name] += 1;
+            }
+        }
+        var order_bookmark = Object.keys(my_bookmark)
+            .sort(function(a,b){return my_bookmark[b] - my_bookmark[a]});
+        var h = '';
+        for (var i in order_bookmark) {
+            h += order_bookmark[i] + '(' + my_bookmark[order_bookmark[i]] + ')<br>';
+        }
+        document.getElementById("most_bookmark").innerHTML = h;
+        my_bookmark = {}; //clear mem
+    });
+    reader.readAsText(file);
+}
+function likes_input() {
+    var file = all_files['likes.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        var likes = JSON.parse(this.result);
+        for (var i in likes.orderedItems) {
+            var name = link2name(likes.orderedItems[i]);
+            if (my_favourite[name] == null) {
+                my_favourite[name] = 1;
+            } else {
+                my_favourite[name] += 1;
+            }
+        }
+        var order_favourite = Object.keys(my_favourite)
+            .sort(function(a,b){return my_favourite[b] - my_favourite[a]});
+        var h = '';
+        for (var i in order_favourite) {
+            h += order_favourite[i] + '(' + my_favourite[order_favourite[i]] + ')<br>';
+        }
+        document.getElementById("most_favourite").innerHTML = h;
+        my_favourite = {}; //clear mem
+    });
+    reader.readAsText(file);
+}
 
 var days_ct;
 function days_diff(start, end) {
@@ -146,40 +245,35 @@ function days_diff(start, end) {
 }
 
 var date_from, date_to;
-document.getElementById("outbox-file-input")
-    .addEventListener("change", function(event) {
-        if (actor == null) {
-            alert('Open actor.json first!\n请先选择 actor.json! ');
-            return 1;
-        }
-        var file = event.target.files[0],
-            reader = new FileReader();
-        reader.addEventListener("load", function() {
-            outbox = JSON.parse(this.result);
-            date_from = document.getElementById("date-input-from");
-            date_to = document.getElementById("date-input-to");
-            var earliest_number = 0;
-            var latest_number = outbox.orderedItems.length - 1;
-            var earliest_date = outbox.orderedItems[earliest_number].published.substring(0,10);
-            var latest_date = outbox.orderedItems[latest_number].published.substring(0,10);
-            date_from.value = earliest_date;
-            date_from.min = earliest_date;
-            date_from.max = latest_date;
-            document.getElementById("date_from").innerHTML = earliest_date;
-            document.getElementById("date_input_from").innerHTML = earliest_date;
-            date_to.value = latest_date;
-            date_to.min = earliest_date;
-            date_to.max = latest_date;
-            document.getElementById("date_to").innerHTML = latest_date;
-            document.getElementById("date_input_to").innerHTML = latest_date;
-            days_ct = days_diff(earliest_date, latest_date);
-            document.getElementById("date_diff").innerHTML = days_ct;
-            document.getElementById("date_input_diff").innerHTML = days_ct;
+function outbox_input() {
+    var file = all_files['outbox.json'].blob,
+        reader = new FileReader();
+    reader.addEventListener("load", function() {
+        outbox = JSON.parse(this.result);
+        date_from = document.getElementById("date-input-from");
+        date_to = document.getElementById("date-input-to");
+        var earliest_number = 0;
+        var latest_number = outbox.orderedItems.length - 1;
+        var earliest_date = offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10);
+        var latest_date = offsetTime(outbox.orderedItems[latest_number].published).substring(0,10);
+        date_from.value = earliest_date;
+        date_from.min = earliest_date;
+        date_from.max = latest_date;
+        document.getElementById("date_from").innerHTML = earliest_date;
+        document.getElementById("date_input_from").innerHTML = earliest_date;
+        date_to.value = latest_date;
+        date_to.min = earliest_date;
+        date_to.max = latest_date;
+        document.getElementById("date_to").innerHTML = latest_date;
+        document.getElementById("date_input_to").innerHTML = latest_date;
+        days_ct = days_diff(earliest_date, latest_date);
+        document.getElementById("date_diff").innerHTML = days_ct;
+        document.getElementById("date_input_diff").innerHTML = days_ct;
 
-            buildArchiveView(outbox, actor);
-        });
-        reader.readAsText(file);
+        buildArchiveView(outbox, actor);
     });
+    reader.readAsText(file);
+}
 
 function deal_with_period(date_from_value, date_to_value) {
     date_from.max = date_to_value;
@@ -196,7 +290,7 @@ function deal_with_period(date_from_value, date_to_value) {
     // deep copy so that the change won't affect the original data.
     let toot;
     for (toot in outbox_operate.orderedItems) {
-        var published_date = new Date(outbox_operate.orderedItems[toot].published.substring(0,10));
+        var published_date = new Date(offsetTime(outbox_operate.orderedItems[toot].published).substring(0,10));
         if (published_date.getTime() < date_from_number.getTime() ||
             published_date.getTime() > date_to_number.getTime()) {
             delete outbox_operate.orderedItems[toot];
@@ -269,8 +363,8 @@ function buildArchiveView(outbox, actor) {
     if (outbox.orderedItems[0] != null) {
         var earliest_number = 0;
         var latest_number = outbox.orderedItems.length - 1;
-        var earliest_date = new Date(outbox.orderedItems[earliest_number].published.substring(0,10));
-        var latest_date = new Date(outbox.orderedItems[latest_number].published.substring(0,10));
+        var earliest_date = new Date(offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10));
+        var latest_date = new Date(offsetTime(outbox.orderedItems[latest_number].published).substring(0,10));
         var earliest_millisec = earliest_date.getTime();
         var latest_millisec = latest_date.getTime();
         for (var i = earliest_millisec; i <= latest_millisec; i += 86400000) {
@@ -284,13 +378,33 @@ function buildArchiveView(outbox, actor) {
             with_reply_ct += 1;
         } else if (outbox.orderedItems[toot].type == "Announce") {
             boost_ct += 1;
-            temp_plot_data[outbox.orderedItems[toot].published.substring(0,10)][2] += 1;
+            temp_plot_data[offsetTime(outbox.orderedItems[toot].published).substring(0,10)][2] += 1;
+            var name = link2name(outbox.orderedItems[toot].object);
+            if (my_boost[name] == null) {
+                my_boost[name] = 1;
+            } else {
+                my_boost[name] += 1;
+            }
         }
     }
     // end prepare
+    var order_boost = Object.keys(my_boost)
+        .sort(function(a,b){return my_boost[b] - my_boost[a]});
+    var h = '';
+    for (var i in order_boost) {
+        h += order_boost[i] + '(' + my_boost[order_boost[i]] + ')<br>';
+    }
+    document.getElementById("most_boost").innerHTML = h;
+    my_boost = {}; //clear mem
 
     function checkIfReply(status) {
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
+            var name = link2name(status.inReplyTo);
+            if (my_reply[name] == null) {
+                my_reply[name] = 1;
+            } else {
+                my_reply[name] += 1;
+            }
             return 1;
         } else {
             return 0;
@@ -309,7 +423,7 @@ function buildArchiveView(outbox, actor) {
         try {
             if (status.to.includes(actor.followers)) {
                 if (status.cc.includes(activitystreams)) {
-                    visibility = '🔓';
+                    visibility = '🔑';
                     unlisted_reply_ct += checkIfReply(status);
                     unlisted_ct += 1;
                     nonreply_ct += (1 - checkIfReply(status));
@@ -350,20 +464,20 @@ function buildArchiveView(outbox, actor) {
             article.querySelector(".status__box")
                 .classList.add("direct");
         } else {
-            temp_plot_data[status.published.substring(0,10)][0] += (1 - checkIfReply(status));
-            temp_plot_data[status.published.substring(0,10)][1] += checkIfReply(status);
+            temp_plot_data[offsetTime(status.published).substring(0,10)][0] += (1 - checkIfReply(status));
+            temp_plot_data[offsetTime(status.published).substring(0,10)][1] += checkIfReply(status);
         }
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
             article.querySelector(".status__box")
                 .classList.add("reply");
         }
 
-        var publish_date = status.published;
+        var publish_date = offsetTime(status.published);
         var publish_month = publish_date.slice(0, 7);
 
         var date_html = '<a class="date" href="' + status.url +
-            '"  target="_blank">' + visibility + ' ' + publish_date.slice(
-                0, 10) + ' ' + publish_date.slice(11, 19) + '</a>';
+            '"  target="_blank">' + visibility + ' <div id="toot_date_time">' + publish_date.slice(
+                0, 10) + ' ' + publish_date.slice(11, 19) + '</div></a>';
         if ((month_cur != publish_month)) {
             date_html = '<a class="date" id="' + publish_month +
                 '" href="' + status.url + '"  target="_blank">' +
@@ -406,6 +520,9 @@ function buildArchiveView(outbox, actor) {
 
             var mediaDiv = article.querySelector(".status__media");
 
+            //
+            //console.log(attachmentUrls)
+            //console.log(attachmentNames)
             for (var i = 0; i < attachmentUrls.length; i++) {
 
                 var url = attachmentUrls[i]
@@ -422,15 +539,16 @@ function buildArchiveView(outbox, actor) {
                         true);
                 }
 
-                var src_img = "media_attachments/" + url.split(
-                        "/media_attachments/")
-                    .pop();
+                var address_img = url.split("/mastodon/")[1];
+                var src_img = URL.createObjectURL(all_files[address_img].blob);
+
                 media.querySelector(".status__media")
                     .src = src_img
                 media.querySelector(".status__media")
                     .onclick = function(src_img) { // insert image inside the modal - use name as a caption
                         var modal = document.getElementById("myModal");
                         var modalImg = document.getElementById("img01");
+                        var captionText = document.getElementById("caption");
                         modal.style.display = "block";
                         modalImg.src = src_img.target.src;
                         if (caption) {
@@ -451,6 +569,14 @@ function buildArchiveView(outbox, actor) {
 
     });
     // console.log(temp_plot_data);
+    var order_reply = Object.keys(my_reply)
+        .sort(function(a,b){return my_reply[b] - my_reply[a]});
+    var h = '';
+    for (var i in order_reply) {
+        h += order_reply[i] + '(' + my_reply[order_reply[i]] + ')<br>';
+    }
+    document.getElementById("most_reply").innerHTML = h;
+    my_reply = {}; //clear mem
 
     // plotting the line graph part
     var lable_array = [],
@@ -645,8 +771,8 @@ function generateTxtFile(text){
 })();
 
 // hide the # of DM
-var secret = document.getElementsByClassName("secret");
 function toggle_show() {
+    var secret = document.getElementsByClassName("secret");
     for (var i = 0; i < secret.length; i++) {
         if (secret[i].style.color == secret[i].style.backgroundColor) {
             secret[i].style.backgroundColor = "";
@@ -654,5 +780,31 @@ function toggle_show() {
             secret[i].style.backgroundColor = secret[i].style.color;
         }
     }
+}
+
+// fold the table
+function toggleFold() {
+    var cell = document.getElementsByClassName("tg-nrit");
+    for (var i = 0; i < cell.length; i++) {
+        cell[i].classList.toggle("cell_hide");
+    }
+}
+
+// set the Time Zone
+var offset = new Date().getTimezoneOffset();
+document.getElementById('timezone_sel').value = - offset / 60;
+
+function setTimeZone(timezone_value) {
+    offset = - timezone_value * 60;
+    if (all_files['outbox.json']) {
+        outbox_input();
+    }
+}
+
+function offsetTime(datetime) {
+    var timeInMillis = Date.parse(datetime);
+    var correctTime = new Date(timeInMillis - offset * 60 * 1000);
+    var correct_datetime = correctTime.toISOString().split('.')[0] + "Z";
+    return correct_datetime;
 }
 

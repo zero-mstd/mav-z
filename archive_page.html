@@ -54,27 +54,63 @@
         </form>
         <p data-i18n="notes">说明：</p>
             <ul>
-                <li><p data-i18n="note.p1">按顺序加载完 <code>actor.json</code> 和 <code>outbox.json</code> 后这个表格会自动生成统计数据.</p></li>
+                <li><p data-i18n="note.p1">先去你的长毛象实例请求你的账户数据存档（设置 - 导入和导出 - 导出）并下载下来，然后直接在下面选择并打开整个 .tar.gz 格式的文件.</p></li>
                 <li><p data-i18n="note.p2">自己回复自己的嘟文算做是原创，显示在“嘟文”那一列里. 这与网页版 Mastodon 是一致的.</p></li>
                 <li><p data-i18n="note.p3">一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条嘟文会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.</p></li>
                 <li><p data-i18n="note.p4">注意：上一条与网页版 Mastodon 并不一致，如果原嘟文被删除，则其回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.</p></li>
-                <li><p data-i18n="note.p5">申请存档中的时间都是格林威治时间，本页面上显示的时间没有做任何处理，加上 8 小时后才得到北京时间.</p></li>
+                <li><p data-i18n="note.p5">本页面会自动读取你的系统时区作为默认时区. 改变时区后嘟文展示与统计都会重新生成，建议先调整好时区再打开存档包.</p></li>
                 <li><p data-i18n="note.p6">表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信. 这个数字可能会大于倒数第四行的“以上两项总计”，初步判断是实例的计数有 bug：删除一条嘟文后，其他实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 有所减少，但有时候自己实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 没有变化. 我觉得非常奇怪，请各位象友指点.</p></li>
                 <li><p data-i18n="note.p7">私信的数量默认隐藏，点击方块的位置可以显示数字，再次点击数字则隐藏.</p></li>
             </ul>
         <section id="loading">
             <div id="div-import-prompt">
+                <div>
+                    <label>
+                        <span data-i18n="timezone"> 时区： </span>
+                        <select id="timezone_sel" onChange="setTimeZone(this.value);">
+                            <option value="-12">GMT-12:00</option>
+                            <option value="-11">GMT-11:00</option>
+                            <option value="-10">GMT-10:00</option>
+                            <option value="-9">GMT-09:00</option>
+                            <option value="-8">GMT-08:00</option>
+                            <option value="-7">GMT-07:00</option>
+                            <option value="-6">GMT-06:00</option>
+                            <option value="-5">GMT-05:00</option>
+                            <option value="-4">GMT-04:00</option>
+                            <option value="-3.5">GMT-03:30</option>
+                            <option value="-3">GMT-03:00</option>
+                            <option value="-2">GMT-02:00</option>
+                            <option value="-1">GMT-01:00</option>
+                            <option value="0">GMT+00:00</option>
+                            <option value="1">GMT+01:00</option>
+                            <option value="2">GMT+02:00</option>
+                            <option value="3">GMT+03:00</option>
+                            <option value="3.5">GMT+03:30</option>
+                            <option value="4">GMT+04:00</option>
+                            <option value="4.5">GMT+04:30</option>
+                            <option value="5">GMT+05:00</option>
+                            <option value="5.5">GMT+05:30</option>
+                            <option value="5.75">GMT+05:45</option>
+                            <option value="6">GMT+06:00</option>
+                            <option value="6.5">GMT+06:30</option>
+                            <option value="7">GMT+07:00</option>
+                            <option value="8">GMT+08:00</option>
+                            <option value="9">GMT+09:00</option>
+                            <option value="9.5">GMT+09:30</option>
+                            <option value="10">GMT+10:00</option>
+                            <option value="11">GMT+11:00</option>
+                            <option value="12">GMT+12:00</option>
+                            <option value="13">GMT+13:00</option>
+                        </select>
+                    </label>
+                </div>
                 <p data-i18n="instruction">
-                    在存档文件夹中选择 <b><code>actor.json</code></b> 和 <b><code>outbox.json</code></b>.
+                    请直接选择你的长毛象存档文件，它的格式应该是 <b><code>archive-xxx.tar.gz</code></b>.
                 </p>
                 <div>
-                    <label id="actor-input">
-                        actor.json
-                        <input accept="application/json" id="actor-file-input" type="file" style="display:none">
-                    </label>
-                    <label id="outbox-input">
-                        outbox.json
-                        <input accept="application/json" id="outbox-file-input" type="file" style="display:none">
+                    <label id="tgz-input">
+                        archive-xxx.tar.gz
+                        <input accept="application/gzip" id="tgz-file-input" type="file" style="display:none">
                     </label>
                     <label>
                         <span data-i18n="from"> 从 </span>
@@ -101,16 +137,18 @@
                 .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
                     font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
                 .tg .tg-nrix{border-color:#fff1e8;text-align:center;vertical-align:middle}
+                .tg .tg-nrit{border-color:#fff1e8;text-align:center;vertical-align:top}
+                .cell_hide{display:none}
             </style>
-            <table class="tg" style="undefined;table-layout: fixed; width: 469px">
+            <table class="tg" style="undefined; table-layout: fixed; width: 943px">
                 <colgroup>
-                    <col style="width: 101px">
-                    <col style="width: 81px">
-                    <col style="width: 81px">
-                    <col style="width: 81px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                    <col style="width: 80px">
+                    <col style="width: 80px">
                     <col style="width: 3px">
-                    <col style="width: 301px">
-                    <col style="width: 301px">
+                    <col style="width: 300px">
+                    <col style="width: 300px">
                 </colgroup>
                 <tbody>
                     <tr>
@@ -176,6 +214,43 @@
                 </tbody>
             </table>
             <div>
+                <p>
+                    <span data-i18n="my">
+                        我与这些站的用户有过互动（括号里的数字表示互动次数）：
+                    </span>
+                    <button onclick="toggleFold()" data-i18n="togglefold">展开/折叠</button>
+                </p>
+                <table class="tg" style="undefined;table-layout: fixed; width: 944px">
+                    <colgroup>
+                        <col style="width: 236px">
+                        <col style="width: 236px">
+                        <col style="width: 236px">
+                        <col style="width: 236px">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="tg-nrix"><span data-i18n="mReply">回复</span></th>
+                            <th class="tg-nrix"><span data-i18n="mBoost">转发</span></th>
+                            <th class="tg-nrix"><span data-i18n="mFavourite">喜欢</span></th>
+                            <th class="tg-nrix"><span data-i18n="mBookmark">收藏</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tg-nrit"><div id="most_reply"></div></td>
+                            <td class="tg-nrit"><div id="most_boost"></div></td>
+                            <td class="tg-nrit"><div id="most_favourite"></div></td>
+                            <td class="tg-nrit"><div id="most_bookmark"></div></td>
+                        </tr>
+                    </tbody>
+</table>
+            </div>
+            <div>
+                <p>
+                    <span data-i18n="trend">
+                        嘟嘟趋势图：
+                    </span>
+                </p>
                 <canvas id="tootChart"></canvas>
             </div>
 
@@ -240,6 +315,8 @@
 
     <script type="text/javascript" src="./assets/chart.js"></script>
     <script type="text/javascript" src="./assets/translator.js"></script>
+    <script type="text/javascript" src="./assets/pako.min.js"></script>
+    <script type="text/javascript" src="./assets/untar.js"></script>
     <script type="text/javascript" src="./assets/main.js"></script>
 </body>
 
