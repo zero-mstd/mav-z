@@ -12,7 +12,8 @@ var i18n_data = {
             'p6': '表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信. 这个数字可能会大于倒数第四行的“以上两项总计”，初步判断是实例的计数有 bug：删除一条嘟文后，其他实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 有所减少，但有时候自己实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 没有变化. 我觉得非常奇怪，请各位象友指点.',
             'p7': '私信的数量默认隐藏，点击方块的位置可以显示数字，再次点击数字则隐藏.',
         },
-        'instruction': '请直接选择你的长毛象存档文件，它的格式应该是 <b><code>archive-xxx.tar.gz</code></b>.',
+        'instruction1': '请直接选择你的长毛象存档文件，它的格式应该是 <b><code>archive-xxx.tar.gz</code></b>.',
+        'instruction2': '请按顺序选择 <b><code>bookmarks.json</code></b>、<b><code>likes.json</code></b>、<b><code>actor.json</code></b>、<b><code>outbox.json</code></b>.',
         'from': ' 从 ',
         'to': ' 至 ',
         'table': {
@@ -47,6 +48,10 @@ var i18n_data = {
         'mBookmark': '收藏',
         'togglefold': '展开/折叠',
         'trend': '嘟嘟趋势图：',
+        'mode': '加载模式：',
+        'auto': '自动',
+        'manual': '手动',
+        'p1ad': '如果选择了手动加载模式，请按顺序加载 bookmarks.json、likes.json、actor.json、outbox.json.',
     },
     'en': {
         'title': 'Mastodon Archive',
@@ -57,11 +62,12 @@ var i18n_data = {
             'p2': 'Self-reply counts as original, and will be shown in the “Toots” column. Same as the Mastodon web side.',
             'p3': 'If the original toot you replied was deleted (may also caused by the account deletion), your reply will become original and be shown in the “Toots” column. As a result, the number of original toots in the table increased, while the number of replies decreased.',
             'p4': 'Note that the behavior described in the previous line is not consistent with the Mastodon web side. Your reply won’t be displayed in the “Toots” column even if the original toot is gone.',
-            'p5': 'This page will automatically detect your system time zone as default. The display will be regenerated and the statistics will be recalculated after you change the time zone, so it is better to adjust the time zone before opening your archieve.',
+            'p5': 'This page will automatically detect your system time zone as default. The display will be regenerated and the statistics will be recalculated after you change the time zone, so it is better to adjust the time zone before opening your archive.',
             'p6': '“The number displayed on the web side” item (in the last row of the table) refers to the number displayed on the left of “Following” number and “Followers” number on the web side of Mastodon. It should count boosts but does not count DMs. In practice, this number is probably greater than the fourth-to-last line in the table, i.e., “Total of the above two (boosts contained, but DMs not)”, I feel very strange about this. My preliminary thought is that there is a bug with the counting of Mastodon, because sometimes when I delete one toot, the <code>statuses_count</code> in <code>api/v1/accounts/id</code> on another instance indeed decreased, while on my own instance, it stay the same. Feel free to tell me if you have a clue.',
             'p7': 'The count of DMs is hidden by default, click to toggle between visible and invisible.',
         },
-        'instruction': 'Choose and open directly the archive file, its file name format should be like <b><code>archive-xxx.tar.gz</code></b>.',
+        'instruction1': 'Choose and open directly the archive file, its file name format should be like <b><code>archive-xxx.tar.gz</code></b>.',
+        'instruction2': 'Choose and open these json files in order: <b><code>bookmarks.json</code></b>, <b><code>likes.json</code></b>, <b><code>actor.json</code></b>, <b><code>outbox.json</code></b>.',
         'from': ' From ',
         'to': ' To ',
         'table': {
@@ -96,6 +102,10 @@ var i18n_data = {
         'mBookmark': 'Bookmark',
         'togglefold': 'fold/unfold',
         'trend': 'The trend of your toot:',
+        'mode': 'Loading mode:',
+        'auto': 'Automatically',
+        'manual': 'Manually',
+        'p1ad': 'If you choose to load your archive manually，please open these files in order: bookmarks.json, likes.json, actor.json, and outbox.json.',
     }
 }
 

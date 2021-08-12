@@ -1,8 +1,21 @@
 'use strict'
+var debug = 1; // 1: debug mod on; 0: debug mod off;
+//
+// Mastodon Archive Viewer (mav-z)
+// Author: Zero
+//
 // i'm both shocked that this works and shocked that the other things i tried didn't
 // same my friend
 var actor = null;
 var outbox = null;
+
+function debugLog(text) {
+    if (debug) {
+        console.log("(" + new Date().toISOString().substr(11,12) + ") " + text);
+    }
+}
+debugLog("(log) debug mod on");
+debugLog("(log) browser: " + navigator.userAgent);
 
 //scroll bar
 //Get the button:
@@ -56,11 +69,13 @@ var my_reply = {},
 
 var all_files = {};
 const take_files = (files) => {
+    debugLog("(log) there are " + files.length + " files in total");
     //console.log(files); // `files` is an array
     let f;
     for (f in files) {
         all_files[files[f].name] = files[f];
     }
+    debugLog("(log) finish untaring");
     //console.log(all_files); // `all_files` is a javascript object, key = file's name
     bookmarks_input();
     likes_input();
@@ -78,12 +93,18 @@ document.getElementById("tgz-file-input")
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
+            debugLog("(log) total: " + this.result.byteLength * 0.000001 + " MB");
+            debugLog("(log) start to untar the .tar.gz file");
             untar(pako.inflate(this.result).buffer).then(take_files);
+            debugLog("(log) untaring the .tar.gz file");
         });
+        debugLog("(log) reading the .tar.gz file");
         reader.readAsArrayBuffer(file);
+        debugLog("(log) finish reading the .tar.gz file");
     });
 
 function actor_input() {
+    debugLog("(log)(actor) start the actor.json part");
     // The js-untar package indeed has a `readAsJSON()` method, see:
     //      https://github.com/InvokIT/js-untar#file-object,
     // which means I should could use the following easier sentence:
@@ -95,8 +116,19 @@ function actor_input() {
 
     var file = all_files['actor.json'].blob,
         reader = new FileReader();
+    if (file) {
+        debugLog("(log)(actor) got actor.json");
+    } else {
+        debugLog("(error)(bookmark) no actor.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(actor) parsing the actor.json");
         actor = JSON.parse(this.result);
+        if (actor.id) {
+            debugLog("(log)(actor) finish parsing the actor.json");
+        } else {
+            debugLog("(error)(actor) no actor.json or no actor.id");
+        }
 
         actor_id = actor.id;
         var accounturl = actor.url,
@@ -108,14 +140,14 @@ function actor_input() {
             avatar_img_address = actor.icon["url"];
             avatar_img = URL.createObjectURL(all_files[avatar_img_addres].blob);
         } catch {
-            console.log("no profile avatar");
+            debugLog("(log)(actor) no profile avatar");
             avatar_img = "assets/avatar.png";
         }
         try {
             header_img_address = actor.image["url"];
             header_img = URL.createObjectURL(all_files[header_img_address].blob);
         } catch {
-            console.log("no profile header image");
+            debugLog("(log)(actor) no profile header image");
             header_img = "assets/header.jpg";
         }
 
@@ -139,8 +171,11 @@ function actor_input() {
             accounturl + '"><img src="' + avatar_img + '"></a>';
         document.getElementById("account__header__content")
             .innerHTML = actor.summary;
+        debugLog("(log)(actor) finish the actor.json part");
     });
+    debugLog("(log)(actor) reading the actor.json");
     reader.readAsText(file);
+    debugLog("(log)(actor) finish reading actor.json");
 }
 
 
@@ -150,10 +185,22 @@ function link2name(link) {
     // return '@' + link_arr[2] + '@' + link_arr[0];
 }
 function bookmarks_input() {
+    debugLog("(log)(bookmark) start the bookmarks.json part");
     var file = all_files['bookmarks.json'].blob,
         reader = new FileReader();
+    if (file) {
+        debugLog("(log)(bookmark) got bookmarks.json");
+    } else {
+        debugLog("(error)(bookmark) no bookmarks.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(bookmark) parsing the bookmarks.json");
         var bookmarks = JSON.parse(this.result);
+        if (bookmarks.orderedItems) {
+            debugLog("(log)(bookmark) finish parsing the bookmarks.json");
+        } else {
+            debugLog("(error)(bookmark) no bookmarks.json or no orderedItems");
+        }
         for (var i in bookmarks.orderedItems) {
             var name = link2name(bookmarks.orderedItems[i]);
             if (my_bookmark[name] == null) {
@@ -169,15 +216,31 @@ function bookmarks_input() {
             h += order_bookmark[i] + '(' + my_bookmark[order_bookmark[i]] + ')<br>';
         }
         document.getElementById("most_bookmark").innerHTML = h;
+        debugLog("(log)(bookmark) finish rendering most bookmark sites");
         my_bookmark = {}; //clear mem
+        debugLog("(log)(bookmark) finish the bookmarks.json part");
     });
+    debugLog("(log)(bookmark) reading the bookmarks.json");
     reader.readAsText(file);
+    debugLog("(log)(bookmark) finish reading bookmarks.json");
 }
 function likes_input() {
+    debugLog("(log)(like) start the likes.json part");
     var file = all_files['likes.json'].blob,
         reader = new FileReader();
+    if (file) {
+        debugLog("(log)(like) got likes.json");
+    } else {
+        debugLog("(error)(like) no likes.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(like) parsing the likes.json");
         var likes = JSON.parse(this.result);
+        if (likes.orderedItems) {
+            debugLog("(log)(like) finish parsing the likes.json");
+        } else {
+            debugLog("(error)(like) no likes.json or no orderedItems");
+        }
         for (var i in likes.orderedItems) {
             var name = link2name(likes.orderedItems[i]);
             if (my_favourite[name] == null) {
@@ -193,9 +256,13 @@ function likes_input() {
             h += order_favourite[i] + '(' + my_favourite[order_favourite[i]] + ')<br>';
         }
         document.getElementById("most_favourite").innerHTML = h;
+        debugLog("(log)(like) finish rendering most favourite sites");
         my_favourite = {}; //clear mem
+        debugLog("(log)(like) finish the likes.json part");
     });
+    debugLog("(log)(like) reading the likes.json");
     reader.readAsText(file);
+    debugLog("(log)(like) finish reading likes.json");
 }
 
 var days_ct;
@@ -207,10 +274,22 @@ function days_diff(start, end) {
 
 var date_from, date_to;
 function outbox_input() {
+    debugLog("(log)(outbox) start the outbox.json part");
     var file = all_files['outbox.json'].blob,
         reader = new FileReader();
+    if (file) {
+        debugLog("(log)(outbox) got outbox.json");
+    } else {
+        debugLog("(error)(outbox) no outbox.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(outbox) parsing the outbox.json");
         outbox = JSON.parse(this.result);
+        if (outbox.orderedItems) {
+            debugLog("(log)(outbox) finish parsing the outbox.json");
+        } else {
+            debugLog("(log)(outbox) no outbox.json or no orderedItems");
+        }
         date_from = document.getElementById("date-input-from");
         date_to = document.getElementById("date-input-to");
         var earliest_number = 0;
@@ -230,10 +309,15 @@ function outbox_input() {
         days_ct = days_diff(earliest_date, latest_date);
         document.getElementById("date_diff").innerHTML = days_ct;
         document.getElementById("date_input_diff").innerHTML = days_ct;
+        debugLog("(log)(outbox) finish rendering the earliest and latest date");
 
+        debugLog("(log)(outbox) passing outbox and actor, start to bulid");
         buildArchiveView(outbox, actor);
+        debugLog("(log)(outbox) finish the outbox.json part");
     });
+    debugLog("(log)(outbox) reading the outbox.json");
     reader.readAsText(file);
+    debugLog("(log)(outbox) finish reading outbox.json");
 }
 
 function deal_with_period(date_from_value, date_to_value) {
@@ -285,14 +369,18 @@ function clear_grid() {
 }
 
 function buildArchiveView(outbox, actor) {
+    debugLog("(log)(build) building satarted");
     clear_grid();
+    debugLog("(log)(build) cleaned the entire page");
     var articleTemplate = document.getElementById("article"),
         articleCWTemplate = document.getElementById("article--CW"),
         videoTemplate = document.getElementById("media-video"),
         imageTemplate = document.getElementById("media-image");
+    debugLog("(log)(build) got 4 templates");
 
     var statuses = outbox.orderedItems.map(item => item.object)
         .filter(object => typeof(object) === typeof({}));
+    debugLog("(log)(build) turned outbox.orderedItems to statuses");
 
     var nonreply_ct = 0,
         with_reply_ct = 0,
@@ -309,6 +397,7 @@ function buildArchiveView(outbox, actor) {
     var month_cur = '',
         month_list = [],
         month_ct = [];
+    debugLog("(log)(build) variables prepared");
 
     // prepare for the plotting
     function millisec_to_date(millisec) {
@@ -319,6 +408,7 @@ function buildArchiveView(outbox, actor) {
     var temp_plot_data = {};
 
     if (outbox.orderedItems[0] != null) {
+        debugLog("(log)(build) start to establish x-axis for the graph");
         var earliest_number = 0;
         var latest_number = outbox.orderedItems.length - 1;
         var earliest_date = new Date(offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10));
@@ -328,6 +418,9 @@ function buildArchiveView(outbox, actor) {
         for (var i = earliest_millisec; i <= latest_millisec; i += 86400000) {
             temp_plot_data[millisec_to_date(i)] = [0, 0, 0]; // toots, replies, boosts
         }
+        debugLog("(log)(build) established x-axis for the graph");
+    } else {
+        debugLog("(error)(build) unable to establish x-axis for the graph");
     }
 
     let toot;
@@ -345,6 +438,7 @@ function buildArchiveView(outbox, actor) {
             }
         }
     }
+    debugLog("(log)(build) finish preparing boost data");
     // end prepare
     var order_boost = Object.keys(my_boost)
         .sort(function(a,b){return my_boost[b] - my_boost[a]});
@@ -353,6 +447,7 @@ function buildArchiveView(outbox, actor) {
         h += order_boost[i] + '(' + my_boost[order_boost[i]] + ')<br>';
     }
     document.getElementById("most_boost").innerHTML = h;
+    debugLog("(log)(build) finish rendering most boost sites");
     my_boost = {}; //clear mem
 
     function checkIfReply(status) {
@@ -369,6 +464,7 @@ function buildArchiveView(outbox, actor) {
         }
     }
 
+    debugLog("(log)(build) start reading and dealing toots one by one");
     statuses.forEach((status) => {
         // check visibility
 
@@ -505,6 +601,7 @@ function buildArchiveView(outbox, actor) {
             .appendChild(article);
 
     });
+    debugLog("(log)(build) finish reading and dealing toots one by one");
     // console.log(temp_plot_data);
     var order_reply = Object.keys(my_reply)
         .sort(function(a,b){return my_reply[b] - my_reply[a]});
@@ -513,8 +610,10 @@ function buildArchiveView(outbox, actor) {
         h += order_reply[i] + '(' + my_reply[order_reply[i]] + ')<br>';
     }
     document.getElementById("most_reply").innerHTML = h;
+    debugLog("(log)(build) finish rendering most reply sites");
     my_reply = {}; //clear mem
 
+    debugLog("(log)(build) prepare for the graph plotting");
     // plotting the line graph part
     var lable_array = [],
         toots_array = [],
@@ -557,12 +656,15 @@ function buildArchiveView(outbox, actor) {
         datasets: [dataToots, dataReplies, dataBoosts]
     };
 
+    debugLog("(log)(build) start plotting");
     lineChart = new Chart(tootCanvas, {
         type: 'line',
         data: tootData
     });
+    debugLog("(log)(build) finish plotting");
     // end of plotting
 
+    debugLog("(log)(build) start to render the table");
     document.getElementById("nonreply_ct").innerHTML = nonreply_ct.toString();
     document.getElementById("with_reply_ct").innerHTML = with_reply_ct.toString();
     document.getElementById("mediatoot_ct").innerHTML = mediatoot_ct.toString();
@@ -587,8 +689,9 @@ function buildArchiveView(outbox, actor) {
     document.getElementById("overviews_boost_a").innerHTML = (boost_ct / days_ct).toFixed(2).toString();
     document.getElementById("overviews_display").innerHTML = outbox.totalItems.toString();
     document.getElementById("overviews_without_reply_and_boost").innerHTML = (public_ct + unlisted_ct + followers_only_ct + boost_ct).toString();
+    debugLog("(log)(build) finish rendering the table");
 
-
+    debugLog("(log)(build) prepare for the index part");
     var month_section_html = '';
     var yr_last = '';
     var yr_cur = '';
@@ -608,7 +711,9 @@ function buildArchiveView(outbox, actor) {
     month_section_html += '</details>';
     document.getElementById("month_section_html")
         .innerHTML = month_section_html;
+    debugLog("(log)(build) fiinsh rendering the index part");
 
+    debugLog("(log)(build) finish the build");
 }
 
 function clicktoots() {
@@ -680,10 +785,12 @@ function toggleFold() {
 
 // set the Time Zone
 var offset = new Date().getTimezoneOffset();
+debugLog("(log) get time zone offset: " + offset);
 document.getElementById('timezone_sel').value = - offset / 60;
 
 function setTimeZone(timezone_value) {
     offset = - timezone_value * 60;
+    debugLog("(log) time zone offset changed: " + offset);
     if (all_files['outbox.json']) {
         outbox_input();
     }
@@ -696,3 +803,34 @@ function offsetTime(datetime) {
     return correct_datetime;
 }
 
+// switchMode
+document.getElementById('mode').value = 'auto';
+var load_mode = 'auto';
+check_mode(load_mode);
+debugLog("(log) the loading mode is: auto");
+
+function switchMode(mode) {
+    load_mode = mode;
+    debugLog("(log) the loading mode is switched to: " + load_mode);
+    check_mode(load_mode);
+}
+
+function check_mode(mode) {
+    if (mode == 'auto'){
+        document.getElementById('instruction2').style.display = "none";
+        document.getElementById('bookmarks-input').style.display = "none";
+        document.getElementById('likes-input').style.display = "none";
+        document.getElementById('actor-input').style.display = "none";
+        document.getElementById('outbox-input').style.display = "none";
+        document.getElementById('instruction1').style.display = "inline-block";
+        document.getElementById('tgz-input').style.display = "inline-block";
+    } else if (mode == 'manual') {
+        document.getElementById('instruction1').style.display = "none";
+        document.getElementById('tgz-input').style.display = "none";
+        document.getElementById('instruction2').style.display = "inline-block";
+        document.getElementById('bookmarks-input').style.display = "inline-block";
+        document.getElementById('likes-input').style.display = "inline-block";
+        document.getElementById('actor-input').style.display = "inline-block";
+        document.getElementById('outbox-input').style.display = "inline-block";
+    }
+}

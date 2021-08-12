@@ -1,10 +1,10 @@
-# Mastodon Archive Viewer - Zero's fork
+# Mastodon Archive Viewer - Zero’s fork
 
 An offline web page to view a [Mastodon](https://joinmastodon.org) archive. It gives a powerful data table to tell you what the composition of all your toots is. There is also a line graph telling you the tooting trend. You can select a period of time to view.
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/zero-mstd/figure-bed@master/mav-z_screenshot_2.png "Screenshot of this tool")
 
-The branch "exhibition" is for my season's toots exhibition.
+The branch “exhibition” is for my season’s toots exhibition.
 
 ## Features (and changelog):
 * original, Dizzy
@@ -35,7 +35,7 @@ The branch "exhibition" is for my season's toots exhibition.
 * 04/19/2021, Zero
     * added a date selector, then one can choose a specific period of time to view
 * 04/20/2021, Zero
-    * fixed the wrong number of "Toots and replies"
+    * fixed the wrong number of “Toots and replies”
     * added a statistical table to show the numbers of all kinds of toots
 * 04/22/2021, Zero
     * added a favicon.ico
@@ -43,7 +43,7 @@ The branch "exhibition" is for my season's toots exhibition.
     * added more information to the table
     * finished the function of date selector! Hooray!
 * 04/29/2021, Zero
-    * self-reply is no longer counted as a reply, so they would show in "Toots" column
+    * self-reply is no longer counted as a reply, so they would show in “Toots” column
 * 04/30/2021, Zero
     * ask users to load actor.json first
 * 05/02/2021, Zero
@@ -57,10 +57,13 @@ The branch "exhibition" is for my season's toots exhibition.
     * no need to unzip `archive-xxx.tar.gz` file anymore, just select directly the archive file in browser, then everything should be fine. This feature benefits from [pako](https://github.com/nodeca/pako) and [js-untar](https://github.com/InvokIT/js-untar), which are greatly appreciated. (and this [code](https://stackoverflow.com/a/65448758) provides an out-of-the-box idea)
     * add the time zone feature, use your system time zone by default, and can be customized.
 * 08/11/2021, Zero
-    * tell you the fedi sites whose users you usually interacted with. At first I want to show the users you most interacted with, but the toots of [pleroma](https://pleroma.social) users in `likes.json` and `bookmarks.json` don't have a link formated as `https://<mastodon.example.com>/users/<username>/statuses/<status_id>`, they are like `https://<pleroma.example.com>/objects/<object-id>`. It is not fair to exclude them.
+    * tell you the fedi sites whose users you usually interacted with. At first I want to show the users you most interacted with, but the toots of [pleroma](https://pleroma.social) users in `likes.json` and `bookmarks.json` don’t have a link formated as `https://<mastodon.example.com>/users/<username>/statuses/<status_id>`, they are like `https://<pleroma.example.com>/objects/<object-id>`. It is not fair to exclude them.
+* 08/13/2021, Zero
+    * add debug mod
+    * give back the individually json file select mode (called “manually” loading mode)
 
 ## Usage
-Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archieve, there you go.
+Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
 
 ### Linux
 First go to your Mastodon instance, request an archive of your toots and uploaded media (Settings - Import and export - Data export), and download your archive. Then:
@@ -82,10 +85,10 @@ $ firefox archive_page.html
 ## Next steps:
 - [x] separate page on only toots & media
 	- [x] make medias easier to view
-	- [x] click to open pictures (why `addEventListener click` didn't work...)
+	- [x] click to open pictures (why `addEventListener click` didn’t work...)
 - [ ] prettier interface
 - [x] select a period of toots
-- [x]  (branch: exhibition) assistant for my season's exhibition
+- [x]  (branch: exhibition) assistant for my season’s exhibition
 - [x] open the .tar.gz directly
 - [x] the display of vedio problem, width out of box
 - [ ] add reverse mode to view all toots
