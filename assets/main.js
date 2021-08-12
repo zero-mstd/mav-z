@@ -77,10 +77,10 @@ const take_files = (files) => {
     }
     debugLog("(log) finish untaring");
     //console.log(all_files); // `all_files` is a javascript object, key = file's name
-    bookmarks_input();
-    likes_input();
-    actor_input();
-    outbox_input();
+    bookmarks_input(all_files['bookmarks.json'].blob);
+    likes_input(all_files['likes.json'].blob);
+    actor_input(all_files['actor.json'].blob);
+    outbox_input(all_files['outbox.json'].blob);
 };
 
 document.getElementById("tgz-file-input")
@@ -103,7 +103,32 @@ document.getElementById("tgz-file-input")
         debugLog("(log) finish reading the .tar.gz file");
     });
 
-function actor_input() {
+document.getElementById("bookmarks-file-input")
+    .addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        bookmarks_input(file);
+    });
+document.getElementById("likes-file-input")
+    .addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        likes_input(file);
+    });
+document.getElementById("actor-file-input")
+    .addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        actor_input(file);
+    });
+document.getElementById("outbox-file-input")
+    .addEventListener("change", function(event) {
+        if (actor == null) {
+            alert('Open actor.json first!\n请先选择 actor.json! ');
+            return 1;
+        }
+        var file = event.target.files[0];
+        outbox_input(file);
+    });
+
+function actor_input(file) {
     debugLog("(log)(actor) start the actor.json part");
     // The js-untar package indeed has a `readAsJSON()` method, see:
     //      https://github.com/InvokIT/js-untar#file-object,
@@ -114,8 +139,7 @@ function actor_input() {
     // So, I have to use the more complex way (.blob),
     // and it is the same situation about `{outbox|bookmarks|likes}_input` function.
 
-    var file = all_files['actor.json'].blob,
-        reader = new FileReader();
+    var reader = new FileReader();
     if (file) {
         debugLog("(log)(actor) got actor.json");
     } else {
@@ -130,64 +154,78 @@ function actor_input() {
             debugLog("(error)(actor) no actor.json or no actor.id");
         }
 
-        actor_id = actor.id;
-        var accounturl = actor.url,
-            url_sp = accounturl.split("/"),
-            id = url_sp[3] + '@' + url_sp[2];
-
-        var avatar_img, header_img = ''
-        try {
-            avatar_img_address = actor.icon["url"];
-            avatar_img = URL.createObjectURL(all_files[avatar_img_addres].blob);
-        } catch {
-            debugLog("(log)(actor) no profile avatar");
-            avatar_img = "assets/avatar.png";
-        }
-        try {
-            header_img_address = actor.image["url"];
-            header_img = URL.createObjectURL(all_files[header_img_address].blob);
-        } catch {
-            debugLog("(log)(actor) no profile header image");
-            header_img = "assets/header.jpg";
-        }
-
-        var header_fields = '';
-        actor.attachment.forEach((item) => {
-            header_fields += '<dl><dt>' + item.name +
-                '</dt><dd><span>' + item.value +
-                '</span></dd></dl>'
-        });
-        document.getElementById("account__header__fields")
-            .innerHTML = header_fields;
-        document.getElementById("public-account-header__image")
-            .innerHTML = '<img class="parallax" src="' +
-            header_img +
-            '" style="transform: translate3d(0px, 0px, 0px);">';
-        document.getElementById("account__header__tabs__name")
-            .innerHTML = '<h1><span>' + actor.name +
-            '</span><small>' + id + '</small></h1>'
-        document.getElementById("public-account-header__bar")
-            .innerHTML = '<a class="avatar" href="' +
-            accounturl + '"><img src="' + avatar_img + '"></a>';
-        document.getElementById("account__header__content")
-            .innerHTML = actor.summary;
-        debugLog("(log)(actor) finish the actor.json part");
+        deal_with_actor(actor);
     });
     debugLog("(log)(actor) reading the actor.json");
     reader.readAsText(file);
     debugLog("(log)(actor) finish reading actor.json");
 }
+function deal_with_actor(actor) {
+    actor_id = actor.id;
+    var accounturl = actor.url,
+        url_sp = accounturl.split("/"),
+        id = url_sp[3] + '@' + url_sp[2];
 
+    var avatar_img, header_img = ''
+    try {
+        avatar_img_address = actor.icon["url"];
+        if (load_mode == 'auto') {
+            avatar_img = URL.createObjectURL(all_files[avatar_img_addres].blob);
+        } else if (load_mode == 'manual') {
+            avatar_img = avatar_img_address;
+        }
+    } catch {
+        debugLog("(log)(actor) no profile avatar");
+        avatar_img = "assets/avatar.png";
+    }
+    try {
+        header_img_address = actor.image["url"];
+        if (load_mode == 'auto') {
+            header_img = URL.createObjectURL(all_files[header_img_address].blob);
+        } else if (load_mode == 'manual') {
+            header_img = header_img_address;
+        }
+    } catch {
+        debugLog("(log)(actor) no profile header image");
+        header_img = "assets/header.jpg";
+    }
 
-function link2name(link) {
-    var link_arr = link.substr(8).split('/');
-    return link_arr[0];
-    // return '@' + link_arr[2] + '@' + link_arr[0];
+    var header_fields = '';
+    actor.attachment.forEach((item) => {
+        header_fields += '<dl><dt>' + item.name +
+            '</dt><dd><span>' + item.value +
+            '</span></dd></dl>'
+    });
+    document.getElementById("account__header__fields")
+        .innerHTML = header_fields;
+    document.getElementById("public-account-header__image")
+        .innerHTML = '<img class="parallax" src="' +
+        header_img +
+        '" style="transform: translate3d(0px, 0px, 0px);">';
+    document.getElementById("account__header__tabs__name")
+        .innerHTML = '<h1><span>' + actor.name +
+        '</span><small>' + id + '</small></h1>'
+    document.getElementById("public-account-header__bar")
+        .innerHTML = '<a class="avatar" href="' +
+        accounturl + '"><img src="' + avatar_img + '"></a>';
+    document.getElementById("account__header__content")
+        .innerHTML = actor.summary;
+    debugLog("(log)(actor) finish the actor.json part");
 }
-function bookmarks_input() {
+
+function link2name(link, stage) {
+    try {
+        var link_arr = link.split('/');
+        return link_arr[2];
+        // return '@' + link_arr[2] + '@' + link_arr[0];
+    } catch {
+        debugLog("(error)(link2name) cannot extract site’s name from this link: " + link + ", when deal with " + stage);
+    }
+}
+
+function bookmarks_input(file) {
     debugLog("(log)(bookmark) start the bookmarks.json part");
-    var file = all_files['bookmarks.json'].blob,
-        reader = new FileReader();
+    var reader = new FileReader();
     if (file) {
         debugLog("(log)(bookmark) got bookmarks.json");
     } else {
@@ -201,33 +239,37 @@ function bookmarks_input() {
         } else {
             debugLog("(error)(bookmark) no bookmarks.json or no orderedItems");
         }
-        for (var i in bookmarks.orderedItems) {
-            var name = link2name(bookmarks.orderedItems[i]);
-            if (my_bookmark[name] == null) {
-                my_bookmark[name] = 1;
-            } else {
-                my_bookmark[name] += 1;
-            }
-        }
-        var order_bookmark = Object.keys(my_bookmark)
-            .sort(function(a,b){return my_bookmark[b] - my_bookmark[a]});
-        var h = '';
-        for (var i in order_bookmark) {
-            h += order_bookmark[i] + '(' + my_bookmark[order_bookmark[i]] + ')<br>';
-        }
-        document.getElementById("most_bookmark").innerHTML = h;
-        debugLog("(log)(bookmark) finish rendering most bookmark sites");
-        my_bookmark = {}; //clear mem
-        debugLog("(log)(bookmark) finish the bookmarks.json part");
+
+        deal_with_bookmarks(bookmarks);
     });
     debugLog("(log)(bookmark) reading the bookmarks.json");
     reader.readAsText(file);
     debugLog("(log)(bookmark) finish reading bookmarks.json");
 }
-function likes_input() {
+function deal_with_bookmarks(bookmarks) {
+    for (var i in bookmarks.orderedItems) {
+        var name = link2name(bookmarks.orderedItems[i], 'bookmarks');
+        if (my_bookmark[name] == null) {
+            my_bookmark[name] = 1;
+        } else {
+            my_bookmark[name] += 1;
+        }
+    }
+    var order_bookmark = Object.keys(my_bookmark)
+        .sort(function(a,b){return my_bookmark[b] - my_bookmark[a]});
+    var h = '';
+    for (var i in order_bookmark) {
+        h += order_bookmark[i] + '(' + my_bookmark[order_bookmark[i]] + ')<br>';
+    }
+    document.getElementById("most_bookmark").innerHTML = h;
+    debugLog("(log)(bookmark) finish rendering most bookmark sites");
+    my_bookmark = {}; //clear mem
+    debugLog("(log)(bookmark) finish the bookmarks.json part");
+}
+
+function likes_input(file) {
     debugLog("(log)(like) start the likes.json part");
-    var file = all_files['likes.json'].blob,
-        reader = new FileReader();
+    var reader = new FileReader();
     if (file) {
         debugLog("(log)(like) got likes.json");
     } else {
@@ -241,28 +283,31 @@ function likes_input() {
         } else {
             debugLog("(error)(like) no likes.json or no orderedItems");
         }
-        for (var i in likes.orderedItems) {
-            var name = link2name(likes.orderedItems[i]);
-            if (my_favourite[name] == null) {
-                my_favourite[name] = 1;
-            } else {
-                my_favourite[name] += 1;
-            }
-        }
-        var order_favourite = Object.keys(my_favourite)
-            .sort(function(a,b){return my_favourite[b] - my_favourite[a]});
-        var h = '';
-        for (var i in order_favourite) {
-            h += order_favourite[i] + '(' + my_favourite[order_favourite[i]] + ')<br>';
-        }
-        document.getElementById("most_favourite").innerHTML = h;
-        debugLog("(log)(like) finish rendering most favourite sites");
-        my_favourite = {}; //clear mem
-        debugLog("(log)(like) finish the likes.json part");
+        deal_with_likes(likes);
     });
     debugLog("(log)(like) reading the likes.json");
     reader.readAsText(file);
     debugLog("(log)(like) finish reading likes.json");
+}
+function deal_with_likes(likes) {
+    for (var i in likes.orderedItems) {
+        var name = link2name(likes.orderedItems[i], 'likes');
+        if (my_favourite[name] == null) {
+            my_favourite[name] = 1;
+        } else {
+            my_favourite[name] += 1;
+        }
+    }
+    var order_favourite = Object.keys(my_favourite)
+        .sort(function(a,b){return my_favourite[b] - my_favourite[a]});
+    var h = '';
+    for (var i in order_favourite) {
+        h += order_favourite[i] + '(' + my_favourite[order_favourite[i]] + ')<br>';
+    }
+    document.getElementById("most_favourite").innerHTML = h;
+    debugLog("(log)(like) finish rendering most favourite sites");
+    my_favourite = {}; //clear mem
+    debugLog("(log)(like) finish the likes.json part");
 }
 
 var days_ct;
@@ -273,10 +318,9 @@ function days_diff(start, end) {
 }
 
 var date_from, date_to;
-function outbox_input() {
+function outbox_input(file) {
     debugLog("(log)(outbox) start the outbox.json part");
-    var file = all_files['outbox.json'].blob,
-        reader = new FileReader();
+    var reader = new FileReader();
     if (file) {
         debugLog("(log)(outbox) got outbox.json");
     } else {
@@ -290,34 +334,37 @@ function outbox_input() {
         } else {
             debugLog("(log)(outbox) no outbox.json or no orderedItems");
         }
-        date_from = document.getElementById("date-input-from");
-        date_to = document.getElementById("date-input-to");
-        var earliest_number = 0;
-        var latest_number = outbox.orderedItems.length - 1;
-        var earliest_date = offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10);
-        var latest_date = offsetTime(outbox.orderedItems[latest_number].published).substring(0,10);
-        date_from.value = earliest_date;
-        date_from.min = earliest_date;
-        date_from.max = latest_date;
-        document.getElementById("date_from").innerHTML = earliest_date;
-        document.getElementById("date_input_from").innerHTML = earliest_date;
-        date_to.value = latest_date;
-        date_to.min = earliest_date;
-        date_to.max = latest_date;
-        document.getElementById("date_to").innerHTML = latest_date;
-        document.getElementById("date_input_to").innerHTML = latest_date;
-        days_ct = days_diff(earliest_date, latest_date);
-        document.getElementById("date_diff").innerHTML = days_ct;
-        document.getElementById("date_input_diff").innerHTML = days_ct;
-        debugLog("(log)(outbox) finish rendering the earliest and latest date");
-
-        debugLog("(log)(outbox) passing outbox and actor, start to bulid");
-        buildArchiveView(outbox, actor);
-        debugLog("(log)(outbox) finish the outbox.json part");
+        deal_with_outbox(outbox);
     });
     debugLog("(log)(outbox) reading the outbox.json");
     reader.readAsText(file);
     debugLog("(log)(outbox) finish reading outbox.json");
+}
+function deal_with_outbox(outbox) {
+    date_from = document.getElementById("date-input-from");
+    date_to = document.getElementById("date-input-to");
+    var earliest_number = 0;
+    var latest_number = outbox.orderedItems.length - 1;
+    var earliest_date = offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10);
+    var latest_date = offsetTime(outbox.orderedItems[latest_number].published).substring(0,10);
+    date_from.value = earliest_date;
+    date_from.min = earliest_date;
+    date_from.max = latest_date;
+    document.getElementById("date_from").innerHTML = earliest_date;
+    document.getElementById("date_input_from").innerHTML = earliest_date;
+    date_to.value = latest_date;
+    date_to.min = earliest_date;
+    date_to.max = latest_date;
+    document.getElementById("date_to").innerHTML = latest_date;
+    document.getElementById("date_input_to").innerHTML = latest_date;
+    days_ct = days_diff(earliest_date, latest_date);
+    document.getElementById("date_diff").innerHTML = days_ct;
+    document.getElementById("date_input_diff").innerHTML = days_ct;
+    debugLog("(log)(outbox) finish rendering the earliest and latest date");
+
+    debugLog("(log)(outbox) passing outbox and actor, start to bulid");
+    buildArchiveView(outbox, actor);
+    debugLog("(log)(outbox) finish the outbox.json part");
 }
 
 function deal_with_period(date_from_value, date_to_value) {
@@ -430,7 +477,7 @@ function buildArchiveView(outbox, actor) {
         } else if (outbox.orderedItems[toot].type == "Announce") {
             boost_ct += 1;
             temp_plot_data[offsetTime(outbox.orderedItems[toot].published).substring(0,10)][2] += 1;
-            var name = link2name(outbox.orderedItems[toot].object);
+            var name = link2name(outbox.orderedItems[toot].object, 'boost');
             if (my_boost[name] == null) {
                 my_boost[name] = 1;
             } else {
@@ -452,7 +499,7 @@ function buildArchiveView(outbox, actor) {
 
     function checkIfReply(status) {
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
-            var name = link2name(status.inReplyTo);
+            var name = link2name(status.inReplyTo, 'reply');
             if (my_reply[name] == null) {
                 my_reply[name] = 1;
             } else {
@@ -499,7 +546,7 @@ function buildArchiveView(outbox, actor) {
                 nonreply_ct += (1 - checkIfReply(status));
             }
         } catch {
-            console.log('grabing visibility failed');
+            debugLog("(log)(build) grabing visibility failed for this toot: " + status.url);
             visibility = '';
         }
 
@@ -573,7 +620,11 @@ function buildArchiveView(outbox, actor) {
                 }
 
                 var address_img = url.split("/mastodon/")[1];
-                var src_img = URL.createObjectURL(all_files[address_img].blob);
+                if (load_mode == 'auto') {
+                    var src_img = URL.createObjectURL(all_files[address_img].blob);
+                } else if (load_mode == 'manual') {
+                    var src_img = address_img;
+                }
 
                 media.querySelector(".status__media")
                     .src = src_img
@@ -834,3 +885,4 @@ function check_mode(mode) {
         document.getElementById('outbox-input').style.display = "inline-block";
     }
 }
+
