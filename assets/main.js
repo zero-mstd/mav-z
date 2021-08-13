@@ -768,45 +768,53 @@ function buildArchiveView(outbox, actor) {
 }
 
 function clicktoots() {
-    var sts = document.getElementsByClassName("status__box reply");
+    var sts = document.getElementsByClassName("status__box");
     for (var index = 0; index < sts.length; index++) {
-        var status = sts[index]
-        status.style.display = "none";
-        document.getElementById("toots")
-            .classList.add("active");
-        document.getElementById("tootsNreplies")
-            .classList.remove("active");
-        document.getElementById("mediatoots")
-            .classList.remove("active");
+        var status = sts[index];
+        if (status.classList.contains("reply")) {
+            status.style.display = "none";
+        } else {
+            status.style.display = "block";
+        }
     }
+    document.getElementById("toots")
+        .classList.add("active");
+    document.getElementById("tootsNreplies")
+        .classList.remove("active");
+    document.getElementById("mediatoots")
+        .classList.remove("active");
 }
 
 function clicktootsNreplies() {
     var sts = document.getElementsByClassName("status__box");
     for (var index = 0; index < sts.length; index++) {
-        var status = sts[index]
+        var status = sts[index];
         status.style.display = "block";
-        document.getElementById("toots")
-            .classList.remove("active");
-        document.getElementById("tootsNreplies")
-            .classList.add("active");
-        document.getElementById("mediatoots")
-            .classList.remove("active");
     }
+    document.getElementById("toots")
+        .classList.remove("active");
+    document.getElementById("tootsNreplies")
+        .classList.add("active");
+    document.getElementById("mediatoots")
+        .classList.remove("active");
 }
 
 function clicktootsmedia() {
-    var sts = document.getElementsByClassName("status__box nonmedia");
+    var sts = document.getElementsByClassName("status__box");
     for (var index = 0; index < sts.length; index++) {
-        var status = sts[index]
-        status.style.display = "none";
-        document.getElementById("toots")
-            .classList.remove("active");
-        document.getElementById("tootsNreplies")
-            .classList.remove("active");
-        document.getElementById("mediatoots")
-            .classList.add("active");
+        var status = sts[index];
+        if (status.classList.contains("nonmedia")) {
+            status.style.display = "none";
+        } else {
+            status.style.display = "block";
+        }
     }
+    document.getElementById("toots")
+        .classList.remove("active");
+    document.getElementById("tootsNreplies")
+        .classList.remove("active");
+    document.getElementById("mediatoots")
+        .classList.add("active");
 }
 
 function clickcloseimg() {

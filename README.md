@@ -61,6 +61,7 @@ The branch “exhibition” is for my season’s toots exhibition.
 * 08/13/2021, Zero
     * add debug mod
     * give back the individually json file select mode (called “manually” loading mode)
+    * fix the bug that not showing all supposed to shown when click “mediatoots” column from “toots” column or vice versa
 
 ## Usage
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
