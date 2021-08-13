@@ -57,7 +57,7 @@ The branch “exhibition” is a tool for [my season’s toots exhibition](https
 * 04/29/2021, Zero
     * self-reply is no longer counted as a reply, so they would show in “Toots” column
 * 04/30/2021, Zero
-    * * (branch: exhibition) finish the season’s exhibition selector function
+    * (branch: exhibition) finish the season’s exhibition selector function
     * ask users to load actor.json first
 * 05/02/2021, Zero
     * finish the line graph function, thanks to [chart.js](https://www.chartjs.org/)
