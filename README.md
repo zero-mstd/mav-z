@@ -6,10 +6,10 @@ An offline web page to view a [Mastodon](https://joinmastodon.org) archive. It g
 
 ## The exhibition branch
 
-The branch “exhibition” is a tool for [my season's toots exhibition](https://zero-mstd.netlify.app/exhibition/). This part is not completely i18n yet because I believe that not many people have the same needs. But anyway, here is my process when I using it, in case someone need it:
+The branch “exhibition” is a tool for [my season’s toots exhibition](https://zero-mstd.netlify.app/exhibition/). This part is not completely i18n yet because I believe that not many people have the same needs. But anyway, here is my process when I using it, in case someone need it:
 
-1. Just like the “master” branch, I open this tool and choose my archieve;
-2. According to the date range of the “exhibition's season”, I set the date range of toots;
+1. Just like the “master” branch, I open this tool and choose my archive;
+2. According to the date range of the “exhibition’s season”, I set the date range of toots;
 3. I read my toots one by one, and decide whether to give it a chance to be exhibited;
 4. For those I want to exhibit, I hit the drop-down menu, and select a proper section for it;
 5. If there currently does not have a proper section, I hit the “add a section (添加分区)”, and set its name (“请输入标题”) and description (“请输入一小段描述”) in the pop-up window;
@@ -58,7 +58,7 @@ The branch “exhibition” is a tool for [my season's toots exhibition](https:/
 * 04/29/2021, Zero
     * self-reply is no longer counted as a reply, so they would show in "Toots" column
 * 04/30/2021, Zero
-    * * (branch: exhibition) finish the season's exhibition selector function
+    * * (branch: exhibition) finish the season’s exhibition selector function
     * ask users to load actor.json first
 * 05/02/2021, Zero
     * finish the line graph function, thanks to [chart.js](https://www.chartjs.org/)
