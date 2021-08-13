@@ -1,8 +1,21 @@
 'use strict'
+var debug = 0; // 1: debug mode on; 0: debug mode off;
+//
+// Mastodon Archive Viewer (mav-z)
+// Author: Zero
+//
 // i'm both shocked that this works and shocked that the other things i tried didn't
 // same my friend
 var actor = null;
 var outbox = null;
+
+function debugLog(text) {
+    if (debug) {
+        console.log("(" + new Date().toISOString().substr(11,12) + ") " + text);
+    }
+}
+debugLog("(log) debug mode on");
+debugLog("(log) browser: " + navigator.userAgent);
 
 //scroll bar
 //Get the button:
@@ -95,16 +108,18 @@ var my_reply = {},
 
 var all_files = {};
 const take_files = (files) => {
+    debugLog("(log) there are " + files.length + " files in total");
     //console.log(files); // `files` is an array
     let f;
     for (f in files) {
         all_files[files[f].name] = files[f];
     }
+    debugLog("(log) finish untaring");
     //console.log(all_files); // `all_files` is a javascript object, key = file's name
-    bookmarks_input();
-    likes_input();
-    actor_input();
-    outbox_input();
+    bookmarks_input(all_files['bookmarks.json'].blob);
+    likes_input(all_files['likes.json'].blob);
+    actor_input(all_files['actor.json'].blob);
+    outbox_input(all_files['outbox.json'].blob);
 };
 
 document.getElementById("tgz-file-input")
@@ -117,12 +132,43 @@ document.getElementById("tgz-file-input")
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
+            debugLog("(log) total: " + this.result.byteLength * 0.000001 + " MB");
+            debugLog("(log) start to untar the .tar.gz file");
             untar(pako.inflate(this.result).buffer).then(take_files);
+            debugLog("(log) untaring the .tar.gz file");
         });
+        debugLog("(log) reading the .tar.gz file");
         reader.readAsArrayBuffer(file);
+        debugLog("(log) finish reading the .tar.gz file");
     });
 
-function actor_input() {
+document.getElementById("bookmarks-file-input")
+    .addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        bookmarks_input(file);
+    });
+document.getElementById("likes-file-input")
+    .addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        likes_input(file);
+    });
+document.getElementById("actor-file-input")
+    .addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        actor_input(file);
+    });
+document.getElementById("outbox-file-input")
+    .addEventListener("change", function(event) {
+        if (actor == null) {
+            alert('Open actor.json first!\n请先选择 actor.json! ');
+            return 1;
+        }
+        var file = event.target.files[0];
+        outbox_input(file);
+    });
+
+function actor_input(file) {
+    debugLog("(log)(actor) start the actor.json part");
     // The js-untar package indeed has a `readAsJSON()` method, see:
     //      https://github.com/InvokIT/js-untar#file-object,
     // which means I should could use the following easier sentence:
@@ -132,109 +178,175 @@ function actor_input() {
     // So, I have to use the more complex way (.blob),
     // and it is the same situation about `{outbox|bookmarks|likes}_input` function.
 
-    var file = all_files['actor.json'].blob,
-        reader = new FileReader();
+    var reader = new FileReader();
+    if (file) {
+        debugLog("(log)(actor) got actor.json");
+    } else {
+        debugLog("(error)(bookmark) no actor.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(actor) parsing the actor.json");
         actor = JSON.parse(this.result);
+        if (actor.id) {
+            debugLog("(log)(actor) finish parsing the actor.json");
+        } else {
+            debugLog("(error)(actor) no actor.json or no actor.id");
+        }
 
-        actor_id = actor.id;
-        var accounturl = actor.url,
-            url_sp = accounturl.split("/"),
-            id = url_sp[3] + '@' + url_sp[2];
+        deal_with_actor(actor);
+    });
+    debugLog("(log)(actor) reading the actor.json");
+    reader.readAsText(file);
+    debugLog("(log)(actor) finish reading actor.json");
+}
+function deal_with_actor(actor) {
+    actor_id = actor.id;
+    var accounturl = actor.url,
+        url_sp = accounturl.split("/"),
+        id = url_sp[3] + '@' + url_sp[2];
 
-        var avatar_img, header_img = ''
-        try {
-            avatar_img_address = actor.icon["url"];
+    var avatar_img, header_img = ''
+    try {
+        avatar_img_address = actor.icon["url"];
+        if (load_mode == 'auto') {
             avatar_img = URL.createObjectURL(all_files[avatar_img_addres].blob);
-        } catch {
-            console.log("no profile avatar");
-            avatar_img = "assets/avatar.png";
+        } else if (load_mode == 'manual') {
+            avatar_img = avatar_img_address;
         }
-        try {
-            header_img_address = actor.image["url"];
+    } catch {
+        debugLog("(log)(actor) no profile avatar");
+        avatar_img = "assets/avatar.png";
+    }
+    try {
+        header_img_address = actor.image["url"];
+        if (load_mode == 'auto') {
             header_img = URL.createObjectURL(all_files[header_img_address].blob);
-        } catch {
-            console.log("no profile header image");
-            header_img = "assets/header.jpg";
+        } else if (load_mode == 'manual') {
+            header_img = header_img_address;
         }
+    } catch {
+        debugLog("(log)(actor) no profile header image");
+        header_img = "assets/header.jpg";
+    }
 
-        var header_fields = '';
-        actor.attachment.forEach((item) => {
-            header_fields += '<dl><dt>' + item.name +
-                '</dt><dd><span>' + item.value +
-                '</span></dd></dl>'
-        });
-        document.getElementById("account__header__fields")
-            .innerHTML = header_fields;
-        document.getElementById("public-account-header__image")
-            .innerHTML = '<img class="parallax" src="' +
-            header_img +
-            '" style="transform: translate3d(0px, 0px, 0px);">';
-        document.getElementById("account__header__tabs__name")
-            .innerHTML = '<h1><span>' + actor.name +
-            '</span><small>' + id + '</small></h1>'
-        document.getElementById("public-account-header__bar")
-            .innerHTML = '<a class="avatar" href="' +
-            accounturl + '"><img src="' + avatar_img + '"></a>';
-        document.getElementById("account__header__content")
-            .innerHTML = actor.summary;
+    var header_fields = '';
+    actor.attachment.forEach((item) => {
+        header_fields += '<dl><dt>' + item.name +
+            '</dt><dd><span>' + item.value +
+            '</span></dd></dl>'
     });
-    reader.readAsText(file);
+    document.getElementById("account__header__fields")
+        .innerHTML = header_fields;
+    document.getElementById("public-account-header__image")
+        .innerHTML = '<img class="parallax" src="' +
+        header_img +
+        '" style="transform: translate3d(0px, 0px, 0px);">';
+    document.getElementById("account__header__tabs__name")
+        .innerHTML = '<h1><span>' + actor.name +
+        '</span><small>' + id + '</small></h1>'
+    document.getElementById("public-account-header__bar")
+        .innerHTML = '<a class="avatar" href="' +
+        accounturl + '"><img src="' + avatar_img + '"></a>';
+    document.getElementById("account__header__content")
+        .innerHTML = actor.summary;
+    debugLog("(log)(actor) finish the actor.json part");
 }
 
-
-function link2name(link) {
-    var link_arr = link.substr(8).split('/');
-    return link_arr[0];
-    // return '@' + link_arr[2] + '@' + link_arr[0];
+function link2name(link, stage) {
+    try {
+        var link_arr = link.split('/');
+        return link_arr[2];
+        // return '@' + link_arr[2] + '@' + link_arr[0];
+    } catch {
+        debugLog("(error)(link2name) cannot extract site’s name from this link: " + link + ", when deal with " + stage);
+    }
 }
-function bookmarks_input() {
-    var file = all_files['bookmarks.json'].blob,
-        reader = new FileReader();
+
+function bookmarks_input(file) {
+    debugLog("(log)(bookmark) start the bookmarks.json part");
+    var reader = new FileReader();
+    if (file) {
+        debugLog("(log)(bookmark) got bookmarks.json");
+    } else {
+        debugLog("(error)(bookmark) no bookmarks.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(bookmark) parsing the bookmarks.json");
         var bookmarks = JSON.parse(this.result);
-        for (var i in bookmarks.orderedItems) {
-            var name = link2name(bookmarks.orderedItems[i]);
-            if (my_bookmark[name] == null) {
-                my_bookmark[name] = 1;
-            } else {
-                my_bookmark[name] += 1;
-            }
+        if (bookmarks.orderedItems) {
+            debugLog("(log)(bookmark) finish parsing the bookmarks.json");
+        } else {
+            debugLog("(error)(bookmark) no bookmarks.json or no orderedItems");
         }
-        var order_bookmark = Object.keys(my_bookmark)
-            .sort(function(a,b){return my_bookmark[b] - my_bookmark[a]});
-        var h = '';
-        for (var i in order_bookmark) {
-            h += order_bookmark[i] + '(' + my_bookmark[order_bookmark[i]] + ')<br>';
-        }
-        document.getElementById("most_bookmark").innerHTML = h;
-        my_bookmark = {}; //clear mem
+
+        deal_with_bookmarks(bookmarks);
     });
+    debugLog("(log)(bookmark) reading the bookmarks.json");
     reader.readAsText(file);
+    debugLog("(log)(bookmark) finish reading bookmarks.json");
 }
-function likes_input() {
-    var file = all_files['likes.json'].blob,
-        reader = new FileReader();
+function deal_with_bookmarks(bookmarks) {
+    for (var i in bookmarks.orderedItems) {
+        var name = link2name(bookmarks.orderedItems[i], 'bookmarks');
+        if (my_bookmark[name] == null) {
+            my_bookmark[name] = 1;
+        } else {
+            my_bookmark[name] += 1;
+        }
+    }
+    var order_bookmark = Object.keys(my_bookmark)
+        .sort(function(a,b){return my_bookmark[b] - my_bookmark[a]});
+    var h = '';
+    for (var i in order_bookmark) {
+        h += order_bookmark[i] + '(' + my_bookmark[order_bookmark[i]] + ')<br>';
+    }
+    document.getElementById("most_bookmark").innerHTML = h;
+    debugLog("(log)(bookmark) finish rendering most bookmark sites");
+    my_bookmark = {}; //clear mem
+    debugLog("(log)(bookmark) finish the bookmarks.json part");
+}
+
+function likes_input(file) {
+    debugLog("(log)(like) start the likes.json part");
+    var reader = new FileReader();
+    if (file) {
+        debugLog("(log)(like) got likes.json");
+    } else {
+        debugLog("(error)(like) no likes.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(like) parsing the likes.json");
         var likes = JSON.parse(this.result);
-        for (var i in likes.orderedItems) {
-            var name = link2name(likes.orderedItems[i]);
-            if (my_favourite[name] == null) {
-                my_favourite[name] = 1;
-            } else {
-                my_favourite[name] += 1;
-            }
+        if (likes.orderedItems) {
+            debugLog("(log)(like) finish parsing the likes.json");
+        } else {
+            debugLog("(error)(like) no likes.json or no orderedItems");
         }
-        var order_favourite = Object.keys(my_favourite)
-            .sort(function(a,b){return my_favourite[b] - my_favourite[a]});
-        var h = '';
-        for (var i in order_favourite) {
-            h += order_favourite[i] + '(' + my_favourite[order_favourite[i]] + ')<br>';
-        }
-        document.getElementById("most_favourite").innerHTML = h;
-        my_favourite = {}; //clear mem
+        deal_with_likes(likes);
     });
+    debugLog("(log)(like) reading the likes.json");
     reader.readAsText(file);
+    debugLog("(log)(like) finish reading likes.json");
+}
+function deal_with_likes(likes) {
+    for (var i in likes.orderedItems) {
+        var name = link2name(likes.orderedItems[i], 'likes');
+        if (my_favourite[name] == null) {
+            my_favourite[name] = 1;
+        } else {
+            my_favourite[name] += 1;
+        }
+    }
+    var order_favourite = Object.keys(my_favourite)
+        .sort(function(a,b){return my_favourite[b] - my_favourite[a]});
+    var h = '';
+    for (var i in order_favourite) {
+        h += order_favourite[i] + '(' + my_favourite[order_favourite[i]] + ')<br>';
+    }
+    document.getElementById("most_favourite").innerHTML = h;
+    debugLog("(log)(like) finish rendering most favourite sites");
+    my_favourite = {}; //clear mem
+    debugLog("(log)(like) finish the likes.json part");
 }
 
 var days_ct;
@@ -245,34 +357,53 @@ function days_diff(start, end) {
 }
 
 var date_from, date_to;
-function outbox_input() {
-    var file = all_files['outbox.json'].blob,
-        reader = new FileReader();
+function outbox_input(file) {
+    debugLog("(log)(outbox) start the outbox.json part");
+    var reader = new FileReader();
+    if (file) {
+        debugLog("(log)(outbox) got outbox.json");
+    } else {
+        debugLog("(error)(outbox) no outbox.json");
+    }
     reader.addEventListener("load", function() {
+        debugLog("(log)(outbox) parsing the outbox.json");
         outbox = JSON.parse(this.result);
-        date_from = document.getElementById("date-input-from");
-        date_to = document.getElementById("date-input-to");
-        var earliest_number = 0;
-        var latest_number = outbox.orderedItems.length - 1;
-        var earliest_date = offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10);
-        var latest_date = offsetTime(outbox.orderedItems[latest_number].published).substring(0,10);
-        date_from.value = earliest_date;
-        date_from.min = earliest_date;
-        date_from.max = latest_date;
-        document.getElementById("date_from").innerHTML = earliest_date;
-        document.getElementById("date_input_from").innerHTML = earliest_date;
-        date_to.value = latest_date;
-        date_to.min = earliest_date;
-        date_to.max = latest_date;
-        document.getElementById("date_to").innerHTML = latest_date;
-        document.getElementById("date_input_to").innerHTML = latest_date;
-        days_ct = days_diff(earliest_date, latest_date);
-        document.getElementById("date_diff").innerHTML = days_ct;
-        document.getElementById("date_input_diff").innerHTML = days_ct;
-
-        buildArchiveView(outbox, actor);
+        if (outbox.orderedItems) {
+            debugLog("(log)(outbox) finish parsing the outbox.json");
+        } else {
+            debugLog("(log)(outbox) no outbox.json or no orderedItems");
+        }
+        deal_with_outbox(outbox);
     });
+    debugLog("(log)(outbox) reading the outbox.json");
     reader.readAsText(file);
+    debugLog("(log)(outbox) finish reading outbox.json");
+}
+function deal_with_outbox(outbox) {
+    date_from = document.getElementById("date-input-from");
+    date_to = document.getElementById("date-input-to");
+    var earliest_number = 0;
+    var latest_number = outbox.orderedItems.length - 1;
+    var earliest_date = offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10);
+    var latest_date = offsetTime(outbox.orderedItems[latest_number].published).substring(0,10);
+    date_from.value = earliest_date;
+    date_from.min = earliest_date;
+    date_from.max = latest_date;
+    document.getElementById("date_from").innerHTML = earliest_date;
+    document.getElementById("date_input_from").innerHTML = earliest_date;
+    date_to.value = latest_date;
+    date_to.min = earliest_date;
+    date_to.max = latest_date;
+    document.getElementById("date_to").innerHTML = latest_date;
+    document.getElementById("date_input_to").innerHTML = latest_date;
+    days_ct = days_diff(earliest_date, latest_date);
+    document.getElementById("date_diff").innerHTML = days_ct;
+    document.getElementById("date_input_diff").innerHTML = days_ct;
+    debugLog("(log)(outbox) finish rendering the earliest and latest date");
+
+    debugLog("(log)(outbox) passing outbox and actor, start to bulid");
+    buildArchiveView(outbox, actor);
+    debugLog("(log)(outbox) finish the outbox.json part");
 }
 
 function deal_with_period(date_from_value, date_to_value) {
@@ -327,14 +458,18 @@ function clear_grid() {
 }
 
 function buildArchiveView(outbox, actor) {
+    debugLog("(log)(build) building satarted");
     clear_grid();
+    debugLog("(log)(build) cleaned the entire page");
     var articleTemplate = document.getElementById("article"),
         articleCWTemplate = document.getElementById("article--CW"),
         videoTemplate = document.getElementById("media-video"),
         imageTemplate = document.getElementById("media-image");
+    debugLog("(log)(build) got 4 templates");
 
     var statuses = outbox.orderedItems.map(item => item.object)
         .filter(object => typeof(object) === typeof({}));
+    debugLog("(log)(build) turned outbox.orderedItems to statuses");
 
     var nonreply_ct = 0,
         with_reply_ct = 0,
@@ -351,6 +486,7 @@ function buildArchiveView(outbox, actor) {
     var month_cur = '',
         month_list = [],
         month_ct = [];
+    debugLog("(log)(build) variables prepared");
 
     // prepare for the plotting
     function millisec_to_date(millisec) {
@@ -361,6 +497,7 @@ function buildArchiveView(outbox, actor) {
     var temp_plot_data = {};
 
     if (outbox.orderedItems[0] != null) {
+        debugLog("(log)(build) start to establish x-axis for the graph");
         var earliest_number = 0;
         var latest_number = outbox.orderedItems.length - 1;
         var earliest_date = new Date(offsetTime(outbox.orderedItems[earliest_number].published).substring(0,10));
@@ -370,6 +507,9 @@ function buildArchiveView(outbox, actor) {
         for (var i = earliest_millisec; i <= latest_millisec; i += 86400000) {
             temp_plot_data[millisec_to_date(i)] = [0, 0, 0]; // toots, replies, boosts
         }
+        debugLog("(log)(build) established x-axis for the graph");
+    } else {
+        debugLog("(error)(build) unable to establish x-axis for the graph");
     }
 
     let toot;
@@ -379,7 +519,7 @@ function buildArchiveView(outbox, actor) {
         } else if (outbox.orderedItems[toot].type == "Announce") {
             boost_ct += 1;
             temp_plot_data[offsetTime(outbox.orderedItems[toot].published).substring(0,10)][2] += 1;
-            var name = link2name(outbox.orderedItems[toot].object);
+            var name = link2name(outbox.orderedItems[toot].object, 'boost');
             if (my_boost[name] == null) {
                 my_boost[name] = 1;
             } else {
@@ -387,6 +527,7 @@ function buildArchiveView(outbox, actor) {
             }
         }
     }
+    debugLog("(log)(build) finish preparing boost data");
     // end prepare
     var order_boost = Object.keys(my_boost)
         .sort(function(a,b){return my_boost[b] - my_boost[a]});
@@ -395,11 +536,12 @@ function buildArchiveView(outbox, actor) {
         h += order_boost[i] + '(' + my_boost[order_boost[i]] + ')<br>';
     }
     document.getElementById("most_boost").innerHTML = h;
+    debugLog("(log)(build) finish rendering most boost sites");
     my_boost = {}; //clear mem
 
     function checkIfReply(status) {
         if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
-            var name = link2name(status.inReplyTo);
+            var name = link2name(status.inReplyTo, 'reply');
             if (my_reply[name] == null) {
                 my_reply[name] = 1;
             } else {
@@ -411,6 +553,7 @@ function buildArchiveView(outbox, actor) {
         }
     }
 
+    debugLog("(log)(build) start reading and dealing toots one by one");
     statuses.forEach((status) => {
         // check visibility
 
@@ -445,7 +588,7 @@ function buildArchiveView(outbox, actor) {
                 nonreply_ct += (1 - checkIfReply(status));
             }
         } catch {
-            console.log('grabing visibility failed');
+            debugLog("(log)(build) grabing visibility failed for this toot: " + status.url);
             visibility = '';
         }
 
@@ -540,7 +683,11 @@ function buildArchiveView(outbox, actor) {
                 }
 
                 var address_img = url.split("/mastodon/")[1];
-                var src_img = URL.createObjectURL(all_files[address_img].blob);
+                if (load_mode == 'auto') {
+                    var src_img = URL.createObjectURL(all_files[address_img].blob);
+                } else if (load_mode == 'manual') {
+                    var src_img = address_img;
+                }
 
                 media.querySelector(".status__media")
                     .src = src_img
@@ -568,6 +715,7 @@ function buildArchiveView(outbox, actor) {
             .appendChild(article);
 
     });
+    debugLog("(log)(build) finish reading and dealing toots one by one");
     // console.log(temp_plot_data);
     var order_reply = Object.keys(my_reply)
         .sort(function(a,b){return my_reply[b] - my_reply[a]});
@@ -576,8 +724,10 @@ function buildArchiveView(outbox, actor) {
         h += order_reply[i] + '(' + my_reply[order_reply[i]] + ')<br>';
     }
     document.getElementById("most_reply").innerHTML = h;
+    debugLog("(log)(build) finish rendering most reply sites");
     my_reply = {}; //clear mem
 
+    debugLog("(log)(build) prepare for the graph plotting");
     // plotting the line graph part
     var lable_array = [],
         toots_array = [],
@@ -620,12 +770,15 @@ function buildArchiveView(outbox, actor) {
         datasets: [dataToots, dataReplies, dataBoosts]
     };
 
+    debugLog("(log)(build) start plotting");
     lineChart = new Chart(tootCanvas, {
         type: 'line',
         data: tootData
     });
+    debugLog("(log)(build) finish plotting");
     // end of plotting
 
+    debugLog("(log)(build) start to render the table");
     document.getElementById("nonreply_ct").innerHTML = nonreply_ct.toString();
     document.getElementById("with_reply_ct").innerHTML = with_reply_ct.toString();
     document.getElementById("mediatoot_ct").innerHTML = mediatoot_ct.toString();
@@ -650,8 +803,9 @@ function buildArchiveView(outbox, actor) {
     document.getElementById("overviews_boost_a").innerHTML = (boost_ct / days_ct).toFixed(2).toString();
     document.getElementById("overviews_display").innerHTML = outbox.totalItems.toString();
     document.getElementById("overviews_without_reply_and_boost").innerHTML = (public_ct + unlisted_ct + followers_only_ct + boost_ct).toString();
+    debugLog("(log)(build) finish rendering the table");
 
-
+    debugLog("(log)(build) prepare for the index part");
     var month_section_html = '';
     var yr_last = '';
     var yr_cur = '';
@@ -671,49 +825,59 @@ function buildArchiveView(outbox, actor) {
     month_section_html += '</details>';
     document.getElementById("month_section_html")
         .innerHTML = month_section_html;
+    debugLog("(log)(build) fiinsh rendering the index part");
 
+    debugLog("(log)(build) finish the build");
 }
 
 function clicktoots() {
-    var sts = document.getElementsByClassName("status__box reply");
+    var sts = document.getElementsByClassName("status__box");
     for (var index = 0; index < sts.length; index++) {
-        var status = sts[index]
-        status.style.display = "none";
-        document.getElementById("toots")
-            .classList.add("active");
-        document.getElementById("tootsNreplies")
-            .classList.remove("active");
-        document.getElementById("mediatoots")
-            .classList.remove("active");
+        var status = sts[index];
+        if (status.classList.contains("reply")) {
+            status.style.display = "none";
+        } else {
+            status.style.display = "block";
+        }
     }
+    document.getElementById("toots")
+        .classList.add("active");
+    document.getElementById("tootsNreplies")
+        .classList.remove("active");
+    document.getElementById("mediatoots")
+        .classList.remove("active");
 }
 
 function clicktootsNreplies() {
     var sts = document.getElementsByClassName("status__box");
     for (var index = 0; index < sts.length; index++) {
-        var status = sts[index]
+        var status = sts[index];
         status.style.display = "block";
-        document.getElementById("toots")
-            .classList.remove("active");
-        document.getElementById("tootsNreplies")
-            .classList.add("active");
-        document.getElementById("mediatoots")
-            .classList.remove("active");
     }
+    document.getElementById("toots")
+        .classList.remove("active");
+    document.getElementById("tootsNreplies")
+        .classList.add("active");
+    document.getElementById("mediatoots")
+        .classList.remove("active");
 }
 
 function clicktootsmedia() {
-    var sts = document.getElementsByClassName("status__box nonmedia");
+    var sts = document.getElementsByClassName("status__box");
     for (var index = 0; index < sts.length; index++) {
-        var status = sts[index]
-        status.style.display = "none";
-        document.getElementById("toots")
-            .classList.remove("active");
-        document.getElementById("tootsNreplies")
-            .classList.remove("active");
-        document.getElementById("mediatoots")
-            .classList.add("active");
+        var status = sts[index];
+        if (status.classList.contains("nonmedia")) {
+            status.style.display = "none";
+        } else {
+            status.style.display = "block";
+        }
     }
+    document.getElementById("toots")
+        .classList.remove("active");
+    document.getElementById("tootsNreplies")
+        .classList.remove("active");
+    document.getElementById("mediatoots")
+        .classList.add("active");
 }
 
 function clickcloseimg() {
@@ -792,10 +956,12 @@ function toggleFold() {
 
 // set the Time Zone
 var offset = new Date().getTimezoneOffset();
+debugLog("(log) get time zone offset: " + offset);
 document.getElementById('timezone_sel').value = - offset / 60;
 
 function setTimeZone(timezone_value) {
     offset = - timezone_value * 60;
+    debugLog("(log) time zone offset changed: " + offset);
     if (all_files['outbox.json']) {
         outbox_input();
     }
@@ -806,5 +972,37 @@ function offsetTime(datetime) {
     var correctTime = new Date(timeInMillis - offset * 60 * 1000);
     var correct_datetime = correctTime.toISOString().split('.')[0] + "Z";
     return correct_datetime;
+}
+
+// switchMode
+document.getElementById('mode').value = 'auto';
+var load_mode = 'auto';
+check_mode(load_mode);
+debugLog("(log) the loading mode is: auto");
+
+function switchMode(mode) {
+    load_mode = mode;
+    debugLog("(log) the loading mode is switched to: " + load_mode);
+    check_mode(load_mode);
+}
+
+function check_mode(mode) {
+    if (mode == 'auto'){
+        document.getElementById('instruction2').style.display = "none";
+        document.getElementById('bookmarks-input').style.display = "none";
+        document.getElementById('likes-input').style.display = "none";
+        document.getElementById('actor-input').style.display = "none";
+        document.getElementById('outbox-input').style.display = "none";
+        document.getElementById('instruction1').style.display = "inline-block";
+        document.getElementById('tgz-input').style.display = "inline-block";
+    } else if (mode == 'manual') {
+        document.getElementById('instruction1').style.display = "none";
+        document.getElementById('tgz-input').style.display = "none";
+        document.getElementById('instruction2').style.display = "inline-block";
+        document.getElementById('bookmarks-input').style.display = "inline-block";
+        document.getElementById('likes-input').style.display = "inline-block";
+        document.getElementById('actor-input').style.display = "inline-block";
+        document.getElementById('outbox-input').style.display = "inline-block";
+    }
 }
 

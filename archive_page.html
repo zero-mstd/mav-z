@@ -51,10 +51,19 @@
                 <input type="radio" name="lang" value="zh" checked /> 中文
                 <input type="radio" name="lang" value="en" /> English
             </fieldset>
+            <br>
+            <fieldset>
+                <legend data-i18n="mode">加载模式：</legend>
+                <select id="mode" onChange="switchMode(this.value);">
+                    <option value="auto" data-i18n="auto">自动</option>
+                    <option value="manual" data-i18n="manual">手动</option>
+                </select> 
+            </fieldset>
         </form>
         <p data-i18n="notes">说明：</p>
             <ul>
                 <li><p data-i18n="note.p1">先去你的长毛象实例请求你的账户数据存档（设置 - 导入和导出 - 导出）并下载下来，然后直接在下面选择并打开整个 .tar.gz 格式的文件.</p></li>
+                <li><p data-i18n="p1ad">如果选择了手动加载模式，请按顺序加载 bookmarks.json、likes.json、actor.json、outbox.json.</p></li>
                 <li><p data-i18n="note.p2">自己回复自己的嘟文算做是原创，显示在“嘟文”那一列里. 这与网页版 Mastodon 是一致的.</p></li>
                 <li><p data-i18n="note.p3">一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条嘟文会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.</p></li>
                 <li><p data-i18n="note.p4">注意：上一条与网页版 Mastodon 并不一致，如果原嘟文被删除，则其回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.</p></li>
@@ -104,13 +113,32 @@
                         </select>
                     </label>
                 </div>
-                <p data-i18n="instruction">
+                <p data-i18n="instruction1" id="instruction1">
                     请直接选择你的长毛象存档文件，它的格式应该是 <b><code>archive-xxx.tar.gz</code></b>.
+                </p>
+                <p data-i18n="instruction2" id="instruction2">
+                    请按顺序选择 <b><code>bookmarks.json</code></b>、<b><code>likes.json</code></b>、<b><code>actor.json</code></b>、<b><code>outbox.json</code></b>.
                 </p>
                 <div>
                     <label id="tgz-input">
                         archive-xxx.tar.gz
                         <input accept="application/gzip" id="tgz-file-input" type="file" style="display:none">
+                    </label>
+                    <label id="bookmarks-input">
+                        bookmarks.json
+                        <input accept="application/json" id="bookmarks-file-input" type="file" style="display:none">
+                    </label>
+                    <label id="likes-input">
+                        likes.json
+                        <input accept="application/json" id="likes-file-input" type="file" style="display:none">
+                    </label>
+                    <label id="actor-input">
+                        actor.json
+                        <input accept="application/json" id="actor-file-input" type="file" style="display:none">
+                    </label>
+                    <label id="outbox-input">
+                        outbox.json
+                        <input accept="application/json" id="outbox-file-input" type="file" style="display:none">
                     </label>
                     <label>
                         <span data-i18n="from"> 从 </span>
