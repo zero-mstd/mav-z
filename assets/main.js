@@ -1,5 +1,5 @@
 'use strict'
-var debug = 1; // 1: debug mod on; 0: debug mod off;
+var debug = 0; // 1: debug mode on; 0: debug mode off;
 //
 // Mastodon Archive Viewer (mav-z)
 // Author: Zero
@@ -14,7 +14,7 @@ function debugLog(text) {
         console.log("(" + new Date().toISOString().substr(11,12) + ") " + text);
     }
 }
-debugLog("(log) debug mod on");
+debugLog("(log) debug mode on");
 debugLog("(log) browser: " + navigator.userAgent);
 
 //scroll bar

@@ -63,10 +63,10 @@ The branch “exhibition” is for my season’s toots exhibition.
     * give back the individually json file select mode (called “manually” loading mode)
     * fix the bug that not showing all supposed to shown when click “mediatoots” column from “toots” column or vice versa
 
-## Usage
+## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
 
-### Linux
+### Linux:
 First go to your Mastodon instance, request an archive of your toots and uploaded media (Settings - Import and export - Data export), and download your archive. Then:
 ```bash
 $ git clone https://github.com/zero-mstd/mav-z.git
@@ -74,7 +74,7 @@ $ cd mav-z
 $ firefox archive_page.html
 ```
 
-### Windows
+### Windows:
 1. First go to your Mastodon instance, request an archive of your toots and uploaded media (Settings - Import and export - Data export), and download your archive;
 2. Open this link <https://github.com/zero-mstd/mav-z/tree/master> in a browser;
 3. Hit the green button `Code`;
@@ -82,6 +82,51 @@ $ firefox archive_page.html
 5. Unzip what you downloaded (should be `mav-z-master.zip`) and enter this folder;
 6. Open the `archive_page.html` in your browser;
 7. Follow the instructions, choose and open the entire `.tar.gz` archive file you got from the 1st step.
+
+## Troubleshooting:
+### If your archive file is too big
+This web page tool can automatically decompress the `archive-xxx.tar.gz` file for you, and it will store all the decompressed files in memory (RAM) temporarily. For reference, my archive file is about 200 MB and it will take 5 seconds to finish all the works.
+
+If your archive file is too big (I don't know, maybe > 1000 MB), your browser may get stuck. In this case, using the **manual mode** is a good idea, i.e., unzipping the archive file manually by yourself. In order to display media files correctly, you should copy and paste your files so that your directory tree is like:
+
+```bash
+./
+├── actor.json
+├── archive_page.html
+├── assets
+│   ├── avatar_default.png
+│   ├── avatar.png
+│   ├── chart.js
+│   ├── favicon.ico
+│   ├── header_default.jpg
+│   ├── header.jpg
+│   ├── main.js
+│   ├── pako.min.js
+│   ├── style.css
+│   ├── translator.js
+│   └── untar.js
+├── bookmarks.json
+├── likes.json
+├── media_attachments
+│   └── files
+│       ├── ……
+│       └── ……
+└── outbox.json
+```
+
+Now you can open the `archive_page.html` in your browser, choose `manually` in the `Loading mode:` drop-down menu, then follow the instructions, choose and open the four `.josn` files one by one. `actor.json` must be loaded before `outbox.json`, while `bookmarks.json` and `likes.json` are optional.
+
+### Other problems
+If you run into other problems, here's what you can do:
+
+1. Open the `assets/main.js`;
+2. Edit it, change the 2nd line to `var debug = 1;`, which means you turn on the debug mode;
+3. Open the `archive_page.html` in browser;
+4. Press the `F12` button and go to the `console` tab, make sure you have already seen the log “debug mode on”;
+5. Now do the process normally;
+6. Analyze the log to see if you can find the cause to the problem;
+7. Solve it if you can! Feel free to fork or open a PR;
+8. If you have no clue, you can contact me via Mastodon or raise a issue. Don't forget to provide your log.
 
 ## Next steps:
 - [x] separate page on only toots & media
