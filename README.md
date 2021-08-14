@@ -72,7 +72,7 @@ The branch “exhibition” is a tool for [my season’s toots exhibition](https
 * 08/11/2021, Zero
     * tell you the fedi sites whose users you usually interacted with. At first I want to show the users you most interacted with, but the toots of [pleroma](https://pleroma.social) users in `likes.json` and `bookmarks.json` don’t have a link formated as `https://<mastodon.example.com>/users/<username>/statuses/<status_id>`, they are like `https://<pleroma.example.com>/objects/<object-id>`. It is not fair to exclude them.
 * 08/13/2021, Zero
-    * add debug mod
+    * add debug mode
     * give back the individually json file select mode (called “manually” loading mode)
     * fix the bug that not showing all supposed to shown when click “mediatoots” column from “toots” column or vice versa
 
@@ -97,7 +97,7 @@ $ firefox archive_page.html
 7. Follow the instructions, choose and open the entire `.tar.gz` archive file you got from the 1st step.
 
 ## Troubleshooting:
-### If your archive file is too big
+### If your archive file is too big:
 This web page tool can automatically decompress the `archive-xxx.tar.gz` file for you, and it will store all the decompressed files in memory (RAM) temporarily. For reference, my archive file is about 200 MB and it will take 5 seconds to finish all the works.
 
 If your archive file is too big (I don't know, maybe > 1000 MB), your browser may get stuck. In this case, using the **manual mode** is a good idea, i.e., unzipping the archive file manually by yourself. In order to display media files correctly, you should copy and paste your files so that your directory tree is like:
@@ -129,7 +129,7 @@ If your archive file is too big (I don't know, maybe > 1000 MB), your browser ma
 
 Now you can open the `archive_page.html` in your browser, choose `manually` in the `Loading mode:` drop-down menu, then follow the instructions, choose and open the four `.josn` files one by one. `actor.json` must be loaded before `outbox.json`, while `bookmarks.json` and `likes.json` are optional.
 
-### Other problems
+### Other problems:
 If you run into other problems, here's what you can do:
 
 1. Open the `assets/main.js`;
