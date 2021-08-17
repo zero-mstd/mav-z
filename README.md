@@ -143,6 +143,7 @@ If you run into other problems, here's what you can do:
 - [x] more information? for example, the one you liked the most, the one you boost the most…
 - [x] add a line graph, maybe?
 - [x] time zone problem
+- [ ] optimize the ram usage, take care about memory leaks/bloat, see [this article](https://developer.chrome.com/docs/devtools/memory-problems/)
 
 ## Similar Projects:
 - [kit-ty-kate, mastodon-archive-viewer](https://github.com/kit-ty-kate/mastodon-archive-viewer), written in [OCaml](https://ocaml.org/), need [OPAM](https://opam.ocaml.org/) installed.
