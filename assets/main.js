@@ -682,7 +682,7 @@ function buildArchiveView(outbox, actor) {
                         true);
                 }
 
-                var address_img = url.split("/mastodon/")[1];
+                var address_img = url.substring(url.indexOf('media_attachments/'));
                 if (load_mode == 'auto') {
                     var src_img = URL.createObjectURL(all_files[address_img].blob);
                 } else if (load_mode == 'manual') {
