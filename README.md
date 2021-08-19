@@ -60,8 +60,10 @@ The branch “exhibition” is for my season’s toots exhibition.
     * tell you the fedi sites whose users you usually interacted with. At first I want to show the users you most interacted with, but the toots of [pleroma](https://pleroma.social) users in `likes.json` and `bookmarks.json` don’t have a link formated as `https://<mastodon.example.com>/users/<username>/statuses/<status_id>`, they are like `https://<pleroma.example.com>/objects/<object-id>`. It is not fair to exclude them.
 * 08/13/2021, Zero
     * add debug mode
-    * give back the individually json file select mode (called “manually” loading mode)
+    * give back the individually json file select mode (called “manually” loading mode) (thanks to @flyover)
     * fix the bug that not showing all supposed to shown when click “mediatoots” column from “toots” column or vice versa
+* 08/19/2021, Zero
+    * fix the bug of address_img introduced by me (thanks to @jmomo & @Hydrangea)
 
 ## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
