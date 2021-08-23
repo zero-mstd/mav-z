@@ -427,6 +427,8 @@ function buildArchiveView(outbox, actor) {
 
     var statuses = outbox.orderedItems.map(item => item.object)
         .filter(object => typeof(object) === typeof({}));
+    // Uncomment the following line to sort your toots by published time.
+    // statuses = statuses.sort((a,b) => new Date(a.published).getTime() - new Date(b.published).getTime());
     debugLog("(log)(build) turned outbox.orderedItems to statuses");
 
     var nonreply_ct = 0,

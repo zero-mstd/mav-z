@@ -96,11 +96,9 @@ If your archive file is too big (I don't know, maybe > 1000 MB), your browser ma
 ├── actor.json
 ├── archive_page.html
 ├── assets
-│   ├── avatar_default.png
 │   ├── avatar.png
 │   ├── chart.js
 │   ├── favicon.ico
-│   ├── header_default.jpg
 │   ├── header.jpg
 │   ├── main.js
 │   ├── pako.min.js
@@ -116,7 +114,26 @@ If your archive file is too big (I don't know, maybe > 1000 MB), your browser ma
 └── outbox.json
 ```
 
-Now you can open the `archive_page.html` in your browser, choose `manually` in the `Loading mode:` drop-down menu, then follow the instructions, choose and open the four `.josn` files one by one. `actor.json` must be loaded before `outbox.json`, while `bookmarks.json` and `likes.json` are optional.
+Now you can open the `archive_page.html` in your browser, choose `manually` in the `Loading mode` drop-down menu, then follow the instructions, choose and open the four `.json` files one by one. `actor.json` must be loaded before `outbox.json`, while `bookmarks.json` and `likes.json` are optional.
+
+### If your toots are not in order:
+If your toots are not arranged completely in chronological order, as shown below, this may be caused by some kind of unknown bug. (If you can figure it out please let me know.)
+
+![One misplaced January toot](https://cdn.jsdelivr.net/gh/zero-mstd/figure-bed@master/example.png "One misplaced January toot")
+
+Here is the workaround: open and edit the `assets/main.js`, go to **line 431** and remove the first two slashes.
+```javascript
+/* 428 */    var statuses = outbox.orderedItems.map(item => item.object)
+/* 429 */        .filter(object => typeof(object) === typeof({}));
+/* 430 */    // Uncomment the following line to sort your toots by published time.
+/* 431 */    statuses = statuses.sort((a,b) => new Date(a.published).getTime() - new Date(b.published).getTime());
+/* 432 */    debugLog("(log)(build) turned outbox.orderedItems to statuses");
+```
+
+By the way, if you want to view your toots in reverse order, edit **line 431** like this (exchange `a` and `b` in the first bracket):
+```javascript
+/* 431 */    statuses = statuses.sort((b,a) => new Date(a.published).getTime() - new Date(b.published).getTime());
+```
 
 ### Other problems:
 If you run into other problems, here's what you can do:
@@ -139,7 +156,7 @@ If you run into other problems, here's what you can do:
 - [x]  (branch: exhibition) assistant for my season’s exhibition
 - [x] open the .tar.gz directly
 - [x] the display of vedio problem, width out of box
-- [ ] add reverse mode to view all toots
+- [x] add reverse mode to view all toots (see [If your toots are not in order](#if-your-toots-are-not-in-order))
 - [ ] total(with_reply_ct) + boost_ct - direct_ct != display_ct, why?
 - [x] i18n support. use pure js, with data attributes. see [this link](https://codeburst.io/translating-your-website-in-pure-javascript-98b9fa4ce427)
 - [x] more information? for example, the one you liked the most, the one you boost the most…
