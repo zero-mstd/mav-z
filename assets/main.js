@@ -201,8 +201,8 @@ function actor_input(file) {
 }
 function deal_with_actor(actor) {
     actor_id = actor.id;
-    var accounturl = actor.url,
-        url_sp = accounturl.split("/"),
+    accounturl = actor.url;
+    var url_sp = accounturl.split("/"),
         id = url_sp[3] + '@' + url_sp[2];
 
     var avatar_img, header_img = ''
@@ -919,7 +919,7 @@ function generateTxtFile(text){
                 }
                 exhibitionText += '<!--'
                 exhibitionText += document.getElementById("c_" + exhibition_content_json[i][j]).innerHTML;
-                exhibitionText += '-->\n\n'
+                exhibitionText += '-->\n\n';
                 exhibitionText += '<iframe src="' + accounturl + '/' +
                     exhibition_content_json[i][j] +
                     `/embed" class="mastodon-embed" style="max-width: 100%; border: 0" width="100%" allowfullscreen="allowfullscreen"></iframe>` +
