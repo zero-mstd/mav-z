@@ -77,6 +77,8 @@ The branch “exhibition” is a tool for [my season’s toots exhibition](https
     * fix the bug that not showing all supposed to shown when click “mediatoots” column from “toots” column or vice versa
 * 08/19/2021, Zero
     * fix the bug of address_img introduced by me (thanks to @jmomo & @Hydrangea)
+* 12/30/2021, Zero
+    * add a solution for outdated browsers (thanks to @10thousandmilescantbebroken)
 
 ## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
@@ -146,6 +148,20 @@ Here is the workaround: open and edit the `assets/main.js`, go to **line 431** a
 By the way, if you want to view your toots in reverse order, edit **line 431** like this (exchange `a` and `b` in the first bracket):
 ```javascript
 /* 431 */    statuses = statuses.sort((b,a) => new Date(a.published).getTime() - new Date(b.published).getTime());
+```
+
+### If your browser is too old:
+The line graph function depends on [chart.js](https://www.chartjs.org/), whose support for older browsers got dropped a while back. Thus, this tool supports:
+- Chrome >= 64
+- Edge >= 79
+- Firefox >= 69
+- Opera >= 51
+
+If your browser doesn’t meet the minimum version number mentioned above, you should get error like “ReferenceError: ResizeObserver is not defined”. If this happens, upgrading your browser is always the best choice. But if you can’t upgrade for some reasons, you can also delete line 336 and line 338 in `archive_page.html`:
+```html
+<!--336-->    <!--
+<!--337-->    <script type="text/javascript" src="./assets/polyfillResizeObserver.js"></script>
+<!--338-->    -->
 ```
 
 ### Other problems:
