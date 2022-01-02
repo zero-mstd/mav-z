@@ -185,6 +185,8 @@ If you run into other problems, here's what you can do:
 - [nuklearfiziks, mastodon-archive-tool](https://observablehq.com/@nuklearfiziks/mastodon-archive-tool). It runs in a browser and does not need to download anything.
 - [Yuzuki Aida, Mastodon-Archive-Viewer](https://github.com/nzws/Mastodon-Archive-Viewer). Quite clean but not completely offline. Need to choose `actor.json` and `outbox.json` respectively, no support to media (images or vedios).
 - [Poga, ActivityPub to CSV](https://poga.github.io/activitypub2csv/). Turn `outbox.json` file into `.csv` file then can be viewed in excel or other softwares.
+- [Blackle, mastodon-data-viewer.py](https://github.com/blackle/mastodon-data-viewer.py). A viewer for mastodon data written in python. It creates a local server that you can use to browse the data. Designed for large (>40,000) toot archives.
+- [Meow](https://purr.neocities.org/). An online viewer for Mastodon export files. One of its highlights is that it can fetch the toots you bookmarked or stared.
 
 ---
 
