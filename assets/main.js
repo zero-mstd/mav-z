@@ -422,6 +422,7 @@ function buildArchiveView(outbox, actor) {
     var articleTemplate = document.getElementById("article"),
         articleCWTemplate = document.getElementById("article--CW"),
         videoTemplate = document.getElementById("media-video"),
+        audioTemplate = document.getElementById("media-audio"),
         imageTemplate = document.getElementById("media-image");
     debugLog("(log)(build) got 4 templates");
 
@@ -613,12 +614,18 @@ function buildArchiveView(outbox, actor) {
                 mediatoot_ct += 1
                 var extension = url.split(".")
                     .pop();
-                if (extension === "mp4") {
+                if (['mp4', 'm4v', 'mov', 'webm'].includes(extension)) {
                     var media = document.importNode(videoTemplate.content,
                         true);
-                } else {
+                } else if (['mp3', 'ogg', 'wav', 'flac', 'opus', 'aac', 'm4a', '3gp'].includes(extension)) {
+                    var media = document.importNode(audioTemplate.content,
+                        true);
+                } else if (['png', 'jpg', 'gif', 'jpeg'].includes(extension)) {
                     var media = document.importNode(imageTemplate.content,
                         true);
+                } else {
+                    console.log('This type of attachments is missing: ' + extension +
+                    ', please tell the author about it.');
                 }
 
                 var address_img = url.substring(url.indexOf('media_attachments/'));
