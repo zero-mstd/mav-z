@@ -623,7 +623,14 @@ function buildArchiveView(outbox, actor) {
 
                 var address_img = url.substring(url.indexOf('media_attachments/'));
                 if (load_mode == 'auto') {
-                    var src_img = URL.createObjectURL(all_files[address_img].blob);
+                    if (all_files.hasOwnProperty(address_img)) {
+                        var src_img = URL.createObjectURL(all_files[address_img].blob);
+                    } else {
+                        var src_img = 'assets/favicon.ico';
+                        caption += ' (MISSED!)';
+                        console.log('(ERROR) Your archive pack does not seem to contain this image: '
+                            + address_img + '. Involved toot: ' + status.url);
+                    }
                 } else if (load_mode == 'manual') {
                     var src_img = address_img;
                 }
