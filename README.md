@@ -79,6 +79,9 @@ The branch “exhibition” is a tool for [my season’s toots exhibition](https
     * fix the bug of address_img introduced by me (thanks to @jmomo & @Hydrangea)
 * 12/30/2021, Zero
     * add a solution for outdated browsers (thanks to @10thousandmilescantbebroken)
+* 02/10/2022, Zero
+    * check the existence of key “address_img” before getting it, fixing the missing file problem which could be caught by not packaged correctly. (thanks to @mionemrys)
+    * add the audio template and support more attachments’ types. (thanks to @mionemrys)
 
 ## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
