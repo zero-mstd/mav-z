@@ -81,7 +81,7 @@ $ cd mav-z
 $ firefox archive_page.html
 ```
 
-### Windows:
+### Windows or macOS:
 1. First go to your Mastodon instance, request an archive of your toots and uploaded media (Settings - Import and export - Data export), and download your archive;
 2. Open this link <https://github.com/zero-mstd/mav-z/tree/master> in a browser;
 3. Hit the green button `Code`;
