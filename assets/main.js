@@ -423,7 +423,8 @@ function buildArchiveView(outbox, actor) {
         articleCWTemplate = document.getElementById("article--CW"),
         videoTemplate = document.getElementById("media-video"),
         audioTemplate = document.getElementById("media-audio"),
-        imageTemplate = document.getElementById("media-image");
+        imageTemplate = document.getElementById("media-image"),
+        otherTemplate = document.getElementById("media-file");
     debugLog("(log)(build) got 4 templates");
 
     var statuses = outbox.orderedItems.map(item => item.object)
@@ -617,44 +618,53 @@ function buildArchiveView(outbox, actor) {
                 if (['mp4', 'm4v', 'mov', 'webm'].includes(extension)) {
                     var media = document.importNode(videoTemplate.content,
                         true);
+                    var mediaType = 'v';
                 } else if (['mp3', 'ogg', 'wav', 'flac', 'opus', 'aac', 'm4a', '3gp'].includes(extension)) {
                     var media = document.importNode(audioTemplate.content,
                         true);
+                    var mediaType = 'a';
                 } else if (['png', 'jpg', 'gif', 'jpeg'].includes(extension)) {
                     var media = document.importNode(imageTemplate.content,
                         true);
+                    var mediaType = 'i';
                 } else {
-                    console.log('This type of attachments is missing: ' + extension +
-                    ', please tell the author about it.');
+                    var media = document.importNode(otherTemplate.content,
+                        true);
+                    var mediaType = 'o';
                 }
 
-                var address_img = url.substring(url.indexOf('media_attachments/'));
+                var address_att = url.substring(url.indexOf('media_attachments/'));
                 if (load_mode == 'auto') {
-                    if (all_files.hasOwnProperty(address_img)) {
-                        var src_img = URL.createObjectURL(all_files[address_img].blob);
+                    if (all_files.hasOwnProperty(address_att)) {
+                        var src_att = URL.createObjectURL(all_files[address_att].blob);
                     } else {
-                        var src_img = 'assets/favicon.ico';
+                        var src_att = 'assets/favicon.ico';
                         caption += ' (MISSED!)';
                         console.log('(ERROR) Your archive pack does not seem to contain this image: '
-                            + address_img + '. Involved toot: ' + status.url);
+                            + address_att + '. Involved toot: ' + status.url);
                     }
                 } else if (load_mode == 'manual') {
-                    var src_img = address_img;
+                    var src_att = address_att;
                 }
 
-                media.querySelector(".status__media")
-                    .src = src_img
-                media.querySelector(".status__media")
-                    .onclick = function(src_img) { // insert image inside the modal - use name as a caption
-                        var modal = document.getElementById("myModal");
-                        var modalImg = document.getElementById("img01");
-                        var captionText = document.getElementById("caption");
-                        modal.style.display = "block";
-                        modalImg.src = src_img.target.src;
-                        if (caption) {
-                            captionText.innerHTML = caption;
+                if (mediaType != 'o') {
+                    media.querySelector(".status__media").src = src_att;
+                } else {
+                    media.querySelector(".status__media").innerHTML = src_att;
+                }
+                if (mediaType == 'i') {
+                    media.querySelector(".status__media")
+                        .onclick = function(src_att) { // insert image inside the modal - use name as a caption
+                            var modal = document.getElementById("myModal");
+                            var modalImg = document.getElementById("img01");
+                            var captionText = document.getElementById("caption");
+                            modal.style.display = "block";
+                            modalImg.src = src_att.target.src;
+                            if (caption) {
+                                captionText.innerHTML = caption;
+                            }
                         }
-                    }
+                }
                 mediaDiv.appendChild(media);
                 // });
             }

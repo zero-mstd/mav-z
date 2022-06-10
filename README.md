@@ -69,6 +69,9 @@ The branch “exhibition” is for my season’s toots exhibition.
 * 02/10/2022, Zero
     * check the existence of key “address_img” before getting it, fixing the missing file problem which could be caught by not packaged correctly. (thanks to @mionemrys)
     * add the audio template and support more attachments’ types. (thanks to @mionemrys)
+* 06/10/2022, Zero
+    * fix the bug that user’s avatar and header cannot be rendered
+    * add a catch-all handler for all unsupported types, so that it can suit Pleroma I guess. (thanks to [@tusooa](https://github.com/zero-mstd/mav-z/issues/1))
 
 ## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
