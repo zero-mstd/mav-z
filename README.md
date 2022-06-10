@@ -82,6 +82,10 @@ The branch “exhibition” is a tool for [my season’s toots exhibition](https
 * 02/10/2022, Zero
     * check the existence of key “address_img” before getting it, fixing the missing file problem which could be caught by not packaged correctly. (thanks to @mionemrys)
     * add the audio template and support more attachments’ types. (thanks to @mionemrys)
+* 06/10/2022, Zero
+    * fix the bug that user’s avatar and header cannot be rendered
+    * add a catch-all handler for all unsupported types, so that it can suit Pleroma I guess. (thanks to [@tusooa](https://github.com/zero-mstd/mav-z/issues/1))
+    * fix the bug that all captions become the last one when there are more than 1 images
 
 ## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
@@ -123,7 +127,9 @@ If your archive file is too big (I don't know, maybe > 1000 MB), your browser ma
 │   ├── style.css
 │   ├── translator.js
 │   └── untar.js
+├── avatar.{jpg|png|…}
 ├── bookmarks.json
+├── header.{jpg|png|…}
 ├── likes.json
 ├── media_attachments
 │   └── files
