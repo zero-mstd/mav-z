@@ -607,7 +607,9 @@ function buildArchiveView(outbox, actor) {
             //
             //console.log(attachmentUrls)
             //console.log(attachmentNames)
-            for (var i = 0; i < attachmentUrls.length; i++) {
+            for (var i = 0; i < attachmentUrls.length; i++) (function(i){
+            // onClick event in a for loop is quite tricky,
+            // see, https://stackoverflow.com/a/15860764
 
                 var url = attachmentUrls[i]
                 var caption = attachmentNames[i]
@@ -667,7 +669,7 @@ function buildArchiveView(outbox, actor) {
                 }
                 mediaDiv.appendChild(media);
                 // });
-            }
+            })(i);
         } else {
             article.querySelector(".status__box")
                 .classList.add("nonmedia");
