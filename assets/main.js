@@ -168,9 +168,9 @@ function deal_with_actor(actor) {
 
     var avatar_img, header_img = ''
     try {
-        avatar_img_address = actor.icon["url"];
+        var avatar_img_address = actor.icon["url"];
         if (load_mode == 'auto') {
-            avatar_img = URL.createObjectURL(all_files[avatar_img_addres].blob);
+            avatar_img = URL.createObjectURL(all_files[avatar_img_address].blob);
         } else if (load_mode == 'manual') {
             avatar_img = avatar_img_address;
         }
@@ -179,7 +179,7 @@ function deal_with_actor(actor) {
         avatar_img = "assets/avatar.png";
     }
     try {
-        header_img_address = actor.image["url"];
+        var header_img_address = actor.image["url"];
         if (load_mode == 'auto') {
             header_img = URL.createObjectURL(all_files[header_img_address].blob);
         } else if (load_mode == 'manual') {

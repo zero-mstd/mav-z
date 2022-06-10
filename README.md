@@ -110,7 +110,9 @@ If your archive file is too big (I don't know, maybe > 1000 MB), your browser ma
 │   ├── style.css
 │   ├── translator.js
 │   └── untar.js
+├── avatar.{jpg|png|…}
 ├── bookmarks.json
+├── header.{jpg|png|…}
 ├── likes.json
 ├── media_attachments
 │   └── files
