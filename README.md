@@ -196,6 +196,8 @@ If you run into other problems, here's what you can do:
 - [Poga, ActivityPub to CSV](https://poga.github.io/activitypub2csv/). Turn `outbox.json` file into `.csv` file then can be viewed in excel or other softwares.
 - [Blackle, mastodon-data-viewer.py](https://github.com/blackle/mastodon-data-viewer.py). A viewer for mastodon data written in python. It creates a local server that you can use to browse the data. Designed for large (>40,000) toot archives.
 - [Meow](https://purr.neocities.org/). An online viewer for Mastodon export files. One of its highlights is that it can fetch the toots you bookmarked or stared.
+- [SouthFox, mastodon BDSM](https://git.southfox.me/southfox/mastodon-BDSM). Mastodon Backup Data & Sqlite Management Tool. Build with flask (Python) and Mastodon API. Login required, but it has the advantage of showing boosts.
+- [kensanata, mastodon-backup](https://github.com/kensanata/mastodon-backup]). Archive your statuses, favorites and media using the Mastodon API (i.e. login required)
 
 ---
 
