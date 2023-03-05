@@ -6,8 +6,8 @@ var i18n_data = {
         'note': {
             'p1': '先去你的长毛象实例请求你的账户数据存档（设置 - 导入和导出 - 导出）并下载下来，然后直接在下面选择并打开整个 .tar.gz 格式的文件.',
             'p2': '自己回复自己的嘟文算做是原创，显示在“嘟文”那一列里. 这与网页版 Mastodon 是一致的.',
-            'p3': '一条回复的原嘟文如果被删除（或原嘟主注销帐号导致的其所有嘟文被删除），则这条嘟文会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.',
-            'p4': '注意：上一条与网页版 Mastodon 并不一致，如果原嘟文被删除，则其回复在网页版的 Mastodon 里并不会显示在个人主页中的“嘟文”那一列里.',
+            'p3': '假设本站用户 A 发了一条嘟文 x，你的嘟文 y 是对 x 的回复，那么当 x 被 A 删除（或由于 A 注销帐号导致其所有嘟文被删除）后，y 会由回复变为原创，显示在“嘟文”那一列里. 同时，统计表格中原创的嘟文数量可能会有所增加，而回复的嘟文数量会相应地有所减少.',
+            'p4': '注意：上一条与网页版 Mastodon 并不一致，这是由于存档中少了 `in_reply_to_account_id` 字段导致的无法补救的缺陷. 受影响的只是对本站嘟文的回复，对外站嘟文的回复不受影响.',
             'p5': '本页面会自动读取你的系统时区作为默认时区. 改变时区后嘟文展示与统计都会重新生成，建议先调整好时区再打开存档包.',
             'p6': '表格最下面一行的“存档中显示的嘟文与回复数”指的是在网页版 Mastodon 的个人主页那里，关注数与关注者数左边的那个数字. 它包括转嘟，但不包括私信. 这个数字可能会大于倒数第四行的“以上两项总计”，初步判断是实例的计数有 bug：删除一条嘟文后，其他实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 有所减少，但有时候自己实例 <code>api/v1/accounts/id</code> 中的 <code>statuses_count</code> 没有变化. 我觉得非常奇怪，请各位象友指点.',
             'p7': '私信的数量默认隐藏，点击方块的位置可以显示数字，再次点击数字则隐藏.',
@@ -60,8 +60,8 @@ var i18n_data = {
         'note': {
             'p1': 'First go to your Mastodon instance, request an archive of your toots and uploaded media (Settings - Import and export - Data export), and download your archive. Then choose and open directly the entire .tar.gz file below.',
             'p2': 'Self-reply counts as original, and will be shown in the “Toots” column. Same as the Mastodon web side.',
-            'p3': 'If the original toot you replied was deleted (may also caused by the account deletion), your reply will become original and be shown in the “Toots” column. As a result, the number of original toots in the table increased, while the number of replies decreased.',
-            'p4': 'Note that the behavior described in the previous line is not consistent with the Mastodon web side. Your reply won’t be displayed in the “Toots” column even if the original toot is gone.',
+            'p3': 'Suppose user A of the same instance as you posted a toot x, and your toot y was a reply to x. Then when x is deleted by A (may also caused by the account deletion of A), y will become original and be shown in the “Toots” column. As a result, the number of original toots in the table increased, while the number of replies decreased.',
+            'p4': 'Note that the behavior described in the previous line is not consistent with the Mastodon web UI. This is because every toot in your archive doesn’t have the `in_reply_to_account_id` field as the web UI does. The only toots affected are those that are replies to the toots on the same instance. It’s totally fine if one is a reply to a toot from other instance.',
             'p5': 'This page will automatically detect your system time zone as default. The display will be regenerated and the statistics will be recalculated after you change the time zone, so it is better to adjust the time zone before opening your archive.',
             'p6': '“The number displayed on the web side” item (in the last row of the table) refers to the number displayed on the left of “Following” number and “Followers” number on the web side of Mastodon. It should count boosts but does not count DMs. In practice, this number is probably greater than the fourth-to-last line in the table, i.e., “Total of the above two (boosts contained, but DMs not)”, I feel very strange about this. My preliminary thought is that there is a bug with the counting of Mastodon, because sometimes when I delete one toot, the <code>statuses_count</code> in <code>api/v1/accounts/id</code> on another instance indeed decreased, while on my own instance, it stay the same. Feel free to tell me if you have a clue.',
             'p7': 'The count of DMs is hidden by default, click to toggle between visible and invisible.',

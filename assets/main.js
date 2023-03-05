@@ -544,16 +544,18 @@ function buildArchiveView(outbox, actor) {
     my_boost = {}; //clear mem
 
     function checkIfReply(status) {
-        if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
-            var name = link2name(status.inReplyTo, 'reply');
-            if (my_reply[name] == null) {
-                my_reply[name] = 1;
-            } else {
-                my_reply[name] += 1;
+        if (status.inReplyTo == null && status.conversation.includes(actor_id.split('/')[2])) {
+            return 0;
+        } else {
+            if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
+                var name = link2name(status.inReplyTo, 'reply');
+                if (my_reply[name] == null) {
+                    my_reply[name] = 1;
+                } else {
+                    my_reply[name] += 1;
+                }
             }
             return 1;
-        } else {
-            return 0;
         }
     }
 

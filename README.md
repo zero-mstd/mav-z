@@ -86,6 +86,8 @@ The branch “exhibition” is a tool for [my season’s toots exhibition](https
     * fix the bug that user’s avatar and header cannot be rendered
     * add a catch-all handler for all unsupported types, so that it can suit Pleroma I guess. (thanks to [@tusooa](https://github.com/zero-mstd/mav-z/issues/1))
     * fix the bug that all captions become the last one when there are more than 1 images
+* 03/05/2023, Zero
+    * (thanks to @SylviaGuillem) changed the rules for determining whether a toot is an original or a reply. If `inReplyTo` is `null` AND the `tag` string in `conversation` is your own instance, count the toot as an original; otherwise, reply. But there is a flaw: this rule will misjudge replies [to a deleted toot which is on the same instance with you] as original.
 
 ## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
