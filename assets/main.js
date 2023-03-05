@@ -505,7 +505,7 @@ function buildArchiveView(outbox, actor) {
         if (status.inReplyTo == null && status.conversation.includes(actor_id.split('/')[2])) {
             return 0;
         } else {
-            if (!(status.inReplyTo.includes(actor_id))) {
+            if (status.inReplyTo != null && !(status.inReplyTo.includes(actor_id))) {
                 var name = link2name(status.inReplyTo, 'reply');
                 if (my_reply[name] == null) {
                     my_reply[name] = 1;
