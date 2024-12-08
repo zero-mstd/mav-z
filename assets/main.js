@@ -8,6 +8,7 @@ var debug = 0; // 1: debug mode on; 0: debug mode off;
 // same my friend
 var actor = null;
 var outbox = null;
+var new_zip_version = 0;
 
 function debugLog(text) {
     if (debug) {
@@ -107,7 +108,7 @@ var my_reply = {},
     my_bookmark = {};
 
 var all_files = {};
-const take_files = (files) => {
+const take_files_gz = (files) => {
     debugLog("(log) there are " + files.length + " files in total");
     //console.log(files); // `files` is an array
     let f;
@@ -115,11 +116,34 @@ const take_files = (files) => {
         all_files[files[f].name] = files[f];
     }
     debugLog("(log) finish untaring");
-    //console.log(all_files); // `all_files` is a javascript object, key = file's name
+    console.log(all_files); // `all_files` is a javascript object, key = file's name
     bookmarks_input(all_files['bookmarks.json'].blob);
     likes_input(all_files['likes.json'].blob);
     actor_input(all_files['actor.json'].blob);
     outbox_input(all_files['outbox.json'].blob);
+};
+
+const take_files_zip = (files) => {
+    debugLog("(log) there are " + files.length + " files in total");
+    //console.log(files); // `files` is an array
+    let f;
+    for (f in files) {
+        all_files[files[f].name] = files[f];
+    }
+    debugLog("(log) finish unzipping");
+    //console.log(all_files); // `all_files` is a javascript object, key = file's name
+    all_files['bookmarks.json'].async("blob").then(function(blob) {
+        bookmarks_input(blob);
+    });
+    all_files['likes.json'].async("blob").then(function(blob) {
+        likes_input(blob);
+    });
+    all_files['actor.json'].async("blob").then(function(blob) {
+        actor_input(blob);
+    });
+    all_files['outbox.json'].async("blob").then(function(blob) {
+        outbox_input(blob);
+    });
 };
 
 document.getElementById("tgz-file-input")
@@ -127,19 +151,34 @@ document.getElementById("tgz-file-input")
     // 1. read the xxx.tar.gz here
     // 2. use pako.min.js to uncompress
     // 3. use untar.js to open the .tar file
-    // 4. deal it with the take_files function
+    // 4. deal it with the take_files_gz or take_files_zip function
         // console.log(this.files);
         var file = event.target.files[0],
             reader = new FileReader();
         reader.addEventListener("load", function() {
             debugLog("(log) total: " + this.result.byteLength * 0.000001 + " MB");
-            debugLog("(log) start to untar the .tar.gz file");
-            untar(pako.inflate(this.result).buffer).then(take_files);
-            debugLog("(log) untaring the .tar.gz file");
+            debugLog("(log) start to process the file");
+            if (file.name.endsWith(".tar.gz")) {
+                new_zip_version = 0;
+                debugLog("(log) start to untar the .tar.gz file");
+                untar(pako.inflate(this.result).buffer).then(take_files_gz);
+                debugLog("(log) untaring the .tar.gz file");
+            } else if (file.name.endsWith(".zip")) {
+                new_zip_version = 1;
+                debugLog("(log) start to unzip the .zip file");
+                var zip = new JSZip();
+                zip.loadAsync(this.result).then(function(contents) {
+                    var filesArray = Object.values(contents.files);
+                    take_files_zip(filesArray);
+                    debugLog("(log) unzipping the .zip file");
+                });
+            } else {
+                console.error("Unsupported file format");
+            }
         });
-        debugLog("(log) reading the .tar.gz file");
+        debugLog("(log) reading the file");
         reader.readAsArrayBuffer(file);
-        debugLog("(log) finish reading the .tar.gz file");
+        debugLog("(log) finish reading the file");
     });
 
 document.getElementById("bookmarks-file-input")
@@ -209,7 +248,13 @@ function deal_with_actor(actor) {
     try {
         var avatar_img_address = actor.icon["url"];
         if (load_mode == 'auto') {
-            avatar_img = URL.createObjectURL(all_files[avatar_img_address].blob);
+            if (new_version == 0) {
+                avatar_img = URL.createObjectURL(all_files[avatar_img_address].blob);
+            } else {
+                all_files[avatar_img_address].async("blob").then(function(blob) {
+                    avatar_img = URL.createObjectURL(blob);
+                });
+            }
         } else if (load_mode == 'manual') {
             avatar_img = avatar_img_address;
         }
@@ -220,7 +265,13 @@ function deal_with_actor(actor) {
     try {
         var header_img_address = actor.image["url"];
         if (load_mode == 'auto') {
-            header_img = URL.createObjectURL(all_files[header_img_address].blob);
+            if (new_version == 0) {
+                header_img = URL.createObjectURL(all_files[header_img_address].blob);
+            } else {
+                all_files[header_img_address].async("blob").then(function(blob) {
+                    header_img = URL.createObjectURL(blob);
+                });
+            }
         } else if (load_mode == 'manual') {
             header_img = header_img_address;
         }
@@ -263,6 +314,7 @@ function link2name(link, stage) {
 }
 
 function bookmarks_input(file) {
+    //console.log(file);
     debugLog("(log)(bookmark) start the bookmarks.json part");
     var reader = new FileReader();
     if (file) {
@@ -695,26 +747,35 @@ function buildArchiveView(outbox, actor) {
                         true);
                     var mediaType = 'i';
                 } else {
+                    console.log('other media type: ' + extension);
                     var media = document.importNode(otherTemplate.content,
                         true);
                     var mediaType = 'o';
                 }
 
                 var address_att = url.substring(url.indexOf('media_attachments/'));
+                var src_att = 'assets/favicon.ico';
                 if (load_mode == 'auto') {
                     if (all_files.hasOwnProperty(address_att)) {
-                        var src_att = URL.createObjectURL(all_files[address_att].blob);
+                        if (new_zip_version == 0) {
+                            src_att = URL.createObjectURL(all_files[address_att].blob);
+                        } else {
+                            all_files[address_att].async("blob").then(function(blob) {
+                                src_att = URL.createObjectURL(blob);
+                            });
+                        }
                     } else {
-                        var src_att = 'assets/favicon.ico';
+                        src_att = 'assets/favicon.ico';
                         caption += ' (MISSED!)';
                         console.log('(ERROR) Your archive pack does not seem to contain this image: '
                             + address_att + '. Involved toot: ' + status.url);
                     }
                 } else if (load_mode == 'manual') {
-                    var src_att = address_att;
+                    src_att = address_att;
                 }
 
                 if (mediaType != 'o') {
+                    console.log(src_att);
                     media.querySelector(".status__media").src = src_att;
                 } else {
                     media.querySelector(".status__media").innerHTML = src_att;
@@ -993,7 +1054,13 @@ function setTimeZone(timezone_value) {
     offset = - timezone_value * 60;
     debugLog("(log) time zone offset changed: " + offset);
     if (all_files['outbox.json']) {
-        outbox_input();
+        if (new_zip_version == 0) {
+            outbox_input(all_files['outbox.json'].blob);
+        } else {
+            all_files['outbox.json'].async("blob").then(function(blob) {
+                outbox_input(blob);
+            });
+        }
     }
 }
 
