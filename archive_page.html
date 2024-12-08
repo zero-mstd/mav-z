@@ -121,15 +121,15 @@
                     </label>
                 </div>
                 <p data-i18n="instruction1" id="instruction1">
-                    请直接选择你的长毛象存档文件，它的格式应该是 <b><code>archive-xxx.tar.gz</code></b>.
+                    请直接选择你的长毛象存档文件，它的格式应该是 <b><code>archive-xxx.tar.gz</code></b>. 但如果你的实例版本大于 4.2，它的格式应该是 <b><code>archive-xxx.zip</code></b>.
                 </p>
                 <p data-i18n="instruction2" id="instruction2">
                     请按顺序选择 <b><code>bookmarks.json</code></b>、<b><code>likes.json</code></b>、<b><code>actor.json</code></b>、<b><code>outbox.json</code></b>.
                 </p>
                 <div>
                     <label id="tgz-input">
-                        archive-xxx.tar.gz
-                        <input accept="application/gzip" id="tgz-file-input" type="file" style="display:none">
+                        archive-xxx.[tar.gz|zip]
+                        <input accept="application/gzip,application/zip" id="tgz-file-input" type="file" style="display:none">
                     </label>
                     <label id="bookmarks-input">
                         bookmarks.json
@@ -347,6 +347,7 @@
     -->
     <script type="text/javascript" src="./assets/chart.js"></script>
     <script type="text/javascript" src="./assets/translator.js"></script>
+    <script type="text/javascript" src="./assets/jszip.min.js"></script>
     <script type="text/javascript" src="./assets/pako.min.js"></script>
     <script type="text/javascript" src="./assets/untar.js"></script>
     <script type="text/javascript" src="./assets/main.js"></script>

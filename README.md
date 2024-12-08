@@ -75,6 +75,8 @@ The branch “exhibition” is for my season’s toots exhibition.
     * fix the bug that all captions become the last one when there are more than 1 images
 * 03/05/2023, Zero
     * (thanks to @SylviaGuillem) changed the rules for determining whether a toot is an original or a reply. If `inReplyTo` is `null` AND the `tag` string in `conversation` is your own instance, count the toot as an original; otherwise, reply. But there is a flaw: this rule will misjudge replies [to a deleted toot which is on the same instance with you] as original.
+* 12/09/2024, Zero
+    * (thanks to @hsvbhv) adaption of the new `.zip` format archives. Background: since mastodon [v4.2.0-beta1](https://github.com/mastodon/mastodon/releases/tag/v4.2.0-beta1), it uses `.zip` for archives instead of `.tar.gz`. ([PR](https://github.com/mastodon/mastodon/pull/23360))
 
 ## Usage:
 Simply put, just request your Mastodon archive and download it, save this repo, open the `archive_page.html` web page in your browser and choose your archive, there you go.
