@@ -509,6 +509,28 @@ function clear_grid() {
     document.getElementById("mediatoot_ct").innerHTML = '0';
 }
 
+function dealWithMedia(mediaType, media, mediaDiv, src_att) {
+    if (mediaType != 'o') {
+        media.querySelector(".status__media").src = src_att;
+    } else {
+        media.querySelector(".status__media").innerHTML = src_att;
+    }
+    if (mediaType == 'i') {
+        media.querySelector(".status__media")
+            .onclick = function(src_att) { // insert image inside the modal - use name as a caption
+                var modal = document.getElementById("myModal");
+                var modalImg = document.getElementById("img01");
+                var captionText = document.getElementById("caption");
+                modal.style.display = "block";
+                modalImg.src = src_att.target.src;
+                if (caption) {
+                    captionText.innerHTML = caption;
+                }
+            }
+    }
+    mediaDiv.appendChild(media);
+}
+
 function buildArchiveView(outbox, actor) {
     debugLog("(log)(build) building satarted");
     clear_grid();
@@ -762,6 +784,7 @@ function buildArchiveView(outbox, actor) {
                         } else {
                             all_files[address_att].async("blob").then(function(blob) {
                                 src_att = URL.createObjectURL(blob);
+                                dealWithMedia(mediaType, media, mediaDiv, src_att);
                             });
                         }
                     } else {
@@ -769,32 +792,12 @@ function buildArchiveView(outbox, actor) {
                         caption += ' (MISSED!)';
                         console.log('(ERROR) Your archive pack does not seem to contain this image: '
                             + address_att + '. Involved toot: ' + status.url);
+                        dealWithMedia(mediaType, media, mediaDiv, src_att);
                     }
                 } else if (load_mode == 'manual') {
                     src_att = address_att;
+                    dealWithMedia(mediaType, media, mediaDiv, src_att);
                 }
-
-                if (mediaType != 'o') {
-                    console.log(src_att);
-                    media.querySelector(".status__media").src = src_att;
-                } else {
-                    media.querySelector(".status__media").innerHTML = src_att;
-                }
-                if (mediaType == 'i') {
-                    media.querySelector(".status__media")
-                        .onclick = function(src_att) { // insert image inside the modal - use name as a caption
-                            var modal = document.getElementById("myModal");
-                            var modalImg = document.getElementById("img01");
-                            var captionText = document.getElementById("caption");
-                            modal.style.display = "block";
-                            modalImg.src = src_att.target.src;
-                            if (caption) {
-                                captionText.innerHTML = caption;
-                            }
-                        }
-                }
-                mediaDiv.appendChild(media);
-                // });
             })(i);
         } else {
             article.querySelector(".status__box")
