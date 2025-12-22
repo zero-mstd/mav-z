@@ -216,6 +216,7 @@ If you run into other problems, here's what you can do:
 - [SouthFox, mastodon BDSM](https://git.southfox.me/southfox/mastodon-BDSM). Mastodon Backup Data & Sqlite Management Tool. Build with flask (Python) and Mastodon API. Login required, but it has the advantage of showing boosts.
 - [kensanata, mastodon-backup](https://github.com/kensanata/mastodon-backup]). Archive your statuses, favorites and media using the Mastodon API (i.e. login required)
 - [s427, MARL](https://github.com/s427/MARL). Mastodon Archive Reader Lite - a lightweight single-page app to explore the contents of your Mastodon archive file. Only support the new .zip format since v4.2.0.
+- [Gnpink, Mastodon Archive Viewer](https://mastodon-archive-project.vercel.app/). Data can be stored in the browser after parsing. Supports syncing to Google Drive.
 
 ---
 
